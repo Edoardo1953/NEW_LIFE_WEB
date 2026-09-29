@@ -154,6 +154,48 @@ body {
     font-size: 0.9rem;
     transition: all 0.2s ease;
     border: 1px solid transparent;
+    flex: 1;
+}
+
+.nav-item-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    margin-bottom: 0.25rem;
+}
+
+.nav-eye-toggle-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.4rem 0.6rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    margin-left: 0.35rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.nav-eye-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: scale(1.15);
+}
+
+.nav-eye-active {
+    color: var(--accent-emerald) !important;
+}
+
+.nav-eye-hidden {
+    color: var(--accent-rose) !important;
+}
+
+.nav-item.nav-item-disabled {
+    opacity: 0.55;
+    border-color: rgba(244, 63, 94, 0.3);
 }
 
 .nav-item:hover {
