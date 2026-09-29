@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Outils & Gestion Mots de Passe - NEW LIFE Sàrl</title>
+    <title>Utenti & Password - NEW LIFE Sàrl</title>
     <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
@@ -48,8 +48,8 @@
                     <span data-i18n="nav_documenti">Documents Société</span>
                 </a>
                 <a href="strumenti.html" class="nav-item active">
-                    <i class="fa-solid fa-toolbox"></i>
-                    <span data-i18n="nav_strumenti">Outils & Passwords</span>
+                    <i class="fa-solid fa-key"></i>
+                    <span data-i18n="nav_strumenti">Utilisateurs & Passwords</span>
                 </a>
 
                 <div class="nav-section-title" data-i18n="nav_section_tools">GESTION</div>
@@ -72,8 +72,8 @@
             <!-- Topbar -->
             <header class="topbar glass-panel">
                 <div class="topbar-title-area">
-                    <h1 data-i18n="tools_title"><i class="fa-solid fa-key text-emerald"></i> Outils, Gestion Utilisateurs & Mots de Passe</h1>
-                    <p data-i18n="tools_desc">Coffre-fort d'identifiants d'entreprise, gestion des accès utilisateurs, générateur de clés et utilitaires financiers.</p>
+                    <h1><i class="fa-solid fa-users-gear text-emerald"></i> Gestion Utilisateurs & Mots de Passe</h1>
+                    <p>Gestion simple et directe des comptes, utilisateurs et de leurs mots de passe d'accès.</p>
                 </div>
 
                 <div class="topbar-actions">
@@ -97,417 +97,101 @@
                 </div>
             </header>
 
-            <!-- KPI Cards Summary -->
-            <div class="kpi-grid">
-                <div class="kpi-card glass-panel">
-                    <div class="kpi-icon-wrapper kpi-inflow">
-                        <i class="fa-solid fa-vault"></i>
-                    </div>
-                    <div class="kpi-data">
-                        <span class="kpi-label" data-i18n="kpi_total_vault">Comptes & Accès Enregistrés</span>
-                        <h3 class="kpi-val text-emerald" id="kpi-vault-count">0</h3>
-                    </div>
+            <!-- Control Bar (Actions & Search) -->
+            <div class="filter-bar glass-panel" style="margin-bottom: 1.5rem;">
+                <div class="filter-group" style="flex: 1;">
+                    <input type="text" id="user-search-input" class="filter-input" style="width: 100%; max-width: 400px;" placeholder="🔍 Rechercher un utilisateur, email ou service...">
                 </div>
 
-                <div class="kpi-card glass-panel">
-                    <div class="kpi-icon-wrapper kpi-balance">
-                        <i class="fa-solid fa-users-gear"></i>
-                    </div>
-                    <div class="kpi-data">
-                        <span class="kpi-label" data-i18n="kpi_active_users">Utilisateurs Actifs</span>
-                        <h3 class="kpi-val text-blue" id="kpi-users-count">0</h3>
-                    </div>
-                </div>
-
-                <div class="kpi-card glass-panel">
-                    <div class="kpi-icon-wrapper" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald);">
-                        <i class="fa-solid fa-shield-halved"></i>
-                    </div>
-                    <div class="kpi-data">
-                        <span class="kpi-label" data-i18n="kpi_strong_pwd">Mots de Passe Sécurisés</span>
-                        <h3 class="kpi-val text-emerald" id="kpi-strong-count">0</h3>
-                    </div>
-                </div>
-
-                <div class="kpi-card glass-panel">
-                    <div class="kpi-icon-wrapper" style="background: rgba(245, 158, 11, 0.15); color: var(--accent-amber);">
-                        <i class="fa-solid fa-cloud-arrow-up"></i>
-                    </div>
-                    <div class="kpi-data">
-                        <span class="kpi-label" data-i18n="kpi_last_backup">Statut Sauvegarde</span>
-                        <h3 class="kpi-val text-amber" id="kpi-backup-status">Local / OK</h3>
-                    </div>
+                <div class="filter-group">
+                    <button class="btn btn-primary" id="btn-add-user" style="padding: 0.6rem 1.25rem;">
+                        <i class="fa-solid fa-user-plus"></i> <strong>+ Nouvel Utilisateur & Mot de Passe</strong>
+                    </button>
+                    <button class="btn btn-secondary btn-sm" id="btn-export-json" title="Exporter une copie de sauvegarde">
+                        <i class="fa-solid fa-download"></i> Sauvegarder
+                    </button>
                 </div>
             </div>
 
-            <!-- Tabs Navigation -->
-            <div class="tabs-nav glass-panel" style="padding: 0.5rem 1rem; border-radius: 12px; margin-bottom: 1.5rem;">
-                <button class="tab-btn active" data-tab="tab-vault">
-                    <i class="fa-solid fa-lock" style="margin-right: 0.4rem;"></i>
-                    <span data-i18n="tab_vault">Coffre-fort Mots de Passe</span>
-                </button>
-                <button class="tab-btn" data-tab="tab-users">
-                    <i class="fa-solid fa-users" style="margin-right: 0.4rem;"></i>
-                    <span data-i18n="tab_users">Gestion Utilisateurs & Rôles</span>
-                </button>
-                <button class="tab-btn" data-tab="tab-generator">
-                    <i class="fa-solid fa-wand-magic-sparkles" style="margin-right: 0.4rem;"></i>
-                    <span data-i18n="tab_generator">Générateur Sécurisé</span>
-                </button>
-                <button class="tab-btn" data-tab="tab-calc">
-                    <i class="fa-solid fa-calculator" style="margin-right: 0.4rem;"></i>
-                    <span data-i18n="tab_calc">Utilitaires & TVA Lux</span>
-                </button>
-            </div>
-
-            <!-- TAB 1: COFFRE-FORT MOTS DE PASSE -->
-            <div id="tab-vault" class="tab-content active">
-                <div class="filter-bar glass-panel" style="margin-bottom: 1.5rem;">
-                    <div class="filter-group">
-                        <select id="vault-cat-filter" class="filter-select">
-                            <option value="ALL" data-i18n="vault_filter_all">Toutes les catégories</option>
-                            <option value="banking" data-i18n="vault_cat_banking">Banques & Portails Financiers</option>
-                            <option value="gov" data-i18n="vault_cat_gov">Administration & Fiscalité (RCSL, TVA, ACD)</option>
-                            <option value="corp" data-i18n="vault_cat_corp">Entreprise & Domaines</option>
-                            <option value="email" data-i18n="vault_cat_email">Messagerie & Cloud</option>
-                            <option value="supplier" data-i18n="vault_cat_supplier">Fournisseurs & Utilitaires</option>
-                            <option value="other" data-i18n="vault_cat_other">Autres Accès</option>
-                        </select>
-                        <input type="text" id="vault-search-input" class="filter-input" data-i18n-placeholder="search_credentials_placeholder" placeholder="Rechercher un service, identifiant, url...">
-                    </div>
-
-                    <div class="filter-group">
-                        <button class="btn btn-primary btn-sm" id="btn-open-add-credential">
-                            <i class="fa-solid fa-plus"></i> <span data-i18n="btn_new_credential">Nouvel Identifiant</span>
-                        </button>
-                        <button class="btn btn-secondary btn-sm" id="btn-export-vault">
-                            <i class="fa-solid fa-download"></i> <span data-i18n="btn_export_vault">Exporter Backup</span>
-                        </button>
-                        <button class="btn btn-secondary btn-sm" id="btn-import-vault-trigger">
-                            <i class="fa-solid fa-upload"></i> <span data-i18n="btn_import_vault">Importer Backup</span>
-                        </button>
-                        <input type="file" id="vault-import-file" accept=".json" style="display: none;">
-                    </div>
-                </div>
-
-                <!-- Vault Grid -->
-                <div id="vault-grid-container" class="vault-grid">
-                    <!-- Dynamic Credential Cards inserted by JS -->
-                </div>
-            </div>
-
-            <!-- TAB 2: GESTION UTILISATEURS -->
-            <div id="tab-users" class="tab-content">
-                <div class="filter-bar glass-panel" style="margin-bottom: 1.5rem;">
-                    <div class="filter-group">
-                        <input type="text" id="users-search-input" class="filter-input" data-i18n-placeholder="search_users_placeholder" placeholder="Rechercher un utilisateur, email, rôle...">
-                    </div>
-                    <div class="filter-group">
-                        <button class="btn btn-primary btn-sm" id="btn-open-add-user">
-                            <i class="fa-solid fa-user-plus"></i> <span data-i18n="btn_new_user">Nouvel Utilisateur</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="table-container glass-panel">
-                    <table class="custom-table" id="users-table">
-                        <thead>
-                            <tr>
-                                <th data-i18n="lbl_user_fullname">Nom & Prénom</th>
-                                <th data-i18n="lbl_user_email">Adresse Email</th>
-                                <th data-i18n="lbl_user_role">Rôle / Fonction</th>
-                                <th data-i18n="lbl_user_modules">Modules Autorisés</th>
-                                <th data-i18n="lbl_user_status">Statut</th>
-                                <th class="text-right" data-i18n="th_actions">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="users-table-body">
-                            <!-- Dynamic User Rows -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- TAB 3: GENERATEUR SECURISE -->
-            <div id="tab-generator" class="tab-content">
-                <div class="generator-box glass-panel">
-                    <div style="text-align: center; margin-bottom: 1.5rem;">
-                        <h2 style="font-size: 1.3rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.4rem;">
-                            <i class="fa-solid fa-shield-halved text-emerald"></i> <span data-i18n="tab_generator">Générateur Sécurisé</span>
-                        </h2>
-                        <p class="text-muted" style="font-size: 0.85rem;">Créez des mots de passe cryptographiquement forts avec calcul d'entropie instantané.</p>
-                    </div>
-
-                    <div class="gen-result-container">
-                        <div class="gen-output-text" id="gen-output">••••••••••••••••</div>
-                        <button class="btn btn-primary btn-sm" id="btn-copy-generated" title="Copier">
-                            <i class="fa-solid fa-copy"></i> <span data-i18n="gen_btn_copy">Copier</span>
-                        </button>
-                    </div>
-
-                    <div class="pwd-strength-indicator">
-                        <div class="pwd-strength-bar strength-strong" id="gen-strength-bar"></div>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-top: -1rem; margin-bottom: 1.5rem;" class="text-muted">
-                        <span>Sécurité : <strong id="gen-strength-label" class="text-emerald">Très Robuste</strong></span>
-                        <span>Entropie : <strong id="gen-entropy-label" class="text-emerald">~96 bits</strong></span>
-                    </div>
-
-                    <div style="margin-bottom: 1.25rem;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-weight: 600;">
-                            <span data-i18n="gen_length">Longueur du mot de passe :</span>
-                            <span id="gen-length-val" class="text-emerald" style="font-size: 1.1rem; font-weight: 800;">18</span>
-                        </div>
-                        <input type="range" id="gen-length-slider" min="8" max="64" value="18" style="width: 100%; accent-color: var(--accent-emerald);">
-                    </div>
-
-                    <div class="gen-controls-grid">
-                        <label class="checkbox-custom-label">
-                            <input type="checkbox" id="gen-opt-upper" checked>
-                            <span data-i18n="gen_uppercase">Majuscules (A-Z)</span>
-                        </label>
-                        <label class="checkbox-custom-label">
-                            <input type="checkbox" id="gen-opt-lower" checked>
-                            <span data-i18n="gen_lowercase">Minuscules (a-z)</span>
-                        </label>
-                        <label class="checkbox-custom-label">
-                            <input type="checkbox" id="gen-opt-numbers" checked>
-                            <span data-i18n="gen_numbers">Chiffres (0-9)</span>
-                        </label>
-                        <label class="checkbox-custom-label">
-                            <input type="checkbox" id="gen-opt-symbols" checked>
-                            <span data-i18n="gen_symbols">Symboles (!@#$%^&*)</span>
-                        </label>
-                    </div>
-
-                    <div style="display: flex; gap: 0.75rem; justify-content: center; margin-top: 1rem;">
-                        <button class="btn btn-primary" id="btn-generate-now" style="padding: 0.75rem 1.75rem;">
-                            <i class="fa-solid fa-rotate"></i> <span data-i18n="gen_btn_generate">Générer un nouveau mot de passe</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 4: UTILITAIRES & TVA LUX -->
-            <div id="tab-calc" class="tab-content">
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.5rem;">
-                    <!-- Calculateur TVA -->
-                    <div class="chart-card glass-panel">
-                        <h3 class="chart-title">
-                            <i class="fa-solid fa-percent text-emerald"></i> <span data-i18n="calc_tva_title">Calculateur TVA Luxembourg</span>
-                        </h3>
-                        <p class="text-muted" style="font-size: 0.8rem; margin-bottom: 1.25rem;">Calculateur bidirectionnel automatique (HT vers TTC ou TTC vers HT) avec barème fiscal luxembourgeois.</p>
-
-                        <div style="display: flex; flex-direction: column; gap: 1rem;">
-                            <div>
-                                <label class="vault-field-label" data-i18n="calc_tva_rate">Taux de TVA appliqué</label>
-                                <select id="calc-tva-rate" class="filter-select" style="width: 100%; margin-top: 0.25rem;">
-                                    <option value="0.17" data-i18n="calc_tva_standard">Standard 17% (Services, biens généraux)</option>
-                                    <option value="0.14" data-i18n="calc_tva_inter">Intermédiaire 14% (Garde, certains vins)</option>
-                                    <option value="0.08" data-i18n="calc_tva_reduced">Réduit 8% (Chauffage, électricité)</option>
-                                    <option value="0.03" data-i18n="calc_tva_super">Super-réduit 3% (Alimentation, livres)</option>
-                                    <option value="0.00" data-i18n="calc_tva_reverse">Autoliquidation / Inversion TVA (0% intra-UE)</option>
-                                </select>
-                            </div>
-
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                                <div>
-                                    <label class="vault-field-label" data-i18n="calc_tva_ht">Montant Hors TVA (€)</label>
-                                    <input type="number" id="calc-tva-ht" class="filter-input" style="width: 100%; font-weight: 700; margin-top: 0.25rem;" placeholder="1000.00" step="0.01">
-                                </div>
-                                <div>
-                                    <label class="vault-field-label" data-i18n="calc_tva_ttc">Montant Total TTC (€)</label>
-                                    <input type="number" id="calc-tva-ttc" class="filter-input" style="width: 100%; font-weight: 700; margin-top: 0.25rem;" placeholder="1170.00" step="0.01">
-                                </div>
-                            </div>
-
-                            <div class="part-metrics-box" style="margin: 0.5rem 0 0 0;">
-                                <div class="part-metric-item">
-                                    <span class="part-metric-label" data-i18n="calc_tva_val">Valeur de la TVA (€)</span>
-                                    <span class="part-metric-val text-emerald" id="calc-tva-val-display">170.00 €</span>
-                                </div>
-                                <div class="part-metric-item">
-                                    <span class="part-metric-label">Taux appliqué</span>
-                                    <span class="part-metric-val text-blue" id="calc-tva-rate-display">17.0 %</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Vérificateur VIES & TVA Intra -->
-                    <div class="chart-card glass-panel">
-                        <h3 class="chart-title">
-                            <i class="fa-solid fa-passport text-blue"></i> <span data-i18n="calc_vies_title">Vérificateur Format TVA Intracommunautaire</span>
-                        </h3>
-                        <p class="text-muted" style="font-size: 0.8rem; margin-bottom: 1.25rem;">Validation de la syntaxe et du format des identifiants fiscaux européens (LU, IT, FR, DE, BE...).</p>
-
-                        <div style="display: flex; flex-direction: column; gap: 1rem;">
-                            <div>
-                                <label class="vault-field-label" data-i18n="calc_vies_input">Numéro TVA (ex: LU12345678, IT01234567890)</label>
-                                <div style="display: flex; gap: 0.5rem; margin-top: 0.25rem;">
-                                    <input type="text" id="calc-vies-input" class="filter-input" style="flex: 1; text-transform: uppercase;" placeholder="LU12345678">
-                                    <button class="btn btn-primary btn-sm" id="btn-check-vies">
-                                        <i class="fa-solid fa-check"></i> <span data-i18n="calc_vies_btn">Valider</span>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div id="vies-result-box" style="padding: 1rem; border-radius: 10px; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-subtle); display: none;">
-                                <div id="vies-status-badge" class="badge badge-entree" style="margin-bottom: 0.5rem;">Format Valide</div>
-                                <div id="vies-message" style="font-size: 0.85rem; color: var(--text-main);">Numéro TVA conforme aux normes de l'administration fiscale luxembourgeoise.</div>
-                            </div>
-
-                            <div style="margin-top: 0.5rem; border-top: 1px solid var(--border-subtle); padding-top: 0.75rem;">
-                                <div class="vault-field-label" style="margin-bottom: 0.4rem;">Coordonnées Officielles NEW LIFE Sàrl</div>
-                                <div style="font-size: 0.82rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 0.25rem;">
-                                    <div><strong>RCS Luxembourg :</strong> B225643</div>
-                                    <div><strong>Matricule National :</strong> 2018 2432 026</div>
-                                    <div><strong>TVA Intracommunautaire :</strong> LU30456108</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <!-- Unified User & Password Cards List -->
+            <div id="users-cards-container" class="vault-grid">
+                <!-- Dynamically generated cards -->
             </div>
 
         </main>
     </div>
 
-    <!-- MODAL: AJOUTER / MODIFIER IDENTIFIANT -->
-    <div class="modal-overlay" id="modal-credential">
-        <div class="modal-container" style="max-width: 600px;">
-            <div class="modal-header">
-                <h3 class="modal-title" id="modal-credential-title">
-                    <i class="fa-solid fa-key text-emerald"></i> <span data-i18n="modal_new_credential_title">Ajouter un Identifiant</span>
-                </h3>
-                <button class="modal-close-btn" id="btn-close-modal-cred">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form id="form-credential" style="display: flex; flex-direction: column; gap: 1rem;">
-                    <input type="hidden" id="cred-id">
-                    
-                    <div>
-                        <label class="vault-field-label" data-i18n="lbl_service_name">Nom du Service / Portale *</label>
-                        <input type="text" id="cred-title" class="filter-input" style="width: 100%;" required placeholder="ex: POST Luxembourg WebBanking">
-                    </div>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <div>
-                            <label class="vault-field-label" data-i18n="lbl_vault_category">Catégorie *</label>
-                            <select id="cred-category" class="filter-select" style="width: 100%;" required>
-                                <option value="banking" data-i18n="vault_cat_banking">Banques & Finance</option>
-                                <option value="gov" data-i18n="vault_cat_gov">Administration & Fiscalité</option>
-                                <option value="corp" data-i18n="vault_cat_corp">Entreprise & Domaines</option>
-                                <option value="email" data-i18n="vault_cat_email">Messagerie & Cloud</option>
-                                <option value="supplier" data-i18n="vault_cat_supplier">Fournisseurs & Utilitaires</option>
-                                <option value="other" data-i18n="vault_cat_other">Autres Accès</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="vault-field-label" data-i18n="lbl_vault_url">Lien URL du site</label>
-                            <input type="url" id="cred-url" class="filter-input" style="width: 100%;" placeholder="https://...">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="vault-field-label" data-i18n="lbl_vault_username">Identifiant / Email / Code utilisateur *</label>
-                        <input type="text" id="cred-username" class="filter-input" style="width: 100%; font-family: monospace;" required placeholder="login ou email">
-                    </div>
-
-                    <div>
-                        <label class="vault-field-label" data-i18n="lbl_vault_password">Mot de Passe *</label>
-                        <div style="display: flex; gap: 0.5rem;">
-                            <input type="text" id="cred-password" class="filter-input" style="flex: 1; font-family: monospace;" required placeholder="••••••••••••">
-                            <button type="button" class="btn btn-secondary btn-sm" id="btn-modal-gen-pwd" title="Générer aléatoire">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="vault-field-label" data-i18n="lbl_vault_pin">Code PIN / 2FA / Info Complémentaire</label>
-                        <input type="text" id="cred-pin" class="filter-input" style="width: 100%; font-family: monospace;" placeholder="Code PIN, LuxTrust, OTP...">
-                    </div>
-
-                    <div>
-                        <label class="vault-field-label" data-i18n="lbl_vault_notes">Notes & Instructions</label>
-                        <textarea id="cred-notes" class="filter-input" style="width: 100%; height: 75px; resize: vertical;" placeholder="Informations utiles de récupération..."></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" id="btn-cancel-cred" data-i18n="btn_cancel">Annuler</button>
-                <button class="btn btn-primary" id="btn-save-cred" data-i18n="btn_save">Enregistrer</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL: AJOUTER / MODIFIER UTILISATEUR -->
-    <div class="modal-overlay" id="modal-user">
+    <!-- MODAL: AJOUTER / MODIFIER UTILISATEUR & MOT DE PASSE -->
+    <div class="modal-overlay" id="modal-user-pwd">
         <div class="modal-container" style="max-width: 550px;">
             <div class="modal-header">
-                <h3 class="modal-title" id="modal-user-title">
-                    <i class="fa-solid fa-user-gear text-blue"></i> <span data-i18n="modal_new_user_title">Ajouter un Utilisateur</span>
+                <h3 class="modal-title" id="modal-title">
+                    <i class="fa-solid fa-user-pen text-emerald"></i> Modifier Utilisateur & Mot de Passe
                 </h3>
-                <button class="modal-close-btn" id="btn-close-modal-user">&times;</button>
+                <button class="modal-close-btn" id="btn-close-modal">&times;</button>
             </div>
             <div class="modal-body">
-                <form id="form-user" style="display: flex; flex-direction: column; gap: 1rem;">
-                    <input type="hidden" id="user-id">
+                <form id="form-user-pwd" style="display: flex; flex-direction: column; gap: 1.1rem;">
+                    <input type="hidden" id="entry-id">
 
                     <div>
-                        <label class="vault-field-label" data-i18n="lbl_user_fullname">Nom & Prénom *</label>
-                        <input type="text" id="user-fullname" class="filter-input" style="width: 100%;" required placeholder="ex: Edoardo Tubia">
+                        <label class="vault-field-label">Nom de l'Utilisateur / Titulaire *</label>
+                        <input type="text" id="entry-name" class="filter-input" style="width: 100%; font-size: 0.95rem; font-weight: 600;" required placeholder="ex: TUBIA EDOARDO">
                     </div>
 
                     <div>
-                        <label class="vault-field-label" data-i18n="lbl_user_email">Adresse Email *</label>
-                        <input type="email" id="user-email" class="filter-input" style="width: 100%;" required placeholder="contact@newlife.lu">
+                        <label class="vault-field-label">Identifiant / Email de connexion *</label>
+                        <input type="text" id="entry-username" class="filter-input" style="width: 100%; font-family: monospace;" required placeholder="ex: tubia.edoardo@gmail.com">
+                    </div>
+
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                            <label class="vault-field-label" style="margin: 0;">Mot de Passe *</label>
+                            <button type="button" class="btn btn-secondary btn-sm" id="btn-gen-pwd" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;">
+                                <i class="fa-solid fa-wand-magic-sparkles text-emerald"></i> Générer Mot de Passe
+                            </button>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <input type="text" id="entry-password" class="filter-input" style="flex: 1; font-family: monospace; font-size: 1rem; font-weight: 700; color: var(--accent-emerald);" required placeholder="Tapez le nouveau mot de passe...">
+                        </div>
                     </div>
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                         <div>
-                            <label class="vault-field-label" data-i18n="lbl_user_role">Rôle / Fonction *</label>
-                            <select id="user-role" class="filter-select" style="width: 100%;">
-                                <option value="admin" data-i18n="role_admin">Administrateur / Gérant</option>
-                                <option value="accountant" data-i18n="role_accountant">Comptable / Fiduciaire</option>
-                                <option value="viewer" data-i18n="role_viewer">Consultation Seule</option>
-                                <option value="collab" data-i18n="role_collab">Collaborateur</option>
+                            <label class="vault-field-label">Rôle / Fonction</label>
+                            <select id="entry-role" class="filter-select" style="width: 100%;">
+                                <option value="Gérant / Administrateur">👑 Gérant / Administrateur</option>
+                                <option value="Comptable / Fiduciaire">📊 Comptable / Fiduciaire</option>
+                                <option value="Compte Bancaire (POST)">🏦 Compte Bancaire (POST)</option>
+                                <option value="Administration / RCSL">🏛️ Administration / RCSL</option>
+                                <option value="Messagerie / Email">✉️ Messagerie / Email</option>
+                                <option value="Consultation Seule">👁️ Consultation Seule</option>
                             </select>
                         </div>
                         <div>
-                            <label class="vault-field-label" data-i18n="lbl_user_status">Statut *</label>
-                            <select id="user-status" class="filter-select" style="width: 100%;">
-                                <option value="active" data-i18n="status_active">Actif</option>
-                                <option value="inactive" data-i18n="status_inactive">Inactif</option>
-                            </select>
+                            <label class="vault-field-label">Code PIN / 2FA (Optionnel)</label>
+                            <input type="text" id="entry-pin" class="filter-input" style="width: 100%; font-family: monospace;" placeholder="ex: LuxTrust, PIN 1234">
                         </div>
                     </div>
 
                     <div>
-                        <label class="vault-field-label" data-i18n="lbl_user_modules">Modules Autorisés</label>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.4rem;">
-                            <label class="checkbox-custom-label"><input type="checkbox" class="user-mod-cb" value="Vue d'ensemble" checked> Dashboard</label>
-                            <label class="checkbox-custom-label"><input type="checkbox" class="user-mod-cb" value="Compte Courant" checked> Banque</label>
-                            <label class="checkbox-custom-label"><input type="checkbox" class="user-mod-cb" value="Comptabilité PCN" checked> Comptabilité</label>
-                            <label class="checkbox-custom-label"><input type="checkbox" class="user-mod-cb" value="Amortissements" checked> Amortissements</label>
-                            <label class="checkbox-custom-label"><input type="checkbox" class="user-mod-cb" value="Participations" checked> Participations</label>
-                            <label class="checkbox-custom-label"><input type="checkbox" class="user-mod-cb" value="Documents" checked> Documents</label>
-                            <label class="checkbox-custom-label"><input type="checkbox" class="user-mod-cb" value="Outils" checked> Outils & Mots de passe</label>
-                        </div>
+                        <label class="vault-field-label">Notes & Instructions d'accès (Optionnel)</label>
+                        <textarea id="entry-notes" class="filter-input" style="width: 100%; height: 65px; resize: vertical;" placeholder="Informations utiles, lien direct, téléphone..."></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" id="btn-cancel-user" data-i18n="btn_cancel">Annuler</button>
-                <button class="btn btn-primary" id="btn-save-user" data-i18n="btn_save">Enregistrer</button>
+                <button class="btn btn-secondary" id="btn-modal-cancel">Annuler</button>
+                <button class="btn btn-primary" id="btn-modal-save" style="padding: 0.6rem 1.5rem;">
+                    <i class="fa-solid fa-floppy-disk"></i> Enregistrer
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Floating Toast Feedback -->
+    <!-- Floating Toast Notification -->
     <div id="toast-notify" class="toast-toast">
-        <i class="fa-solid fa-circle-check"></i> <span id="toast-text">Copié dans le presse-papier !</span>
+        <i class="fa-solid fa-circle-check"></i> <span id="toast-text">Mot de passe copié !</span>
     </div>
 
     <!-- Scripts -->
