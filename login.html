@@ -170,14 +170,14 @@
                 <div class="login-form-group">
                     <label class="vault-field-label">Utilisateur / Email</label>
                     <div class="login-input-wrapper">
-                        <input type="text" id="login-user" class="login-input" placeholder="tubia.edoardo@gmail.com" required autofocus>
+                        <input type="text" id="login-user" name="username" class="login-input" value="tubia.edoardo@gmail.com" autocomplete="username" placeholder="tubia.edoardo@gmail.com" required>
                     </div>
                 </div>
 
                 <div class="login-form-group">
                     <label class="vault-field-label">Mot de Passe</label>
                     <div class="login-input-wrapper">
-                        <input type="password" id="login-pwd" class="login-input" placeholder="••••••••••••" required>
+                        <input type="password" id="login-pwd" name="password" class="login-input" autocomplete="current-password" placeholder="••••••••••••" required autofocus>
                         <button type="button" class="login-reveal-btn" id="btn-toggle-pwd">
                             <i class="fa-solid fa-eye" id="icon-toggle-pwd"></i>
                         </button>
@@ -206,6 +206,17 @@
     <script src="auth.js"></script>
     <script src="i18n.js"></script>
     <script>
+        // Pre-fill last login if saved
+        const lastUser = localStorage.getItem('new_life_last_login_user');
+        if (lastUser) {
+            document.getElementById('login-user').value = lastUser;
+        }
+
+        // Focus password field immediately
+        setTimeout(() => {
+            document.getElementById('login-pwd')?.focus();
+        }, 100);
+
         // Reveal / Hide password toggle
         const toggleBtn = document.getElementById('btn-toggle-pwd');
         const pwdInput = document.getElementById('login-pwd');
@@ -224,9 +235,11 @@
         // Form Submit
         document.getElementById('login-form').addEventListener('submit', (e) => {
             e.preventDefault();
-            const username = document.getElementById('login-user').value;
+            const username = document.getElementById('login-user').value.trim();
             const password = document.getElementById('login-pwd').value;
             const remember = document.getElementById('login-remember').checked;
+
+            localStorage.setItem('new_life_last_login_user', username);
 
             const res = loginUser(username, password, remember);
             if (res.success) {
