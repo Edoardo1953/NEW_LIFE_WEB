@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion Sécurisée - NEW LIFE Sàrl</title>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .login-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 440px;
+            padding: 2.5rem 2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            animation: fadeInLogin 0.4s ease;
+        }
+
+        @keyframes fadeInLogin {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-logo {
+            width: 58px;
+            height: 58px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #10b981, #0ea5e9);
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .login-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 0.25rem;
+        }
+
+        .login-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .login-form-group {
+            text-align: left;
+            margin-bottom: 1.25rem;
+        }
+
+        .login-input-wrapper {
+            position: relative;
+            margin-top: 0.35rem;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            padding-right: 2.75rem;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        body.theme-light .login-input {
+            background: #ffffff;
+            border-color: #cbd5e1;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: var(--accent-emerald);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
+
+        .login-reveal-btn {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .login-reveal-btn:hover {
+            color: var(--accent-emerald);
+        }
+
+        .login-error-box {
+            display: none;
+            background: rgba(244, 63, 94, 0.15);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            color: #fb7185;
+            padding: 0.65rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 1.25rem;
+            text-align: left;
+        }
+
+        .top-right-bar {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-right-bar">
+        <!-- Language Selector -->
+        <div class="lang-selector">
+            <button class="lang-btn" data-lang="fr" title="Français">
+                <img src="https://flagcdn.com/w40/fr.png" alt="FR">
+            </button>
+            <button class="lang-btn" data-lang="it" title="Italiano">
+                <img src="https://flagcdn.com/w40/it.png" alt="IT">
+            </button>
+            <button class="lang-btn" data-lang="en" title="English">
+                <img src="https://flagcdn.com/w40/gb.png" alt="EN">
+            </button>
+        </div>
+
+        <!-- Theme Toggle -->
+        <button class="theme-toggle-btn" id="theme-toggle-btn" title="Changer de thème">
+            <i class="fa-solid fa-moon"></i>
+        </button>
+    </div>
+
+    <div class="login-wrapper">
+        <div class="login-card glass-panel">
+            <div class="login-logo">NL</div>
+            <h1 class="login-title">NEW LIFE Sàrl</h1>
+            <p class="login-subtitle">Portail Comptabilité, Finance & Gestion</p>
+
+            <div id="login-error" class="login-error-box">
+                <i class="fa-solid fa-triangle-exclamation" style="margin-right: 0.4rem;"></i>
+                <span id="login-error-text">Identifiant ou mot de passe incorrect.</span>
+            </div>
+
+            <form id="login-form">
+                <div class="login-form-group">
+                    <label class="vault-field-label">Utilisateur / Email</label>
+                    <div class="login-input-wrapper">
+                        <input type="text" id="login-user" class="login-input" placeholder="tubia.edoardo@gmail.com" required autofocus>
+                    </div>
+                </div>
+
+                <div class="login-form-group">
+                    <label class="vault-field-label">Mot de Passe</label>
+                    <div class="login-input-wrapper">
+                        <input type="password" id="login-pwd" class="login-input" placeholder="••••••••••••" required>
+                        <button type="button" class="login-reveal-btn" id="btn-toggle-pwd">
+                            <i class="fa-solid fa-eye" id="icon-toggle-pwd"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; font-size: 0.85rem;">
+                    <label class="checkbox-custom-label">
+                        <input type="checkbox" id="login-remember" checked>
+                        <span>Se souvenir de moi</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem; border-radius: 10px;">
+                    <i class="fa-solid fa-right-to-bracket" style="margin-right: 0.5rem;"></i> <strong>Se Connecter</strong>
+                </button>
+            </form>
+
+            <div style="margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--border-subtle); font-size: 0.75rem; color: var(--text-muted);">
+                <i class="fa-solid fa-shield-halved text-emerald"></i> Accès sécurisé crypté • NEW LIFE Sàrl © 2026
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="auth.js"></script>
+    <script src="i18n.js"></script>
+    <script>
+        // Reveal / Hide password toggle
+        const toggleBtn = document.getElementById('btn-toggle-pwd');
+        const pwdInput = document.getElementById('login-pwd');
+        const pwdIcon = document.getElementById('icon-toggle-pwd');
+
+        toggleBtn.addEventListener('click', () => {
+            if (pwdInput.type === 'password') {
+                pwdInput.type = 'text';
+                pwdIcon.className = 'fa-solid fa-eye-slash';
+            } else {
+                pwdInput.type = 'password';
+                pwdIcon.className = 'fa-solid fa-eye';
+            }
+        });
+
+        // Form Submit
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('login-user').value;
+            const password = document.getElementById('login-pwd').value;
+            const remember = document.getElementById('login-remember').checked;
+
+            const res = loginUser(username, password, remember);
+            if (res.success) {
+                window.location.replace('index.html');
+            } else {
+                const errBox = document.getElementById('login-error');
+                const errText = document.getElementById('login-error-text');
+                errText.innerText = res.message || 'Identifiant ou mot de passe incorrect.';
+                errBox.style.display = 'block';
+                pwdInput.value = '';
+                pwdInput.focus();
+            }
+        });
+    </script>
+</body>
+</html>
