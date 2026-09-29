@@ -150,14 +150,17 @@ class SimpleUserManager {
             const roleBadge = this.getRoleBadge(item.role);
 
             return `
-                <div class="vault-card" style="border: 1px solid var(--border-color); border-radius: 14px; padding: 1.25rem;">
-                    <div class="vault-card-header" style="margin-bottom: 0.85rem;">
+                <div class="vault-card draggable" draggable="true" data-id="${item.id}" style="border: 1px solid var(--border-color); border-radius: 14px; padding: 1.25rem;">
+                    <div class="vault-card-header" style="margin-bottom: 0.85rem; display: flex; justify-content: space-between; align-items: flex-start;">
                         <div style="display: flex; align-items: center; gap: 0.85rem;">
                             <div class="user-card-avatar" style="width: 44px; height: 44px; font-size: 1.1rem;">${initials}</div>
                             <div>
                                 <h3 style="font-size: 1.05rem; font-weight: 800; color: var(--text-main); margin: 0;">${this.escapeHtml(item.name)}</h3>
                                 <div style="margin-top: 0.2rem;">${roleBadge}</div>
                             </div>
+                        </div>
+                        <div class="drag-handle" title="Trascina per spostare d'ordine">
+                            <i class="fa-solid fa-grip-vertical"></i>
                         </div>
                     </div>
 
@@ -226,6 +229,56 @@ class SimpleUserManager {
                 </div>
             `;
         }).join('');
+
+        this.attachDragAndDrop();
+    }
+
+    attachDragAndDrop() {
+        const cards = document.querySelectorAll('.vault-card.draggable');
+        cards.forEach(card => {
+            card.addEventListener('dragstart', (e) => {
+                this.draggedId = card.getAttribute('data-id');
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', this.draggedId);
+                setTimeout(() => card.classList.add('dragging'), 0);
+            });
+
+            card.addEventListener('dragend', () => {
+                cards.forEach(c => c.classList.remove('dragging', 'drag-over'));
+            });
+
+            card.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                if (!card.classList.contains('dragging')) {
+                    card.classList.add('drag-over');
+                }
+            });
+
+            card.addEventListener('dragleave', () => {
+                card.classList.remove('drag-over');
+            });
+
+            card.addEventListener('drop', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                cards.forEach(c => c.classList.remove('drag-over', 'dragging'));
+
+                const targetId = card.getAttribute('data-id');
+                if (this.draggedId && targetId && this.draggedId !== targetId) {
+                    const fromIdx = this.entries.findIndex(entry => entry.id === this.draggedId);
+                    const toIdx = this.entries.findIndex(entry => entry.id === targetId);
+
+                    if (fromIdx !== -1 && toIdx !== -1) {
+                        const [movedItem] = this.entries.splice(fromIdx, 1);
+                        this.entries.splice(toIdx, 0, movedItem);
+                        this.saveData();
+                        this.render();
+                        this.showToast('Ordine schede aggiornato!');
+                    }
+                }
+            });
+        });
     }
 
     openModal(id = null) {
