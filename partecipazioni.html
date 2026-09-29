@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Participations & Filiales - NEW LIFE Sàrl</title>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .pdf-viewer-frame {
+            width: 100%;
+            height: 75vh;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: #ffffff;
+        }
+        .chart-box {
+            background: var(--bg-dark-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1.25rem;
+            height: 310px;
+            display: flex;
+            flex-direction: column;
+        }
+        .chart-box-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar glass-panel">
+            <div class="logo-container">
+                <div class="logo-badge">NL</div>
+                <div class="logo-title">NEW LIFE Sàrl</div>
+                <div class="logo-subtitle">Luxembourg • PCN & Finance</div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-section-title" data-i18n="nav_section_modules">MODULES</div>
+                <a href="index.html" class="nav-item">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span data-i18n="nav_dashboard">Vue d’ensemble</span>
+                </a>
+                <a href="banca.html" class="nav-item">
+                    <i class="fa-solid fa-building-columns"></i>
+                    <span data-i18n="nav_banca">Compte Courant</span>
+                </a>
+                <a href="contabilita.html" class="nav-item">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                    <span data-i18n="nav_contabilita">Comptabilité PCN</span>
+                </a>
+                <a href="ammortamenti.html" class="nav-item">
+                    <i class="fa-solid fa-calculator"></i>
+                    <span data-i18n="nav_ammortamenti">Amortissements</span>
+                </a>
+                <a href="partecipazioni.html" class="nav-item active">
+                    <i class="fa-solid fa-shapes"></i>
+                    <span data-i18n="nav_partecipazioni">Participations</span>
+                </a>
+                <a href="documenti.html" class="nav-item">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span data-i18n="nav_documenti">Documents Société</span>
+                </a>
+
+                <div class="nav-section-title" data-i18n="nav_section_tools">GESTION</div>
+                <button class="btn-sidebar-action" onclick="window.location.reload(true)">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span data-i18n="nav_refresh_data">Actualiser</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="update-badge">
+                    <span data-i18n="last_update">Dernière mise à jour :</span>
+                    <strong id="sidebar-updated-at">--/--/----</strong>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Topbar -->
+            <header class="topbar glass-panel">
+                <div class="topbar-title-area">
+                    <h1 data-i18n="part_title"><i class="fa-solid fa-shapes text-emerald"></i> Portefeuille des Participations & Filiales</h1>
+                    <p data-i18n="part_desc">Suivi des immobilisations financières (Classe PCN 23), archivage des actes de cession, statuts, visures et bilans.</p>
+                </div>
+
+                <div class="topbar-actions">
+                    <!-- Language Selector -->
+                    <div class="lang-selector">
+                        <button class="lang-btn" data-lang="fr" title="Français">
+                            <img src="https://flagcdn.com/w40/fr.png" alt="FR">
+                        </button>
+                        <button class="lang-btn" data-lang="it" title="Italiano">
+                            <img src="https://flagcdn.com/w40/it.png" alt="IT">
+                        </button>
+                        <button class="lang-btn" data-lang="en" title="English">
+                            <img src="https://flagcdn.com/w40/gb.png" alt="EN">
+                        </button>
+                    </div>
+
+                    <!-- Theme Toggle -->
+                    <button class="theme-toggle-btn" id="theme-toggle-btn" title="Changer de thème">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Summary KPI Cards Grid -->
+            <div class="kpi-grid" style="grid-template-columns: repeat(5, 1fr);">
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-title" data-i18n="kpi_part_total_vnc">Total Actifs Financiers (PCN 23)</span>
+                        <div class="kpi-icon emerald"><i class="fa-solid fa-vault"></i></div>
+                    </div>
+                    <div class="kpi-value text-emerald" id="kpi-part-vnc">239.221,67 €</div>
+                    <div class="kpi-sub"><i class="fa-solid fa-chart-line text-emerald"></i> PCN 233 + PCN 234</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-title" data-i18n="kpi_part_active_count">Participations (PCN 233)</span>
+                        <div class="kpi-icon blue"><i class="fa-solid fa-building"></i></div>
+                    </div>
+                    <div class="kpi-value text-blue" id="kpi-part-count">237.725,00 €</div>
+                    <div class="kpi-sub" id="kpi-part-count-sub"><i class="fa-solid fa-shapes text-blue"></i> 3 Sociétés en portefeuille</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-title" data-i18n="kpi_part_creances">Créances Liées (PCN 234)</span>
+                        <div class="kpi-icon cyan"><i class="fa-solid fa-money-bill-transfer"></i></div>
+                    </div>
+                    <div class="kpi-value text-cyan" id="kpi-part-creances">1.496,67 €</div>
+                    <div class="kpi-sub"><i class="fa-solid fa-hand-holding-dollar text-cyan"></i> Financement & Associés</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-title" data-i18n="kpi_part_total_invested">Total Investi Historique</span>
+                        <div class="kpi-icon purple" style="color: #a855f7;"><i class="fa-solid fa-money-bill-wave"></i></div>
+                    </div>
+                    <div class="kpi-value" id="kpi-part-invested">308.742,18 €</div>
+                    <div class="kpi-sub"><i class="fa-solid fa-arrow-down text-purple"></i> Apports & acquisitions</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-title" data-i18n="kpi_part_total_divested">Cessions & Retraits</span>
+                        <div class="kpi-icon amber"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                    </div>
+                    <div class="kpi-value text-amber" id="kpi-part-divested">70.520,00 €</div>
+                    <div class="kpi-sub"><i class="fa-solid fa-arrow-up text-amber"></i> Cessions partielles SAF</div>
+                </div>
+            </div>
+
+            <!-- Visual Analytics Charts Row -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem;">
+                <div class="chart-box">
+                    <div class="chart-box-title">
+                        <i class="fa-solid fa-chart-pie text-emerald"></i>
+                        <span data-i18n="chart_part_distrib_title">Répartition de la Valeur Nette par Entité</span>
+                    </div>
+                    <div style="flex: 1; position: relative;">
+                        <canvas id="chart-part-doughnut"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-box">
+                    <div class="chart-box-title">
+                        <i class="fa-solid fa-globe text-blue"></i>
+                        <span data-i18n="chart_part_geo_title">Exposition Géographique des Participations</span>
+                    </div>
+                    <div style="flex: 1; position: relative;">
+                        <canvas id="chart-part-geo"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Navigation Bar -->
+            <div class="tabs-nav">
+                <button class="tab-btn active" data-tab="tab-part-cards">
+                    <i class="fa-solid fa-address-card"></i>
+                    <span data-i18n="tab_part_cards">Vue Portefeuille & Fiches</span>
+                </button>
+                <button class="tab-btn" data-tab="tab-part-table">
+                    <i class="fa-solid fa-table-list"></i>
+                    <span data-i18n="tab_part_table">Tableau Comptable PCN 23</span>
+                </button>
+                <button class="tab-btn" data-tab="tab-part-docs">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span data-i18n="tab_part_docs">Archive Documents & Actes</span>
+                </button>
+                <button class="tab-btn" data-tab="tab-part-history">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span data-i18n="tab_part_history">Journal des Mouvements PCN 23</span>
+                </button>
+            </div>
+
+            <!-- TAB 1: Holdings Cards View -->
+            <div class="tab-content active" id="tab-part-cards">
+                <!-- Control Filter Bar -->
+                <div class="filter-bar glass-panel" style="margin-bottom: 1.25rem;">
+                    <div class="filter-group">
+                        <select id="part-entity-filter" class="filter-select">
+                            <option value="ALL">Toutes les participations</option>
+                        </select>
+
+                        <select id="part-status-filter" class="filter-select">
+                            <option value="ALL" data-i18n="filter_part_status_all">Tous les statuts</option>
+                            <option value="active" data-i18n="filter_part_status_active">Actives uniquement</option>
+                        </select>
+
+                        <input type="text" id="part-search-input" class="filter-input" placeholder="Rechercher une entité, pays, RCS...">
+                    </div>
+
+                    <div class="filter-group">
+                        <button class="btn btn-secondary btn-sm" onclick="openAddDocModal()">
+                            <i class="fa-solid fa-file-circle-plus text-blue"></i>
+                            <span data-i18n="btn_attach_doc">Rattacher un Document</span>
+                        </button>
+                        <button class="btn btn-primary btn-sm" onclick="openAddPartModal()">
+                            <i class="fa-solid fa-plus"></i>
+                            <span data-i18n="btn_new_participation">Nouvelle Participation</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Cards Grid -->
+                <div class="participation-grid" id="part-cards-grid">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+
+            <!-- TAB 2: Analytical Accounting Table -->
+            <div class="tab-content" id="tab-part-table">
+                <div class="table-card glass-panel">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th data-i18n="th_part_entity">Société / Entité</th>
+                                <th data-i18n="th_part_country">Pays</th>
+                                <th data-i18n="th_part_pcn">Code PCN</th>
+                                <th data-i18n="th_part_date_entry">Date Entrée</th>
+                                <th class="text-right" data-i18n="th_part_initial_val">Investi Initial</th>
+                                <th class="text-right" data-i18n="th_part_divested_val">Cessions</th>
+                                <th class="text-right" data-i18n="th_part_vnc">Valeur Nette (VNC)</th>
+                                <th class="text-center" data-i18n="th_part_pct">Quote-part</th>
+                                <th class="text-center" data-i18n="th_part_docs">Docs Liés</th>
+                                <th class="text-center" data-i18n="th_part_actions">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="part-table-body">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 3: Dedicated Documents Archive -->
+            <div class="tab-content" id="tab-part-docs">
+                <!-- Document Filter Bar -->
+                <div class="filter-bar glass-panel" style="margin-bottom: 1.25rem;">
+                    <div class="filter-group">
+                        <select id="part-doc-entity-filter" class="filter-select">
+                            <option value="ALL">Toutes les entités</option>
+                        </select>
+
+                        <select id="part-doc-cat-filter" class="filter-select">
+                            <option value="ALL" data-i18n="doc_category_all">Toutes les catégories</option>
+                            <option value="acte">Actes Notariés & Cessions</option>
+                            <option value="statuts">Statuts & Modifications</option>
+                            <option value="visura">Visure & Extraits RCS</option>
+                            <option value="bilan">Bilans & P&L Filiales</option>
+                            <option value="pacte">Pactes d'Associés</option>
+                            <option value="financement">Financement & Prêts</option>
+                            <option value="quittance">Quittances & Virements</option>
+                        </select>
+
+                        <input type="text" id="part-doc-search-input" class="filter-input" placeholder="Rechercher dans les documents...">
+                    </div>
+
+                    <div class="filter-group">
+                        <button class="btn btn-primary btn-sm" onclick="openAddDocModal()">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <span data-i18n="btn_attach_doc">Rattacher un Document</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Documents Grid Container -->
+                <div class="doc-grid" id="part-doc-archive-grid">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+
+            <!-- TAB 4: Historical Movements & Cashflows -->
+            <div class="tab-content" id="tab-part-history">
+                <div class="table-card glass-panel">
+                    <div style="padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                        <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-main);"><i class="fa-solid fa-list-check text-blue"></i> Mouvements Historiques Classe PCN 23 (Participations)</h3>
+                        <span class="badge badge-ord">Grand Livre PCN New Life Sàrl</span>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Société / Entité</th>
+                                <th>Type d'Opération</th>
+                                <th>Compte PCN</th>
+                                <th>Description / Libellé</th>
+                                <th class="text-right">Montant</th>
+                                <th class="text-center">Acte / Justificatif</th>
+                            </tr>
+                        </thead>
+                        <tbody id="part-history-table-body">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- PDF / Document Viewer Modal -->
+    <div class="modal-overlay" id="view-doc-modal">
+        <div class="modal-container" style="max-width: 1000px; height: 85vh; display: flex; flex-direction: column;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="view-modal-title"><i class="fa-solid fa-file-pdf text-rose"></i> Aperçu du Document</h3>
+                <button class="modal-close-btn" onclick="closeViewModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 0.5rem; flex: 1; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.2);">
+                <iframe id="pdf-viewer-frame" class="pdf-viewer-frame" src="" style="width: 100%; height: 100%; border: none; border-radius: 8px;"></iframe>
+                <div id="pdf-viewer-empty-notice" style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center;"></div>
+            </div>
+            <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
+                <button class="btn btn-secondary btn-sm" id="modal-delete-btn" style="color: var(--accent-rose); border-color: rgba(244, 63, 94, 0.3);" onclick="handleModalDeleteDoc()" title="Rimuovi il file / elimina documento">
+                    <i class="fa-solid fa-trash-can"></i> Supprimer / Détacher
+                </button>
+                <div style="display: flex; gap: 0.5rem;">
+                    <a id="modal-open-tab-link" href="#" target="_blank" class="btn btn-secondary btn-sm" style="display: none;">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> Ouvrir dans un nouvel onglet
+                    </a>
+                    <a id="modal-download-link" href="#" download class="btn btn-primary btn-sm">
+                        <i class="fa-solid fa-download"></i> Télécharger le fichier
+                    </a>
+                    <button class="btn btn-secondary btn-sm" onclick="closeViewModal()">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add / Edit Participation Modal -->
+    <div class="modal-overlay" id="edit-part-modal">
+        <div class="modal-container" style="max-width: 650px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-part-title"><i class="fa-solid fa-shapes text-emerald"></i> Nouvelle Participation</h3>
+                <button class="modal-close-btn" onclick="closePartModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="part-form" onsubmit="event.preventDefault(); savePartForm();">
+                    <input type="hidden" id="part-form-id">
+                    
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <label class="form-label" data-i18n="lbl_part_name">Nom de la Société / Entité *</label>
+                            <input type="text" id="part-form-name" class="form-control" required placeholder="Ex: Sombra e Agua Fresca Resort">
+                        </div>
+                        <div>
+                            <label class="form-label">Nom Court / Sigle</label>
+                            <input type="text" id="part-form-short-name" class="form-control" placeholder="Ex: SAF Resort">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <label class="form-label" data-i18n="lbl_part_country">Pays / Juridiction</label>
+                            <input type="text" id="part-form-country" class="form-control" placeholder="Ex: Luxembourg, Italie, Brésil...">
+                        </div>
+                        <div>
+                            <label class="form-label">Icône / Émoji</label>
+                            <input type="text" id="part-form-flag" class="form-control" placeholder="🏢, 🇮🇹, 🌴, 🌱">
+                        </div>
+                        <div>
+                            <label class="form-label" data-i18n="lbl_part_pcn">Compte PCN</label>
+                            <select id="part-form-pcn" class="form-control">
+                                <option value="233 - PARTICIPATIONS">233 - Participations</option>
+                                <option value="2330 - GREEN ENERBRAS">2330 - Green Enerbras</option>
+                                <option value="234 - CREANCES / LIEN DE PARTICIPATION">234 - Créances / Lien</option>
+                                <option value="23 - IMMOBILISATIONS FINANCIERES">23 - Immobilisations Fin.</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <label class="form-label" data-i18n="lbl_part_sector">Secteur d'activité</label>
+                            <input type="text" id="part-form-sector" class="form-control" placeholder="Ex: Hôtellerie, Solaire...">
+                        </div>
+                        <div>
+                            <label class="form-label" data-i18n="lbl_part_rcs">Numéro RCS / P.IVA / Registre</label>
+                            <input type="text" id="part-form-rcs" class="form-control" placeholder="Ex: P.IVA IT-04892180261">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <label class="form-label" data-i18n="lbl_part_headquarters">Siège Social</label>
+                            <input type="text" id="part-form-headquarters" class="form-control" placeholder="Ex: Torino, Italie">
+                        </div>
+                        <div>
+                            <label class="form-label" data-i18n="lbl_part_rep">Gérant / Mandataire</label>
+                            <input type="text" id="part-form-rep" class="form-control" placeholder="Ex: Tubia Edoardo">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
+                        <div>
+                            <label class="form-label" data-i18n="lbl_part_date">Date Entrée</label>
+                            <input type="date" id="part-form-date" class="form-control">
+                        </div>
+                        <div>
+                            <label class="form-label" data-i18n="lbl_part_initial_val">Investi Initial (€)</label>
+                            <input type="number" step="0.01" id="part-form-initial" class="form-control" placeholder="0.00">
+                        </div>
+                        <div>
+                            <label class="form-label" data-i18n="lbl_part_divested_val">Cessions (€)</label>
+                            <input type="number" step="0.01" id="part-form-divested" class="form-control" placeholder="0.00">
+                        </div>
+                        <div>
+                            <label class="form-label" data-i18n="lbl_part_vnc">Valeur Nette VNC (€)</label>
+                            <input type="number" step="0.01" id="part-form-vnc" class="form-control" placeholder="0.00">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <label class="form-label" data-i18n="lbl_part_pct">Quote-part (%)</label>
+                            <input type="text" id="part-form-pct" class="form-control" placeholder="Ex: 25.00%">
+                        </div>
+                        <div>
+                            <label class="form-label" data-i18n="lbl_part_status">Statut</label>
+                            <select id="part-form-status" class="form-control">
+                                <option value="active">Actif</option>
+                                <option value="partial">Cession Partielle</option>
+                                <option value="closed">Cédé / Clôturé</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 1rem;">
+                        <label class="form-label" data-i18n="lbl_part_notes">Notes & Remarques</label>
+                        <textarea id="part-form-notes" class="form-control" rows="2" placeholder="Détails juridiques, pactes, assemblées..."></textarea>
+                    </div>
+
+                    <div class="modal-footer" style="padding: 0; margin-top: 1.5rem;">
+                        <button type="submit" class="btn btn-primary" data-i18n="btn_save">Enregistrer</button>
+                        <button type="button" class="btn btn-secondary" onclick="closePartModal()" data-i18n="btn_cancel">Annuler</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add / Attach Document Modal -->
+    <div class="modal-overlay" id="edit-doc-modal">
+        <div class="modal-container" style="max-width: 560px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-doc-form-title"><i class="fa-solid fa-file-circle-plus text-blue"></i> Rattacher un Document</h3>
+                <button class="modal-close-btn" onclick="closeDocModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="doc-form" onsubmit="event.preventDefault(); saveDocForm();">
+                    <input type="hidden" id="modal-doc-id">
+                    
+                    <div style="margin-bottom: 1rem;">
+                        <label class="form-label" data-i18n="lbl_doc_part_select">Participation Rattachée *</label>
+                        <select id="modal-doc-part-id" class="form-control" required>
+                            <!-- Dynamically loaded -->
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 1rem;">
+                        <label class="form-label" data-i18n="lbl_doc_title">Titre du Document / Acte *</label>
+                        <input type="text" id="modal-doc-title" class="form-control" required placeholder="Ex: Atto Notarile di Cessione Quote">
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <label class="form-label" data-i18n="lbl_doc_category">Catégorie</label>
+                            <select id="modal-doc-category" class="form-control">
+                                <option value="acte">Acte Notarié / Achat</option>
+                                <option value="statuts">Statuts & Modifications</option>
+                                <option value="visura">Visura Camerale / RCS</option>
+                                <option value="bilan">Bilan & P&L Filiale</option>
+                                <option value="pacte">Pacte d'Associés</option>
+                                <option value="financement">Financement & Prêts</option>
+                                <option value="quittance">Quittance & Virement</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label" data-i18n="lbl_doc_date">Date de Référence / Signature</label>
+                            <input type="date" id="modal-doc-date" class="form-control">
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 1rem;">
+                        <label class="form-label">Nom du fichier PDF (dans docs/)</label>
+                        <input type="text" id="modal-doc-filename" class="form-control" placeholder="Ex: Atto_SEF_Srl.pdf">
+                    </div>
+
+                    <div style="margin-bottom: 1rem;">
+                        <label class="form-label" data-i18n="lbl_doc_file">Sélectionner un fichier (simulation / upload local)</label>
+                        <input type="file" id="modal-doc-file-input" class="form-control" accept=".pdf,.docx,.doc,.jpg,.png">
+                    </div>
+
+                    <div style="margin-bottom: 1rem;">
+                        <label class="form-label">Notes & Références</label>
+                        <textarea id="modal-doc-notes" class="form-control" rows="2" placeholder="Notaire, n° répertoire, clauses clés..."></textarea>
+                    </div>
+
+                    <div class="modal-footer" style="padding: 0; margin-top: 1.5rem;">
+                        <button type="submit" class="btn btn-primary" data-i18n="btn_save">Enregistrer</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeDocModal()" data-i18n="btn_cancel">Annuler</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="data.js"></script>
+    <script src="partecipazioni_data.js"></script>
+    <script src="doc_storage.js"></script>
+    <script src="i18n.js"></script>
+    <script src="partecipazioni_app.js"></script>
+</body>
+</html>

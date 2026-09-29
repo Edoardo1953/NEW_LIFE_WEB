@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compte Courant & Banque - NEW LIFE Sàrl</title>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SheetJS & jsPDF -->
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar glass-panel">
+            <div class="logo-container">
+                <div class="logo-badge">NL</div>
+                <div class="logo-title">NEW LIFE Sàrl</div>
+                <div class="logo-subtitle">Luxembourg • PCN & Finance</div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-section-title" data-i18n="nav_section_modules">MODULES</div>
+                <a href="index.html" class="nav-item">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span data-i18n="nav_dashboard">Vue d’ensemble</span>
+                </a>
+                <a href="banca.html" class="nav-item active">
+                    <i class="fa-solid fa-building-columns"></i>
+                    <span data-i18n="nav_banca">Compte Courant</span>
+                </a>
+                <a href="contabilita.html" class="nav-item">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                    <span data-i18n="nav_contabilita">Comptabilité PCN</span>
+                </a>
+                <a href="ammortamenti.html" class="nav-item">
+                    <i class="fa-solid fa-calculator"></i>
+                    <span data-i18n="nav_ammortamenti">Amortissements</span>
+                </a>
+                <a href="partecipazioni.html" class="nav-item">
+                    <i class="fa-solid fa-shapes"></i>
+                    <span data-i18n="nav_partecipazioni">Participations</span>
+                </a>
+                <a href="documenti.html" class="nav-item">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span data-i18n="nav_documenti">Documents Société</span>
+                </a>
+
+                <div class="nav-section-title" data-i18n="nav_section_tools">GESTION</div>
+                <button class="btn-sidebar-action" onclick="window.location.reload(true)">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span data-i18n="nav_refresh_data">Actualiser</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="update-badge">
+                    <span data-i18n="last_update">Dernière mise à jour :</span>
+                    <strong id="sidebar-updated-at">--/--/----</strong>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Topbar -->
+            <header class="topbar glass-panel">
+                <div class="topbar-title-area">
+                    <h1 data-i18n="banca_title"><i class="fa-solid fa-building-columns text-emerald"></i> Grand Livre de Trésorerie & Compte Courant</h1>
+                    <p data-i18n="banca_desc">Suivi chronologique et analytique des mouvements bancaires.</p>
+                </div>
+
+                <div class="topbar-actions">
+                    <!-- Language Selector -->
+                    <div class="lang-selector">
+                        <button class="lang-btn" data-lang="fr" title="Français">
+                            <img src="https://flagcdn.com/w40/fr.png" alt="FR">
+                        </button>
+                        <button class="lang-btn" data-lang="it" title="Italiano">
+                            <img src="https://flagcdn.com/w40/it.png" alt="IT">
+                        </button>
+                        <button class="lang-btn" data-lang="en" title="English">
+                            <img src="https://flagcdn.com/w40/gb.png" alt="EN">
+                        </button>
+                    </div>
+
+                    <!-- Theme Toggle -->
+                    <button class="theme-toggle-btn" id="theme-toggle-btn" title="Changer de thème">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Summary KPI Strip -->
+            <div class="kpi-grid" style="grid-template-columns: repeat(4, 1fr);">
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-title" data-i18n="stat_total_in">Total Entrées</span>
+                        <div class="kpi-icon emerald"><i class="fa-solid fa-arrow-down"></i></div>
+                    </div>
+                    <div class="kpi-value text-emerald" id="bank-stat-in">0,00 €</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-title" data-i18n="stat_total_out">Total Sorties</span>
+                        <div class="kpi-icon rose"><i class="fa-solid fa-arrow-up"></i></div>
+                    </div>
+                    <div class="kpi-value text-rose" id="bank-stat-out">0,00 €</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-title" data-i18n="stat_net_flow">Flux Net</span>
+                        <div class="kpi-icon amber"><i class="fa-solid fa-scale-balanced"></i></div>
+                    </div>
+                    <div class="kpi-value" id="bank-stat-net">0,00 €</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-title" data-i18n="stat_final_balance">Solde Reconstitué</span>
+                        <div class="kpi-icon blue"><i class="fa-solid fa-vault"></i></div>
+                    </div>
+                    <div class="kpi-value" id="bank-stat-balance">0,00 €</div>
+                </div>
+            </div>
+
+            <!-- Filter Toolbar -->
+            <div class="filter-bar glass-panel">
+                <div class="filter-group">
+                    <select id="filter-year" class="filter-select">
+                        <option value="ALL" data-i18n="filter_all_years">Toutes les années</option>
+                    </select>
+
+                    <select id="filter-month" class="filter-select">
+                        <option value="ALL" data-i18n="filter_all_months">Tous les mois</option>
+                        <option value="1">01 - Janvier</option>
+                        <option value="2">02 - Février</option>
+                        <option value="3">03 - Mars</option>
+                        <option value="4">04 - Avril</option>
+                        <option value="5">05 - Mai</option>
+                        <option value="6">06 - Juin</option>
+                        <option value="7">07 - Juillet</option>
+                        <option value="8">08 - Août</option>
+                        <option value="9">09 - Septembre</option>
+                        <option value="10">10 - Octobre</option>
+                        <option value="11">11 - Novembre</option>
+                        <option value="12">12 - Décembre</option>
+                    </select>
+
+                    <select id="filter-type" class="filter-select">
+                        <option value="ALL" data-i18n="filter_all_types">Tous les flux (E/S)</option>
+                        <option value="ENTREES" data-i18n="filter_entrees">Entrées uniquement</option>
+                        <option value="SORTIES" data-i18n="filter_sorties">Sorties uniquement</option>
+                    </select>
+
+                    <select id="filter-compte" class="filter-select">
+                        <option value="ALL" data-i18n="filter_all_comptes">Tous les comptes</option>
+                        <option value="POST" data-i18n="compte_post">Compte POST (Actif)</option>
+                        <option value="BANQUE" data-i18n="compte_banque">Compte ING / BANQUE (Clôturé)</option>
+                        <option value="CAISSE" data-i18n="compte_caisse">Caisse espèces</option>
+                    </select>
+
+                    <select id="filter-category" class="filter-select">
+                        <option value="ALL">Toutes les catégories PCN</option>
+                    </select>
+
+                    <input type="text" id="filter-search" class="filter-input" style="min-width: 240px;" placeholder="Rechercher libellé, fournisseur, facture..." data-i18n-placeholder="filter_search_placeholder">
+
+                    <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); cursor: pointer; background: rgba(0,0,0,0.2); padding: 0.4rem 0.65rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                        <input type="checkbox" id="filter-hide-storni" checked style="cursor: pointer;">
+                        <span data-i18n="filter_hide_storni">Masquer les stornos techniques</span>
+                    </label>
+
+                    <button id="btn-reset-filters" class="btn btn-secondary btn-sm" data-i18n="btn_reset_filters">
+                        <i class="fa-solid fa-rotate-left"></i> Réinitialiser
+                    </button>
+
+                    <button id="btn-restore-records" class="btn btn-secondary btn-sm" onclick="restoreAllDeletedRecords()" style="display: none; border-color: var(--accent-amber); color: var(--accent-amber);">
+                        <i class="fa-solid fa-trash-arrow-up"></i>
+                        <span data-i18n="btn_restore_deleted">Restaurer supprimés</span> (<span id="count-deleted-records">0</span>)
+                    </button>
+                </div>
+
+                <div class="filter-group">
+                    <button id="btn-export-excel" class="btn btn-secondary btn-sm">
+                        <i class="fa-solid fa-file-excel text-emerald"></i>
+                        <span data-i18n="btn_export_excel">Excel</span>
+                    </button>
+                    <button id="btn-export-pdf" class="btn btn-secondary btn-sm">
+                        <i class="fa-solid fa-file-pdf text-rose"></i>
+                        <span data-i18n="btn_export_pdf">PDF</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Ledger Table -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h2 class="chart-title">
+                        <i class="fa-solid fa-list-check text-emerald"></i>
+                        <span>Écritures & Mouvements Bancaires (<span id="count-rows">0</span> opérations)</span>
+                    </h2>
+                </div>
+
+                <div class="table-container">
+                    <table class="custom-table" id="bank-table">
+                        <thead>
+                            <tr>
+                                <th data-i18n="th_code_op">Code Op.</th>
+                                <th data-i18n="th_date">Date</th>
+                                <th data-i18n="th_compte">Compte</th>
+                                <th data-i18n="th_e_s">Sens</th>
+                                <th data-i18n="th_description">Description / Libellé</th>
+                                <th data-i18n="th_fournisseur">Fournisseur / Tiers</th>
+                                <th data-i18n="th_macro">Catégorie PCN</th>
+                                <th class="text-right" data-i18n="th_total">Total TTC</th>
+                                <th class="text-right" data-i18n="th_solde">Solde Progressif</th>
+                                <th class="text-center" data-i18n="th_actions">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bank-tbody">
+                            <!-- Populated dynamically via banca_app.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Transaction Detail Modal -->
+    <div class="modal-overlay" id="detail-modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fa-solid fa-receipt text-emerald"></i> Détail de l'opération bancaire</h3>
+                <button class="modal-close-btn" onclick="closeDetailModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-detail-content">
+                <!-- Injected via JS -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDetailModal()" data-i18n="btn_cancel">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data & Scripts -->
+    <script src="data.js"></script>
+    <script src="ammortamenti_data.js"></script>
+    <script src="i18n.js"></script>
+    <script src="banca_app.js"></script>
+</body>
+</html>

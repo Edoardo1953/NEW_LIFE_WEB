@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comptabilité & Bilan PCN - NEW LIFE Sàrl</title>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SheetJS & jsPDF -->
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .bilan-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        @media (max-width: 900px) {
+            .bilan-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .account-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.65rem 0.85rem;
+            border-bottom: 1px solid var(--border-subtle);
+            font-size: 0.85rem;
+        }
+        .account-row:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+        .account-group-header {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.75rem 0.85rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+            border-radius: 8px;
+            margin-top: 0.75rem;
+            margin-bottom: 0.25rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Interactive P&L Breakdown Styling */
+        .pnl-accordion-group {
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        .pnl-interactive-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0.85rem;
+            border-bottom: 1px solid var(--border-subtle);
+            font-size: 0.86rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 8px;
+            user-select: none;
+        }
+        .pnl-interactive-row:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        .pnl-interactive-row.expanded {
+            background: rgba(255, 255, 255, 0.07);
+            border-bottom: none;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        .pnl-chevron {
+            transition: transform 0.25s ease;
+            display: inline-block;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            margin-right: 0.4rem;
+        }
+        .pnl-interactive-row.expanded .pnl-chevron {
+            transform: rotate(90deg);
+            color: var(--accent-emerald);
+        }
+        .pnl-interactive-row.charge-row.expanded .pnl-chevron {
+            color: var(--accent-rose);
+        }
+        .pnl-detail-container {
+            display: none;
+            padding: 0.85rem 1rem;
+            margin-bottom: 0.45rem;
+            background: rgba(0, 0, 0, 0.22);
+            border: 1px dashed var(--border-color);
+            border-top: none;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            overflow-x: auto;
+        }
+        .pnl-detail-container.expanded {
+            display: block;
+            animation: pnlFadeIn 0.2s ease;
+        }
+        @keyframes pnlFadeIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        body.theme-light .pnl-detail-container {
+            background: #f1f5f9;
+        }
+
+        /* Interactive Bilan Breakdown Styling */
+        .bilan-accordion-group {
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            margin-bottom: 0.35rem;
+        }
+        .bilan-interactive-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0.85rem;
+            border-bottom: 1px solid var(--border-subtle);
+            font-size: 0.86rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 8px;
+            user-select: none;
+        }
+        .bilan-interactive-row:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        .bilan-interactive-row.expanded {
+            background: rgba(255, 255, 255, 0.07);
+            border-bottom: none;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        .bilan-chevron {
+            transition: transform 0.25s ease;
+            display: inline-block;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            margin-right: 0.4rem;
+        }
+        .bilan-interactive-row.expanded .bilan-chevron {
+            transform: rotate(90deg);
+            color: var(--accent-emerald);
+        }
+        .bilan-interactive-row.passif-row.expanded .bilan-chevron {
+            color: var(--accent-blue);
+        }
+        .bilan-detail-container {
+            display: none;
+            padding: 0.85rem 1rem;
+            margin-bottom: 0.45rem;
+            background: rgba(0, 0, 0, 0.22);
+            border: 1px dashed var(--border-color);
+            border-top: none;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            overflow-x: auto;
+        }
+        .bilan-detail-container.expanded {
+            display: block;
+            animation: pnlFadeIn 0.2s ease;
+        }
+        body.theme-light .bilan-detail-container {
+            background: #f1f5f9;
+        }
+
+        /* Mastrini & Journal Styling */
+        .mastrino-group-header {
+            background: rgba(59, 130, 246, 0.12) !important;
+            border-left: 4px solid var(--accent-blue) !important;
+            padding: 0.85rem 1rem !important;
+            font-weight: 800 !important;
+            color: var(--accent-blue) !important;
+            font-size: 0.92rem !important;
+            letter-spacing: 0.5px;
+        }
+        .mastrino-group-header-pnl {
+            background: rgba(16, 185, 129, 0.12) !important;
+            border-left: 4px solid var(--accent-emerald) !important;
+            padding: 0.85rem 1rem !important;
+            font-weight: 800 !important;
+            color: var(--accent-emerald) !important;
+            font-size: 0.92rem !important;
+            letter-spacing: 0.5px;
+        }
+        .mastrino-row {
+            cursor: pointer;
+            transition: background 0.2s ease;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .mastrino-row:hover {
+            background: rgba(255, 255, 255, 0.04) !important;
+        }
+        .mastrino-chevron {
+            transition: transform 0.25s ease;
+            display: inline-block;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-right: 0.4rem;
+        }
+        .mastrino-row.expanded .mastrino-chevron {
+            transform: rotate(90deg);
+            color: var(--accent-emerald);
+        }
+        .mastrino-detail-row {
+            display: none;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        .mastrino-detail-row.expanded {
+            display: table-row !important;
+        }
+        .mastrino-detail-container {
+            padding: 1rem 1.25rem;
+            border-top: 1px dashed var(--border-color);
+            border-bottom: 1px dashed var(--border-color);
+            background: rgba(0, 0, 0, 0.25);
+        }
+        .nested-table {
+            width: 100%;
+            font-size: 0.82rem;
+            border-collapse: collapse;
+        }
+        .nested-table th {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 0.6rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .nested-table td {
+            padding: 0.5rem 0.6rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        .nested-table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .badge-bilan {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            padding: 0.2rem 0.55rem;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+        .badge-pnl {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            padding: 0.2rem 0.55rem;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+        .count-pill {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-muted);
+            padding: 0.15rem 0.45rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 0.35rem;
+        }
+        body.theme-light .mastrino-detail-container {
+            background: #f8fafc;
+        }
+        body.theme-light .mastrino-group-header {
+            background: #e0f2fe !important;
+            color: #0369a1 !important;
+        }
+        body.theme-light .mastrino-group-header-pnl {
+            background: #dcfce7 !important;
+            color: #15803d !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar glass-panel">
+            <div class="logo-container">
+                <div class="logo-badge">NL</div>
+                <div class="logo-title">NEW LIFE Sàrl</div>
+                <div class="logo-subtitle">Luxembourg • PCN & Finance</div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-section-title" data-i18n="nav_section_modules">MODULES</div>
+                <a href="index.html" class="nav-item">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span data-i18n="nav_dashboard">Vue d’ensemble</span>
+                </a>
+                <a href="banca.html" class="nav-item">
+                    <i class="fa-solid fa-building-columns"></i>
+                    <span data-i18n="nav_banca">Compte Courant</span>
+                </a>
+                <a href="contabilita.html" class="nav-item active">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                    <span data-i18n="nav_contabilita">Comptabilité PCN</span>
+                </a>
+                <a href="ammortamenti.html" class="nav-item">
+                    <i class="fa-solid fa-calculator"></i>
+                    <span data-i18n="nav_ammortamenti">Amortissements</span>
+                </a>
+                <a href="partecipazioni.html" class="nav-item">
+                    <i class="fa-solid fa-shapes"></i>
+                    <span data-i18n="nav_partecipazioni">Participations</span>
+                </a>
+                <a href="documenti.html" class="nav-item">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span data-i18n="nav_documenti">Documents Société</span>
+                </a>
+
+                <div class="nav-section-title" data-i18n="nav_section_tools">GESTION</div>
+                <button class="btn-sidebar-action" onclick="window.location.reload(true)">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span data-i18n="nav_refresh_data">Actualiser</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="update-badge">
+                    <span data-i18n="last_update">Dernière mise à jour :</span>
+                    <strong id="sidebar-updated-at">--/--/----</strong>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Topbar -->
+            <header class="topbar glass-panel">
+                <div class="topbar-title-area">
+                    <h1 data-i18n="contab_title"><i class="fa-solid fa-book-bookmark text-emerald"></i> Comptabilité Générale & Bilan PCN</h1>
+                    <p data-i18n="contab_desc">Plan Comptable Normalisé luxembourgeois, Bilan, Compte de Résultat, Journal et Mastrini.</p>
+                </div>
+
+                <div class="topbar-actions">
+                    <!-- Language Selector -->
+                    <div class="lang-selector">
+                        <button class="lang-btn" data-lang="fr" title="Français">
+                            <img src="https://flagcdn.com/w40/fr.png" alt="FR">
+                        </button>
+                        <button class="lang-btn" data-lang="it" title="Italiano">
+                            <img src="https://flagcdn.com/w40/it.png" alt="IT">
+                        </button>
+                        <button class="lang-btn" data-lang="en" title="English">
+                            <img src="https://flagcdn.com/w40/gb.png" alt="EN">
+                        </button>
+                    </div>
+
+                    <!-- Theme Toggle -->
+                    <button class="theme-toggle-btn" id="theme-toggle-btn" title="Changer de thème">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Filter Strip & Exercise Selector -->
+            <div class="filter-bar glass-panel">
+                <div class="filter-group">
+                    <label style="font-weight: 600; color: var(--text-muted);"><i class="fa-solid fa-calendar-check"></i> <span data-i18n="filter_year">Exercice</span> :</label>
+                    <select id="contab-year-select" class="filter-select">
+                        <!-- Populated with closed years <= 2025 -->
+                    </select>
+
+                    <label style="font-weight: 600; color: var(--text-muted); margin-left: 0.5rem;"><i class="fa-solid fa-filter"></i> <span data-i18n="filter_method">Méthode</span> :</label>
+                    <select id="contab-method-select" class="filter-select">
+                        <option value="CAISSE" selected data-i18n="opt_method_caisse">Flux de Caisse / Trésorerie (Per Cassa)</option>
+                        <option value="COMPETENCE" data-i18n="opt_method_competence">Compétence Comptable (PCN)</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <button id="btn-export-contab-excel" class="btn btn-secondary btn-sm">
+                        <i class="fa-solid fa-file-excel text-emerald"></i>
+                        <span data-i18n="btn_export_excel">Excel</span>
+                    </button>
+                    <button id="btn-export-contab-pdf" class="btn btn-secondary btn-sm">
+                        <i class="fa-solid fa-file-pdf text-rose"></i>
+                        <span data-i18n="btn_export_pdf">PDF</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab Navigation (4 Tabs like GREEN_ENERBRAS) -->
+            <div class="tabs-nav">
+                <button class="tab-btn active" data-tab="tab-pnl" data-i18n="tab_pnl">Perdite e Profitti (P&L)</button>
+                <button class="tab-btn" data-tab="tab-bilan" data-i18n="tab_bilan">Stato Patrimoniale (Bilan)</button>
+                <button class="tab-btn" data-tab="tab-journal" data-i18n="tab_journal">Giornale Movimenti</button>
+                <button class="tab-btn" data-tab="tab-mastrini" data-i18n="tab_mastrini">Mastrini</button>
+            </div>
+
+            <!-- TAB 1: Compte de Résultat (P&L) -->
+            <div class="tab-content active" id="tab-pnl">
+                <div class="bilan-grid">
+                    <!-- PRODUITS (Classe 7) -->
+                    <div class="chart-card">
+                        <div class="chart-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                            <h2 class="chart-title"><i class="fa-solid fa-sack-dollar text-emerald"></i> <span data-i18n="pnl_produits_title">PRODUITS D'EXPLOITATION & FINANCIERS</span></h2>
+                            <div style="display: flex; gap: 0.35rem;">
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="toggleAllPnLSection('pnl-produits-container', true)" title="Espandi tutte le voci di ricavo" style="font-size: 0.72rem; padding: 0.25rem 0.55rem;">
+                                    <i class="fa-solid fa-folder-open"></i> <span style="font-size: 0.72rem;">Espandi</span>
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="toggleAllPnLSection('pnl-produits-container', false)" title="Comprimi tutte le voci" style="font-size: 0.72rem; padding: 0.25rem 0.55rem;">
+                                    <i class="fa-solid fa-folder"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="pnl-produits-container">
+                            <!-- Populated via JS -->
+                        </div>
+                        <div class="account-group-header" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald); font-size: 1rem; margin-top: 1.5rem;">
+                            <span data-i18n="total_produits">TOTAL PRODUITS :</span>
+                            <span id="total-produits-val">0,00 €</span>
+                        </div>
+                    </div>
+
+                    <!-- CHARGES (Classe 6) -->
+                    <div class="chart-card">
+                        <div class="chart-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                            <h2 class="chart-title"><i class="fa-solid fa-file-invoice-dollar text-rose"></i> <span data-i18n="pnl_charges_title">CHARGES D'EXPLOITATION & FINANCIÈRES</span></h2>
+                            <div style="display: flex; gap: 0.35rem;">
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="toggleAllPnLSection('pnl-charges-container', true)" title="Espandi tutte le voci di costo" style="font-size: 0.72rem; padding: 0.25rem 0.55rem;">
+                                    <i class="fa-solid fa-folder-open"></i> <span style="font-size: 0.72rem;">Espandi</span>
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="toggleAllPnLSection('pnl-charges-container', false)" title="Comprimi tutte le voci" style="font-size: 0.72rem; padding: 0.25rem 0.55rem;">
+                                    <i class="fa-solid fa-folder"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="pnl-charges-container">
+                            <!-- Populated via JS -->
+                        </div>
+                        <div class="account-group-header" style="background: rgba(244, 63, 94, 0.15); color: var(--accent-rose); font-size: 1rem; margin-top: 1.5rem;">
+                            <span data-i18n="total_charges">TOTAL CHARGES :</span>
+                            <span id="total-charges-val">0,00 €</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Résultat Net Strip -->
+                <div class="kpi-card" style="margin-top: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <span class="kpi-title" data-i18n="net_accounting_result">RÉSULTAT NET COMPTABLE DE L'EXERCICE</span>
+                            <p style="font-size: 0.8rem; color: var(--text-muted);">Solde Produits (Classe 7) moins Charges (Classe 6)</p>
+                        </div>
+                        <div style="font-size: 2rem; font-weight: 800;" id="pnl-net-result-val">0,00 €</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: Bilan (Actif / Passif) -->
+            <div class="tab-content" id="tab-bilan">
+                <div class="bilan-grid">
+                    <!-- ACTIF -->
+                    <div class="chart-card">
+                        <div class="chart-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                            <h2 class="chart-title"><i class="fa-solid fa-arrow-trend-up text-emerald"></i> <span data-i18n="bilan_actif_title">ACTIF DU BILAN</span></h2>
+                            <div style="display: flex; gap: 0.35rem;">
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="toggleAllBilanSection('bilan-actif-container', true)" title="Espandi tutte le voci dell'Attivo" style="font-size: 0.72rem; padding: 0.25rem 0.55rem;">
+                                    <i class="fa-solid fa-folder-open"></i> <span style="font-size: 0.72rem;">Espandi</span>
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="toggleAllBilanSection('bilan-actif-container', false)" title="Comprimi tutte le voci" style="font-size: 0.72rem; padding: 0.25rem 0.55rem;">
+                                    <i class="fa-solid fa-folder"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="bilan-actif-container">
+                            <!-- Populated via JS -->
+                        </div>
+                        <div class="account-group-header" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald); font-size: 1rem; margin-top: 1.5rem;">
+                            <span data-i18n="total_actif">TOTAL ACTIF :</span>
+                            <span id="total-actif-val">0,00 €</span>
+                        </div>
+                    </div>
+
+                    <!-- PASSIF -->
+                    <div class="chart-card">
+                        <div class="chart-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                            <h2 class="chart-title"><i class="fa-solid fa-arrow-trend-down text-blue"></i> <span data-i18n="bilan_passif_title">PASSIF DU BILAN</span></h2>
+                            <div style="display: flex; gap: 0.35rem;">
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="toggleAllBilanSection('bilan-passif-container', true)" title="Espandi tutte le voci del Passivo" style="font-size: 0.72rem; padding: 0.25rem 0.55rem;">
+                                    <i class="fa-solid fa-folder-open"></i> <span style="font-size: 0.72rem;">Espandi</span>
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="toggleAllBilanSection('bilan-passif-container', false)" title="Comprimi tutte le voci" style="font-size: 0.72rem; padding: 0.25rem 0.55rem;">
+                                    <i class="fa-solid fa-folder"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="bilan-passif-container">
+                            <!-- Populated via JS -->
+                        </div>
+                        <div class="account-group-header" style="background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); font-size: 1rem; margin-top: 1.5rem;">
+                            <span data-i18n="total_passif">TOTAL PASSIF & CAPITAUX :</span>
+                            <span id="total-passif-val">0,00 €</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: Giornale Movimenti (Journal) -->
+            <div class="tab-content" id="tab-journal">
+                <div class="chart-card">
+                    <!-- FILTRI GIORNALE (IN ALTO) -->
+                    <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: 10px; padding: 0.85rem 1rem; margin-bottom: 1.25rem; display: flex; flex-wrap: wrap; gap: 0.85rem; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; flex: 1;">
+                            <div style="position: relative; min-width: 200px; flex: 1;">
+                                <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.85rem;"></i>
+                                <input type="text" id="filter-journal-search" oninput="onJournalFilterChange()" placeholder="Cerca controparte o causale..." data-i18n-placeholder="filter_cerca_journal" class="filter-input" style="width: 100%; padding-left: 2rem;">
+                            </div>
+                            <div style="min-width: 130px;">
+                                <input type="text" id="filter-journal-date" oninput="onJournalFilterChange()" placeholder="Filtra Data..." class="filter-input" style="width: 100%;">
+                            </div>
+                            <div style="min-width: 170px;">
+                                <select id="filter-journal-pcn" onchange="onJournalFilterChange()" class="filter-select" style="width: 100%;">
+                                    <option value="" data-i18n="filter_tutti_conti">Tutti i conti PCN</option>
+                                </select>
+                            </div>
+                            <div style="min-width: 140px;">
+                                <select id="filter-journal-section" onchange="onJournalFilterChange()" class="filter-select" style="width: 100%;">
+                                    <option value="" data-i18n="filter_tutte_sezioni">Tutte le sezioni</option>
+                                    <option value="BIL">BILAN (Stato Patrimoniale)</option>
+                                    <option value="PP">P&L (Perdite e Profitti)</option>
+                                </select>
+                            </div>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="resetJournalFilters()">
+                                <i class="fa-solid fa-rotate-left"></i> <span data-i18n="btn_reset_filtri">Reset</span>
+                            </button>
+                        </div>
+                        <div id="journal-filter-stats" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; white-space: nowrap;">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+
+                    <div class="table-container" style="overflow-x: auto;">
+                        <table class="custom-table" id="table-journal">
+                            <thead>
+                                <tr>
+                                    <th style="width: 45px; text-align: center;">#</th>
+                                    <th style="width: 95px;" data-i18n="th_date">Data</th>
+                                    <th data-i18n="th_description">Controparte / Descrizione</th>
+                                    <th style="width: 140px;" data-i18n="th_class">Conto PCN</th>
+                                    <th style="width: 75px; text-align: center;">Sez.</th>
+                                    <th style="width: 110px;" class="text-right" data-i18n="th_montant">Imponibile</th>
+                                    <th style="width: 90px;" class="text-right" data-i18n="th_tva">IVA</th>
+                                    <th style="width: 120px;" class="text-right" data-i18n="th_total">Totale (€)</th>
+                                    <th style="width: 130px;" class="text-right" data-i18n="th_solde">Progressivo</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body-journal">
+                                <!-- Injected via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: Mastrini (Grand Livre dei Conti PCN) -->
+            <div class="tab-content" id="tab-mastrini">
+                <div class="chart-card">
+                    <!-- HEADER CONTROLS MASTRINI -->
+                    <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: 10px; padding: 0.85rem 1rem; margin-bottom: 1.25rem; display: flex; flex-wrap: wrap; gap: 0.85rem; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; flex: 1;">
+                            <div style="position: relative; min-width: 220px; flex: 1;">
+                                <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.85rem;"></i>
+                                <input type="text" id="filter-mastrini-search" oninput="onMastriniFilterChange()" placeholder="Cerca conto per codice o nome..." data-i18n-placeholder="filter_cerca_mastrini" class="filter-input" style="width: 100%; padding-left: 2rem;">
+                            </div>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="toggleAllMastrini(true)">
+                                <i class="fa-solid fa-folder-open"></i> <span data-i18n="btn_espandi_tutti">Espandi Tutti</span>
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="toggleAllMastrini(false)">
+                                <i class="fa-solid fa-folder"></i> <span data-i18n="btn_comprimi_tutti">Comprimi Tutti</span>
+                            </button>
+                        </div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">
+                            <i class="fa-solid fa-circle-info" style="color: var(--accent-blue);"></i> Clicca su un mastrino per consultare le registrazioni di dettaglio
+                        </div>
+                    </div>
+
+                    <div class="table-container" style="overflow-x: auto;">
+                        <table class="custom-table" id="table-mastrini">
+                            <thead>
+                                <tr>
+                                    <th style="width: 140px;" data-i18n="col_conto_pcn">Nr Conto</th>
+                                    <th data-i18n="col_titolo_conto">Titolo del Conto</th>
+                                    <th style="width: 85px; text-align: center;" data-i18n="col_tipo_conto">Sezione</th>
+                                    <th style="width: 140px;" class="text-right" data-i18n="col_saldo_prec">Saldo Precedente</th>
+                                    <th style="width: 140px;" class="text-right" data-i18n="col_entrate_costi">Entrate / Costi</th>
+                                    <th style="width: 140px;" class="text-right" data-i18n="col_uscite_ricavi">Uscite / Ricavi</th>
+                                    <th style="width: 150px;" class="text-right" data-i18n="col_nuovo_saldo">Nuovo Saldo</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body-mastrini">
+                                <!-- Injected via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bilan Equilibre & Validation Status Banner -->
+            <div class="glass-panel" id="bilan-status-banner" style="margin-top: 1.5rem; margin-bottom: 1rem; padding: 1rem 1.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; border-left: 4px solid var(--accent-emerald);">
+                <div style="display: flex; align-items: center; gap: 0.85rem;">
+                    <div style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.35rem;">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                    </div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 0.6rem;">
+                            <strong style="font-size: 1.05rem; color: var(--text-main);" data-i18n="bilan_status_balanced">✓ BILAN ÉQUILIBRÉ (Actif = Passif)</strong>
+                            <span class="badge" id="bilan-status-badge" style="background: rgba(16, 185, 129, 0.2); color: var(--accent-emerald); font-weight: 700;">PAREGGIATO</span>
+                        </div>
+                        <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.25rem;" data-i18n="bilan_closed_note">
+                            Exercices comptables clôturés (jusqu’à fin 2025). L’année en cours (2026) et prévisionnelle (2027) sont suivies dans le Compte Courant.
+                        </p>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1.25rem; background: rgba(255, 255, 255, 0.03); padding: 0.6rem 1rem; border-radius: 8px; border: 1px solid var(--border-subtle);">
+                    <div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);" data-i18n="bilan_status_diff">Différence Actif / Passif :</div>
+                        <div style="font-size: 1.15rem; font-weight: 800; color: var(--accent-emerald);" id="bilan-diff-val">0,00 €</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);" data-i18n="bilan_status_filing">Statut Dépôt RCSL :</div>
+                        <div style="font-size: 0.85rem; font-weight: 700; color: var(--accent-blue);" id="bilan-filing-status">Déposé RCSL (2025)</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Data & Scripts -->
+    <script src="data.js"></script>
+    <script src="ammortamenti_data.js"></script>
+    <script src="i18n.js"></script>
+    <script src="contabilita_app.js"></script>
+</body>
+</html>

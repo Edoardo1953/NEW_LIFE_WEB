@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amortissements & Immobilisations - NEW LIFE Sàrl</title>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SheetJS & jsPDF -->
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .asset-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .asset-card {
+            background: var(--bg-dark-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1.25rem;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        .asset-card:hover {
+            border-color: var(--accent-emerald);
+            transform: translateY(-2px);
+        }
+        .asset-badge-pcn {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent-emerald);
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar glass-panel">
+            <div class="logo-container">
+                <div class="logo-badge">NL</div>
+                <div class="logo-title">NEW LIFE Sàrl</div>
+                <div class="logo-subtitle">Luxembourg • PCN & Finance</div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-section-title" data-i18n="nav_section_modules">MODULES</div>
+                <a href="index.html" class="nav-item">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span data-i18n="nav_dashboard">Vue d’ensemble</span>
+                </a>
+                <a href="banca.html" class="nav-item">
+                    <i class="fa-solid fa-building-columns"></i>
+                    <span data-i18n="nav_banca">Compte Courant</span>
+                </a>
+                <a href="contabilita.html" class="nav-item">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                    <span data-i18n="nav_contabilita">Comptabilité PCN</span>
+                </a>
+                <a href="ammortamenti.html" class="nav-item active">
+                    <i class="fa-solid fa-calculator"></i>
+                    <span data-i18n="nav_ammortamenti">Amortissements</span>
+                </a>
+                <a href="partecipazioni.html" class="nav-item">
+                    <i class="fa-solid fa-shapes"></i>
+                    <span data-i18n="nav_partecipazioni">Participations</span>
+                </a>
+                <a href="documenti.html" class="nav-item">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span data-i18n="nav_documenti">Documents Société</span>
+                </a>
+
+                <div class="nav-section-title" data-i18n="nav_section_tools">GESTION</div>
+                <button class="btn-sidebar-action" onclick="window.location.reload(true)">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span data-i18n="nav_refresh_data">Actualiser</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="update-badge">
+                    <span data-i18n="last_update">Dernière mise à jour :</span>
+                    <strong id="sidebar-updated-at">--/--/----</strong>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Topbar -->
+            <header class="topbar glass-panel">
+                <div class="topbar-title-area">
+                    <h1 data-i18n="amort_title"><i class="fa-solid fa-calculator text-emerald"></i> Registre & Tableaux d’Amortissement</h1>
+                    <p data-i18n="amort_desc">Gestion du parc d’immobilisations corporelles et incorporelles.</p>
+                </div>
+
+                <div class="topbar-actions">
+                    <!-- Language Selector -->
+                    <div class="lang-selector">
+                        <button class="lang-btn" data-lang="fr" title="Français">
+                            <img src="https://flagcdn.com/w40/fr.png" alt="FR">
+                        </button>
+                        <button class="lang-btn" data-lang="it" title="Italiano">
+                            <img src="https://flagcdn.com/w40/it.png" alt="IT">
+                        </button>
+                        <button class="lang-btn" data-lang="en" title="English">
+                            <img src="https://flagcdn.com/w40/gb.png" alt="EN">
+                        </button>
+                    </div>
+
+                    <!-- Theme Toggle -->
+                    <button class="theme-toggle-btn" id="theme-toggle-btn" title="Changer de thème">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Exercise Filter Bar -->
+            <div class="filter-bar glass-panel" style="margin-bottom: 1.25rem;">
+                <div class="filter-group" style="display: flex; align-items: center; gap: 0.75rem;">
+                    <label style="font-weight: 600; color: var(--text-muted);"><i class="fa-solid fa-calendar-check text-emerald"></i> <span data-i18n="filter_year">Exercice</span> :</label>
+                    <select id="amort-year-select" class="filter-select">
+                        <!-- Populated via JS -->
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <span class="badge badge-ord" id="amort-exercise-badge" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald); font-weight: 700; padding: 0.45rem 0.85rem; border-radius: 8px; font-size: 0.85rem;">
+                        <i class="fa-solid fa-circle-dot"></i> Exercice Actif : 2026 (En cours)
+                    </span>
+                </div>
+            </div>
+
+            <!-- Summary KPI Strip -->
+            <div class="kpi-grid" style="grid-template-columns: repeat(4, 1fr);">
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
+                            <span class="kpi-title" data-i18n="th_val_brute">Valeur Brute Immobilisée</span>
+                            <span class="kpi-year-badge" id="badge-kpi-brute" style="font-size: 0.75rem; font-weight: 700; padding: 0.15rem 0.45rem; border-radius: 6px; background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald);">2026</span>
+                        </div>
+                        <div class="kpi-icon emerald"><i class="fa-solid fa-cubes"></i></div>
+                    </div>
+                    <div class="kpi-value text-emerald" id="ammo-kpi-brute">71.249,13 €</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
+                            <span class="kpi-title" data-i18n="th_annuite">Dotation Annuelle</span>
+                            <span class="kpi-year-badge" id="badge-kpi-dotation" style="font-size: 0.75rem; font-weight: 700; padding: 0.15rem 0.45rem; border-radius: 6px; background: rgba(244, 63, 94, 0.15); color: var(--accent-rose);">2026</span>
+                        </div>
+                        <div class="kpi-icon rose"><i class="fa-solid fa-arrow-down-wide-short"></i></div>
+                    </div>
+                    <div class="kpi-value text-rose" id="ammo-kpi-dotation">13.343,48 €</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
+                            <span class="kpi-title" data-i18n="th_cumul">Amortissements Cumulés</span>
+                            <span class="kpi-year-badge" id="badge-kpi-cumul" style="font-size: 0.75rem; font-weight: 700; padding: 0.15rem 0.45rem; border-radius: 6px; background: rgba(245, 158, 11, 0.15); color: var(--accent-amber);">2026</span>
+                        </div>
+                        <div class="kpi-icon amber"><i class="fa-solid fa-layer-group"></i></div>
+                    </div>
+                    <div class="kpi-value text-amber" id="ammo-kpi-cumul">37.150,32 €</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
+                            <span class="kpi-title" data-i18n="th_vnc">Valeur Nette (VNC)</span>
+                            <span class="kpi-year-badge" id="badge-kpi-vnc" style="font-size: 0.75rem; font-weight: 700; padding: 0.15rem 0.45rem; border-radius: 6px; background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan);">Fin 2026</span>
+                        </div>
+                        <div class="kpi-icon cyan"><i class="fa-solid fa-shield-halved"></i></div>
+                    </div>
+                    <div class="kpi-value text-cyan" id="ammo-kpi-vnc">34.098,81 €</div>
+                </div>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="tabs-nav">
+                <button class="tab-btn active" data-tab="tab-assets" data-i18n="tab_asset_list">Fiches Immobilisations</button>
+                <button class="tab-btn" data-tab="tab-totals" data-i18n="tab_amort_totals">Tableau Consolidé</button>
+                <button class="tab-btn" data-tab="tab-simulator" data-i18n="tab_amort_simulator">Simulateur / Nouveau Bien</button>
+            </div>
+
+            <!-- Tab 1: Fiches Immobilisations -->
+            <div class="tab-content active" id="tab-assets">
+                <div class="filter-bar glass-panel" style="margin-bottom: 1.25rem;">
+                    <div class="filter-group">
+                        <button class="btn btn-primary btn-sm asset-filter-btn active" data-cat="ALL">
+                            <i class="fa-solid fa-layer-group"></i> <span data-i18n="filter_all_assets">Tous les biens</span> (<span id="count-all-assets">13</span>)
+                        </button>
+                        <button class="btn btn-secondary btn-sm asset-filter-btn" data-cat="211">
+                            <i class="fa-solid fa-laptop-code text-blue"></i> <span>211 - Software & Paksi</span> (4)
+                        </button>
+                        <button class="btn btn-secondary btn-sm asset-filter-btn" data-cat="2232">
+                            <i class="fa-solid fa-car text-rose"></i> <span>2232 - Véhicules Peugeot & Tiguan</span> (2)
+                        </button>
+                        <button class="btn btn-secondary btn-sm asset-filter-btn" data-cat="2234">
+                            <i class="fa-solid fa-couch text-amber"></i> <span>2234 - Mobilier IKEA / SME / Hornbach / Piave</span> (7)
+                        </button>
+                    </div>
+                </div>
+
+                <div class="asset-grid" id="asset-cards-container">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+
+            <!-- Tab 2: Tableau Consolidé -->
+            <div class="tab-content" id="tab-totals">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h2 class="chart-title"><i class="fa-solid fa-table-list text-emerald"></i> <span data-i18n="amort_consolidated_title">Échéancier Consolidé des Amortissements</span></h2>
+                        <div class="filter-group">
+                            <button id="btn-export-amort-excel" class="btn btn-secondary btn-sm">
+                                <i class="fa-solid fa-file-excel text-emerald"></i> Excel
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="custom-table" id="totals-table">
+                            <thead>
+                                <tr>
+                                    <th data-i18n="col_year_exercise">Exercice</th>
+                                    <th class="text-right" data-i18n="col_acquisitions" style="color: var(--accent-emerald);">Acquisitions (+)</th>
+                                    <th class="text-right" data-i18n="col_cessions" style="color: var(--accent-rose);">Cessions (-)</th>
+                                    <th class="text-right" data-i18n="col_val_brute_totale">Valeur Brute Totale (€)</th>
+                                    <th class="text-right" data-i18n="th_annuite" style="color: var(--accent-rose);">Dotation Annuelle (€)</th>
+                                    <th class="text-right" data-i18n="th_cumul" style="color: var(--accent-amber);">Amort. Cumulés (€)</th>
+                                    <th class="text-right" data-i18n="th_vnc" style="color: var(--accent-emerald);">Valeur Nette VNC (€)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="totals-tbody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Simulateur / Nouveau Bien -->
+            <div class="tab-content" id="tab-simulator">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h2 class="chart-title"><i class="fa-solid fa-wand-magic-sparkles text-emerald"></i> <span data-i18n="tab_amort_simulator">Simulateur de Plan d'Amortissement</span></h2>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem;">
+                        <div>
+                            <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 0.35rem;" data-i18n="form_asset_name">Nom de l'immobilisation</label>
+                            <input type="text" id="sim-name" class="filter-input" style="width: 100%;" placeholder="Ex: Ordinateur portable Apple MacBook">
+                        </div>
+
+                        <div>
+                            <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 0.35rem;" data-i18n="form_category">Poste d’actif (Classe PCN)</label>
+                            <select id="sim-category" class="filter-select" style="width: 100%;">
+                                <option value="211 - Frais de développement / Software">211 - Frais de développement / Software</option>
+                                <option value="2232 - Véhicules de transport">2232 - Véhicules de transport</option>
+                                <option value="223 - Installations techniques et mobilier">223 - Mobilier & Matériel bureautique</option>
+                                <option value="224 - Matériel informatique">224 - Matériel informatique</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 0.35rem;" data-i18n="form_acq_val">Valeur d’achat hors TVA (€)</label>
+                            <input type="number" id="sim-val" class="filter-input" style="width: 100%;" placeholder="5000" value="5000">
+                        </div>
+
+                        <div>
+                            <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 0.35rem;" data-i18n="form_years">Durée d’amortissement (années)</label>
+                            <input type="number" id="sim-years" class="filter-input" style="width: 100%;" placeholder="3" value="3">
+                        </div>
+
+                        <div>
+                            <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 0.35rem;" data-i18n="form_acq_date">Date de mise en service</label>
+                            <input type="date" id="sim-date" class="filter-input" style="width: 100%;" value="2025-01-01">
+                        </div>
+
+                        <div>
+                            <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 0.35rem;" data-i18n="form_method">Méthode d’amortissement</label>
+                            <select id="sim-method" class="filter-select" style="width: 100%;">
+                                <option value="linear" data-i18n="opt_linear">Linéaire (Standard)</option>
+                                <option value="degressive" data-i18n="opt_degressive">Dégressif</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                        <button id="btn-calc-sim" class="btn btn-primary" data-i18n="btn_calc_amort">
+                            <i class="fa-solid fa-calculator"></i> Calculer l’échéancier
+                        </button>
+                    </div>
+
+                    <!-- Simulator Result Table -->
+                    <div class="table-container">
+                        <table class="custom-table" id="sim-result-table">
+                            <thead>
+                                <tr>
+                                    <th>Année</th>
+                                    <th class="text-right">Valeur Début (€)</th>
+                                    <th class="text-right">Taux (%)</th>
+                                    <th class="text-right">Annuité / Dotation (€)</th>
+                                    <th class="text-right">Amort. Cumulés (€)</th>
+                                    <th class="text-right">Valeur Nette Fin (VNC €)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sim-tbody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Asset Detail Modal -->
+    <div class="modal-overlay" id="asset-modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 class="modal-title" id="asset-modal-title"><i class="fa-solid fa-cube text-emerald"></i> Fiche Cespiti</h3>
+                <button class="modal-close-btn" onclick="closeAssetModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="asset-modal-body">
+                <!-- Injected via JS -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeAssetModal()">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data & Scripts -->
+    <script src="data.js"></script>
+    <script src="ammortamenti_data.js"></script>
+    <script src="i18n.js"></script>
+    <script src="ammortamenti_app.js"></script>
+</body>
+</html>

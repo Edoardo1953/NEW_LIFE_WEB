@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documents Société & Archive - NEW LIFE Sàrl</title>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .pdf-viewer-frame {
+            width: 100%;
+            height: 75vh;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar glass-panel">
+            <div class="logo-container">
+                <div class="logo-badge">NL</div>
+                <div class="logo-title">NEW LIFE Sàrl</div>
+                <div class="logo-subtitle">Luxembourg • PCN & Finance</div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-section-title" data-i18n="nav_section_modules">MODULES</div>
+                <a href="index.html" class="nav-item">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span data-i18n="nav_dashboard">Vue d’ensemble</span>
+                </a>
+                <a href="banca.html" class="nav-item">
+                    <i class="fa-solid fa-building-columns"></i>
+                    <span data-i18n="nav_banca">Compte Courant</span>
+                </a>
+                <a href="contabilita.html" class="nav-item">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                    <span data-i18n="nav_contabilita">Comptabilité PCN</span>
+                </a>
+                <a href="ammortamenti.html" class="nav-item">
+                    <i class="fa-solid fa-calculator"></i>
+                    <span data-i18n="nav_ammortamenti">Amortissements</span>
+                </a>
+                <a href="partecipazioni.html" class="nav-item">
+                    <i class="fa-solid fa-shapes"></i>
+                    <span data-i18n="nav_partecipazioni">Participations</span>
+                </a>
+                <a href="documenti.html" class="nav-item active">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span data-i18n="nav_documenti">Documents Société</span>
+                </a>
+
+                <div class="nav-section-title" data-i18n="nav_section_tools">GESTION</div>
+                <button class="btn-sidebar-action" onclick="window.location.reload(true)">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span data-i18n="nav_refresh_data">Actualiser</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="update-badge">
+                    <span data-i18n="last_update">Dernière mise à jour :</span>
+                    <strong id="sidebar-updated-at">--/--/----</strong>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Topbar -->
+            <header class="topbar glass-panel">
+                <div class="topbar-title-area">
+                    <h1 data-i18n="docs_title"><i class="fa-solid fa-folder-open text-blue"></i> Documents d’Entreprise & Registres</h1>
+                    <p data-i18n="docs_desc">Archive centrale des actes, statuts, bilans RCSL et déclarations fiscales.</p>
+                </div>
+
+                <div class="topbar-actions">
+                    <!-- Language Selector -->
+                    <div class="lang-selector">
+                        <button class="lang-btn" data-lang="fr" title="Français">
+                            <img src="https://flagcdn.com/w40/fr.png" alt="FR">
+                        </button>
+                        <button class="lang-btn" data-lang="it" title="Italiano">
+                            <img src="https://flagcdn.com/w40/it.png" alt="IT">
+                        </button>
+                        <button class="lang-btn" data-lang="en" title="English">
+                            <img src="https://flagcdn.com/w40/gb.png" alt="EN">
+                        </button>
+                    </div>
+
+                    <!-- Theme Toggle -->
+                    <button class="theme-toggle-btn" id="theme-toggle-btn" title="Changer de thème">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Control Bar -->
+            <div class="filter-bar glass-panel">
+                <div class="filter-group">
+                    <select id="doc-cat-filter" class="filter-select">
+                        <option value="ALL" data-i18n="doc_category_all">Toutes les catégories</option>
+                        <option value="bilan" data-i18n="doc_cat_bilan">Bilans & Comptes Déposés</option>
+                        <option value="juridique" data-i18n="doc_cat_juridique">Actes & Statuts Juridiques</option>
+                        <option value="registres" data-i18n="doc_cat_registres">Registres RCS / RBE</option>
+                        <option value="fiscal" data-i18n="doc_cat_fiscal">Fiscalité & Déclarations</option>
+                        <option value="contrats" data-i18n="doc_cat_contrats">Contrats & Factures Clés</option>
+                    </select>
+
+                    <input type="text" id="doc-search-input" class="filter-input" placeholder="Rechercher un document...">
+                </div>
+
+                <div class="filter-group">
+                    <a href="partecipazioni.html" class="btn btn-secondary">
+                        <i class="fa-solid fa-shapes text-emerald"></i>
+                        <span data-i18n="nav_partecipazioni">Participations</span>
+                    </a>
+                    <button class="btn btn-primary" onclick="openUploadModal()">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <span data-i18n="btn_upload_doc">Téléverser un document</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Documents Grid -->
+            <div class="doc-grid" id="doc-grid-container">
+                <!-- Populated dynamically via JS -->
+            </div>
+        </main>
+    </div>
+
+    <!-- PDF / Document Viewer Modal -->
+    <div class="modal-overlay" id="view-doc-modal">
+        <div class="modal-container" style="max-width: 1000px; height: 85vh; display: flex; flex-direction: column;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="view-modal-title"><i class="fa-solid fa-file-pdf text-rose"></i> Aperçu du Document</h3>
+                <button class="modal-close-btn" onclick="closeViewModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 0.5rem; flex: 1; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.2);">
+                <iframe id="pdf-viewer-frame" class="pdf-viewer-frame" src="" style="width: 100%; height: 100%; border: none; border-radius: 8px;"></iframe>
+                <div id="pdf-viewer-empty-notice" style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center;"></div>
+            </div>
+            <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
+                <button class="btn btn-secondary btn-sm" id="modal-delete-btn" style="color: var(--accent-rose); border-color: rgba(244, 63, 94, 0.3);" onclick="handleModalDeleteDoc()" title="Rimuovi il file / elimina documento">
+                    <i class="fa-solid fa-trash-can"></i> Supprimer / Détacher
+                </button>
+                <div style="display: flex; gap: 0.5rem;">
+                    <a id="modal-open-tab-link" href="#" target="_blank" class="btn btn-secondary btn-sm" style="display: none;">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> Ouvrir dans un nouvel onglet
+                    </a>
+                    <a id="modal-download-link" href="#" download class="btn btn-primary btn-sm">
+                        <i class="fa-solid fa-download"></i> Télécharger le fichier
+                    </a>
+                    <button class="btn btn-secondary btn-sm" onclick="closeViewModal()">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Metadata Modal -->
+    <div class="modal-overlay" id="edit-doc-modal">
+        <div class="modal-container" style="max-width: 550px;">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fa-solid fa-pen-to-square text-amber"></i> <span data-i18n="modal_edit_title">Modifier le document</span></h3>
+                <button class="modal-close-btn" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="edit-doc-id">
+                
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;" data-i18n="lbl_doc_title">Titre du document</label>
+                    <input type="text" id="edit-doc-title" class="filter-input" style="width: 100%;">
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;" data-i18n="lbl_doc_category">Catégorie</label>
+                    <select id="edit-doc-cat" class="filter-select" style="width: 100%;">
+                        <option value="bilan">Bilans & Comptes Déposés</option>
+                        <option value="juridique">Actes & Statuts Juridiques</option>
+                        <option value="registres">Registres RCS / RBE</option>
+                        <option value="fiscal">Fiscalité & Déclarations</option>
+                        <option value="contrats">Contrats & Factures Clés</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;" data-i18n="lbl_doc_date">Date de référence / Dépôt</label>
+                    <input type="date" id="edit-doc-date" class="filter-input" style="width: 100%;">
+                </div>
+
+                <div>
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;">Notes / Commentaires</label>
+                    <textarea id="edit-doc-notes" class="filter-input" style="width: 100%; height: 70px;"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeEditModal()" data-i18n="btn_cancel">Annuler</button>
+                <button class="btn btn-primary" onclick="saveDocEdit()" data-i18n="btn_save">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Document Modal -->
+    <div class="modal-overlay" id="upload-doc-modal">
+        <div class="modal-container" style="max-width: 550px;">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fa-solid fa-cloud-arrow-up text-blue"></i> <span data-i18n="modal_upload_title">Ajouter un nouveau document</span></h3>
+                <button class="modal-close-btn" onclick="closeUploadModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;" data-i18n="lbl_doc_title">Titre du document</label>
+                    <input type="text" id="upload-doc-title" class="filter-input" style="width: 100%;" placeholder="Ex: Statuts Coordonnés 2026">
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;" data-i18n="lbl_doc_category">Catégorie</label>
+                    <select id="upload-doc-cat" class="filter-select" style="width: 100%;">
+                        <option value="bilan">Bilans & Comptes Déposés</option>
+                        <option value="juridique">Actes & Statuts Juridiques</option>
+                        <option value="registres">Registres RCS / RBE</option>
+                        <option value="fiscal">Fiscalité & Déclarations</option>
+                        <option value="contrats">Contrats & Factures Clés</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;" data-i18n="lbl_doc_date">Date de référence</label>
+                    <input type="date" id="upload-doc-date" class="filter-input" style="width: 100%;" value="2026-01-01">
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;" data-i18n="lbl_doc_file">Fichier</label>
+                    <input type="file" id="upload-file-input" class="filter-input" style="width: 100%;">
+                </div>
+
+                <div>
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;">Notes / Références</label>
+                    <textarea id="upload-doc-notes" class="filter-input" style="width: 100%; height: 60px;" placeholder="Dépôt RCS, n° formalité..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeUploadModal()" data-i18n="btn_cancel">Annuler</button>
+                <button class="btn btn-primary" onclick="submitUploadDoc()" data-i18n="btn_save">Ajouter le document</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data & Scripts -->
+    <script src="data.js"></script>
+    <script src="ammortamenti_data.js"></script>
+    <script src="doc_storage.js"></script>
+    <script src="i18n.js"></script>
+    <script src="documenti_app.js"></script>
+</body>
+</html>
