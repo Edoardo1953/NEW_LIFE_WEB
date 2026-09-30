@@ -150,7 +150,9 @@ function renderDocGrid() {
         return;
     }
 
-    filtered.forEach(d => {
+    initContainerDragEvents();
+
+    filtered.forEach((d, index) => {
         const card = document.createElement('div');
         card.className = 'doc-card';
 
@@ -160,13 +162,21 @@ function renderDocGrid() {
         const viewBtnClass = isAvailable ? 'doc-btn-icon view available' : 'doc-btn-icon view empty';
         const viewBtnTitle = isAvailable ? "Visualizza documento PDF disponibile" : "Nessun file caricato (Clicca per allegare)";
         const iconColor = isAvailable ? '#10b981' : '#64748b';
+        const isFirst = index === 0;
+        const isLast = index === filtered.length - 1;
 
         card.innerHTML = `
             <div>
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.85rem;">
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <div class="doc-drag-handle" title="Trascina per riordinare / Glisser pour réorganiser">
-                            <i class="fa-solid fa-grip-vertical"></i>
+                        <div class="doc-drag-handle" title="Trascina la scheda per riordinare o usa le frecce">
+                            <button type="button" class="doc-move-btn" onclick="event.stopPropagation(); moveDoc('${d.id}', -1);" title="Sposta a sinistra / prima" ${isFirst ? 'disabled' : ''}>
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <i class="fa-solid fa-grip-vertical" style="opacity: 0.6; font-size: 0.85rem; margin: 0 1px;"></i>
+                            <button type="button" class="doc-move-btn" onclick="event.stopPropagation(); moveDoc('${d.id}', 1);" title="Sposta a destra / dopo" ${isLast ? 'disabled' : ''}>
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
                         </div>
                         <div class="doc-icon-wrapper" style="color: ${fileIconColor};">
                             <i class="${fileIconClass}"></i>
@@ -211,55 +221,63 @@ function renderDocGrid() {
 
 let draggedDocId = null;
 
+function initContainerDragEvents() {
+    const container = document.getElementById('doc-grid-container');
+    if (!container || container._dndBound) return;
+    container._dndBound = true;
+
+    container.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+
+        const targetCard = e.target.closest('.doc-card');
+        container.querySelectorAll('.doc-card').forEach(c => {
+            if (c !== targetCard) c.classList.remove('drag-over');
+        });
+
+        if (targetCard && targetCard.dataset.docId && targetCard.dataset.docId !== draggedDocId) {
+            targetCard.classList.add('drag-over');
+        }
+    });
+
+    container.addEventListener('dragleave', (e) => {
+        if (!container.contains(e.relatedTarget)) {
+            container.querySelectorAll('.doc-card').forEach(c => c.classList.remove('drag-over'));
+        }
+    });
+
+    container.addEventListener('drop', (e) => {
+        e.preventDefault();
+        container.querySelectorAll('.doc-card').forEach(c => c.classList.remove('drag-over', 'dragging'));
+
+        const targetCard = e.target.closest('.doc-card');
+        const sourceId = e.dataTransfer.getData('text/plain') || draggedDocId;
+
+        if (targetCard && sourceId) {
+            const targetId = targetCard.dataset.docId;
+            if (targetId && sourceId !== targetId) {
+                reorderDocuments(sourceId, targetId);
+            }
+        }
+        draggedDocId = null;
+    });
+}
+
 function setupCardDragEvents(card, docId) {
     card.setAttribute('draggable', 'true');
     card.dataset.docId = docId;
 
     card.addEventListener('dragstart', (e) => {
+        if (e.target.closest('button, a, input, select, textarea')) {
+            e.preventDefault();
+            return;
+        }
         draggedDocId = docId;
-        e.dataTransfer.setData('text/plain', docId);
-        e.dataTransfer.effectAllowed = 'move';
-        setTimeout(() => {
-            card.classList.add('dragging');
-        }, 0);
-    });
-
-    card.addEventListener('dragenter', (e) => {
-        e.preventDefault();
-        if (draggedDocId && draggedDocId !== docId) {
-            card.classList.add('drag-over');
-        }
-    });
-
-    card.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
-        if (draggedDocId && draggedDocId !== docId && !card.classList.contains('drag-over')) {
-            card.classList.add('drag-over');
-        }
-    });
-
-    card.addEventListener('dragleave', (e) => {
-        const rect = card.getBoundingClientRect();
-        if (
-            e.clientX < rect.left ||
-            e.clientX >= rect.right ||
-            e.clientY < rect.top ||
-            e.clientY >= rect.bottom
-        ) {
-            card.classList.remove('drag-over');
-        }
-    });
-
-    card.addEventListener('drop', (e) => {
-        e.preventDefault();
-        card.classList.remove('drag-over');
-        const sourceId = e.dataTransfer.getData('text/plain') || draggedDocId;
-        const targetId = docId;
-
-        if (sourceId && targetId && sourceId !== targetId) {
-            reorderDocuments(sourceId, targetId);
-        }
+        try {
+            e.dataTransfer.setData('text/plain', docId);
+            e.dataTransfer.effectAllowed = 'move';
+        } catch (err) {}
+        card.classList.add('dragging');
     });
 
     card.addEventListener('dragend', () => {
@@ -267,15 +285,10 @@ function setupCardDragEvents(card, docId) {
         document.querySelectorAll('.doc-card').forEach(c => c.classList.remove('drag-over', 'dragging'));
         draggedDocId = null;
     });
-
-    // Make sure clicking buttons or links does not initiate drag
-    card.querySelectorAll('button, a, input, select').forEach(el => {
-        el.setAttribute('draggable', 'false');
-        el.addEventListener('dragstart', (e) => e.stopPropagation());
-    });
 }
 
 function reorderDocuments(sourceId, targetId) {
+    if (!sourceId || !targetId || sourceId === targetId) return;
     let docs = getStoredDocuments();
     const fromIndex = docs.findIndex(doc => doc.id === sourceId);
     const toIndex = docs.findIndex(doc => doc.id === targetId);
@@ -286,6 +299,20 @@ function reorderDocuments(sourceId, targetId) {
         saveDocuments(docs);
         renderDocGrid();
     }
+}
+
+function moveDoc(docId, delta) {
+    let docs = getStoredDocuments();
+    const fromIndex = docs.findIndex(doc => doc.id === docId);
+    if (fromIndex === -1) return;
+
+    const toIndex = fromIndex + delta;
+    if (toIndex < 0 || toIndex >= docs.length) return;
+
+    const [movedItem] = docs.splice(fromIndex, 1);
+    docs.splice(toIndex, 0, movedItem);
+    saveDocuments(docs);
+    renderDocGrid();
 }
 
 let currentViewingDocId = null;
