@@ -169,6 +169,7 @@ const translations = {
         // Documents
         'docs_title': 'Documents d’Entreprise & Registres',
         'docs_desc': 'Archive centrale des actes, statuts, bilans RCSL et déclarations fiscales.',
+        'doc_drag_hint': 'Glisser-déposer pour réorganiser',
         'btn_upload_doc': 'Téléverser un document',
         'doc_category_all': 'Toutes les catégories',
         'doc_cat_bilan': 'Bilans & Comptes Déposés',
@@ -509,6 +510,7 @@ const translations = {
         // Documenti
         'docs_title': 'Documenti Societari & Registri',
         'docs_desc': 'Archivio centrale di atti, statuti, bilanci depositati RCSL e dichiarazioni.',
+        'doc_drag_hint': 'Trascina e rilascia per riordinare',
         'btn_upload_doc': 'Carica Documento',
         'doc_category_all': 'Tutte le categorie',
         'doc_cat_bilan': 'Bilanci & Rendiconti Depositati',
@@ -849,6 +851,7 @@ const translations = {
         // Documents
         'docs_title': 'Corporate Documents & Registries',
         'docs_desc': 'Central repository for deeds, articles of incorporation, filed RCSL balance sheets.',
+        'doc_drag_hint': 'Drag & drop to reorder',
         'btn_upload_doc': 'Upload Document',
         'doc_category_all': 'All Categories',
         'doc_cat_bilan': 'Filed Balance Sheets & Reports',

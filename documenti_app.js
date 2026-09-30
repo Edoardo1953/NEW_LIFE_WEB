@@ -65,65 +65,32 @@ function getStoredDocuments() {
         docs = JSON.parse(raw);
     } catch {
         docs = JSON.parse(JSON.stringify(DEFAULT_DOCUMENTS));
-    }
-
-    let updated = false;
-
-    // Sincronizza i file disponibili reali
-    docs = docs.map(d => {
-        if (d.id === 'DOC-2025-BILAN' || (d.title && d.title.toLowerCase().includes('bilan'))) {
-            d.filename = "NEW_LIFE_bilan_2025_RCSL_depose.pdf";
-            d.filepath = "docs/NEW_LIFE_bilan_2025_RCSL_depose.pdf";
-            d.available = true;
-            d.size = "3.32 Mo";
-            updated = true;
-        } else if (d.id === 'DOC-RCS' || (d.title && (d.title.toLowerCase().includes('rcs') || d.title.toLowerCase().includes('immatriculation')))) {
-            d.filename = "Extrait RCS New Life 10.2025.pdf";
-            d.filepath = "docs/Extrait RCS New Life 10.2025.pdf";
-            d.available = true;
-            d.size = "379.38 Ko";
-            updated = true;
-        } else if (d.id === 'DOC-RBE' || (d.title && (d.title.toLowerCase().includes('rbe') || d.title.toLowerCase().includes('bénéficiaires')))) {
-            d.filename = "NEW LIFE - Extrait RBE 10.2025.pdf";
-            d.filepath = "docs/NEW LIFE - Extrait RBE 10.2025.pdf";
-            d.available = true;
-            d.size = "360.09 Ko";
-            updated = true;
-        }
-        return d;
-    });
-
-    // Deduplicate extra test documents (consolidating to clean official set)
-    if (docs.length > 4) {
-        const seenKeys = new Set();
-        docs = docs.filter(d => {
-            const key = d.id === 'DOC-2025-BILAN' || d.id === 'DOC-STATUTS' || d.id === 'DOC-RCS' || d.id === 'DOC-RBE' 
-                ? d.id 
-                : d.title.toLowerCase().includes('rbe') ? 'DOC-RBE' : d.title.toLowerCase().includes('rcs') ? 'DOC-RCS' : d.title;
-            if (seenKeys.has(key)) return false;
-            seenKeys.add(key);
-            return true;
-        });
-        updated = true;
-    }
-
-    // Ensure all default documents exist
-    DEFAULT_DOCUMENTS.forEach(defDoc => {
-        const existingIdx = docs.findIndex(d => d.id === defDoc.id);
-        if (existingIdx === -1) {
-            docs.push(JSON.parse(JSON.stringify(defDoc)));
-            updated = true;
-        }
-    });
-
-    if (updated) {
-        saveDocuments(docs);
+        localStorage.setItem('new_life_docs', JSON.stringify(docs));
     }
     return docs;
 }
 
 function saveDocuments(docs) {
     localStorage.setItem('new_life_docs', JSON.stringify(docs));
+}
+
+function restoreDefaultDocs() {
+    const isIt = (localStorage.getItem('new_life_lang') || 'fr') === 'it';
+    const msg = isIt 
+        ? "Vuoi ripristinare i documenti societari ufficiali predefiniti? I documenti caricati non verranno rimossi."
+        : "Voulez-vous restaurer les documents par défaut de la société ? Les documents personnalisés ne seront pas supprimés.";
+    
+    if (!confirm(msg)) return;
+
+    let docs = getStoredDocuments();
+    DEFAULT_DOCUMENTS.forEach(defDoc => {
+        const exists = docs.some(d => d.id === defDoc.id);
+        if (!exists) {
+            docs.push(JSON.parse(JSON.stringify(defDoc)));
+        }
+    });
+    saveDocuments(docs);
+    renderDocGrid();
 }
 
 function initDocumenti() {
@@ -196,9 +163,14 @@ function renderDocGrid() {
 
         card.innerHTML = `
             <div>
-                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                    <div class="doc-icon-wrapper" style="color: ${fileIconColor};">
-                        <i class="${fileIconClass}"></i>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.85rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <div class="doc-drag-handle" title="Trascina per riordinare / Glisser pour réorganiser">
+                            <i class="fa-solid fa-grip-vertical"></i>
+                        </div>
+                        <div class="doc-icon-wrapper" style="color: ${fileIconColor};">
+                            <i class="${fileIconClass}"></i>
+                        </div>
                     </div>
                     ${getCategoryBadge(d.category)}
                 </div>
@@ -231,8 +203,89 @@ function renderDocGrid() {
                 </div>
             </div>
         `;
+
+        setupCardDragEvents(card, d.id);
         container.appendChild(card);
     });
+}
+
+let draggedDocId = null;
+
+function setupCardDragEvents(card, docId) {
+    card.setAttribute('draggable', 'true');
+    card.dataset.docId = docId;
+
+    card.addEventListener('dragstart', (e) => {
+        draggedDocId = docId;
+        e.dataTransfer.setData('text/plain', docId);
+        e.dataTransfer.effectAllowed = 'move';
+        setTimeout(() => {
+            card.classList.add('dragging');
+        }, 0);
+    });
+
+    card.addEventListener('dragenter', (e) => {
+        e.preventDefault();
+        if (draggedDocId && draggedDocId !== docId) {
+            card.classList.add('drag-over');
+        }
+    });
+
+    card.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        if (draggedDocId && draggedDocId !== docId && !card.classList.contains('drag-over')) {
+            card.classList.add('drag-over');
+        }
+    });
+
+    card.addEventListener('dragleave', (e) => {
+        const rect = card.getBoundingClientRect();
+        if (
+            e.clientX < rect.left ||
+            e.clientX >= rect.right ||
+            e.clientY < rect.top ||
+            e.clientY >= rect.bottom
+        ) {
+            card.classList.remove('drag-over');
+        }
+    });
+
+    card.addEventListener('drop', (e) => {
+        e.preventDefault();
+        card.classList.remove('drag-over');
+        const sourceId = e.dataTransfer.getData('text/plain') || draggedDocId;
+        const targetId = docId;
+
+        if (sourceId && targetId && sourceId !== targetId) {
+            reorderDocuments(sourceId, targetId);
+        }
+    });
+
+    card.addEventListener('dragend', () => {
+        card.classList.remove('dragging');
+        document.querySelectorAll('.doc-card').forEach(c => c.classList.remove('drag-over', 'dragging'));
+        draggedDocId = null;
+    });
+
+    // Make sure clicking buttons or links does not initiate drag
+    card.querySelectorAll('button, a, input, select').forEach(el => {
+        el.setAttribute('draggable', 'false');
+        el.addEventListener('dragstart', (e) => e.stopPropagation());
+    });
+}
+
+function reorderDocuments(sourceId, targetId) {
+    let docs = getStoredDocuments();
+    const fromIndex = docs.findIndex(doc => doc.id === sourceId);
+    const toIndex = docs.findIndex(doc => doc.id === targetId);
+
+    if (fromIndex !== -1 && toIndex !== -1) {
+        const [movedItem] = docs.splice(fromIndex, 1);
+        docs.splice(toIndex, 0, movedItem);
+        saveDocuments(docs);
+        renderDocGrid();
+    }
 }
 
 let currentViewingDocId = null;
@@ -428,26 +481,31 @@ async function deleteDocument(docId) {
     const targetDoc = docs.find(d => d.id === docId);
     if (!targetDoc) return;
 
-    const isSystemDoc = targetDoc.id === 'DOC-2025-BILAN' || targetDoc.id === 'DOC-STATUTS' || targetDoc.id === 'DOC-RCS' || targetDoc.id === 'DOC-RBE';
-
-    let confirmMsg = `Sei sicuro di voler eliminare il documento "${targetDoc.title}"?`;
-    if (isSystemDoc && targetDoc.available) {
-        confirmMsg = `Vuoi rimuovere il file PDF allegato a "${targetDoc.title}"? (L'icona tornerà grigia e il file verrà staccato)`;
+    const lang = localStorage.getItem('new_life_lang') || 'fr';
+    let confirmMsg = `Êtes-vous sûr de vouloir supprimer définitivement le document "${targetDoc.title}" ?`;
+    if (lang === 'it') {
+        confirmMsg = `Sei sicuro di voler eliminare definitivamente il documento "${targetDoc.title}"?`;
+    } else if (lang === 'en') {
+        confirmMsg = `Are you sure you want to permanently delete the document "${targetDoc.title}"?`;
     }
 
     if (!confirm(confirmMsg)) return;
 
-    if (isSystemDoc) {
-        targetDoc.available = false;
-        targetDoc.size = 'Non caricato';
-    } else {
-        docs = docs.filter(item => item.id !== docId);
+    docs = docs.filter(item => item.id !== docId);
+    saveDocuments(docs);
+
+    if (window.DocStorage) {
+        try {
+            await window.DocStorage.deleteFile(docId);
+        } catch (err) {
+            console.warn("DocStorage delete error:", err);
+        }
     }
 
-    saveDocuments(docs);
-    if (window.DocStorage) {
-        await window.DocStorage.deleteFile(docId);
+    if (currentViewingDocId === docId) {
+        closeViewModal();
     }
+
     renderDocGrid();
 }
 
