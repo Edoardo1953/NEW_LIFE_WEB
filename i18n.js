@@ -317,6 +317,7 @@ const translations = {
         'toast_copied': 'Copié dans le presse-papier !',
         'toast_saved': 'Enregistré avec succès !',
         'toast_deleted': 'Supprimé avec succès !',
+        'toast_data_refreshed': 'Données et synchronisation actualisées avec succès !',
         'confirm_delete_credential': 'Êtes-vous sûr de vouloir supprimer cet identifiant ?',
         'confirm_delete_user': 'Êtes-vous sûr de vouloir supprimer cet utilisateur ?',
         'gen_length': 'Longueur du mot de passe :',
@@ -659,6 +660,7 @@ const translations = {
         'toast_copied': 'Copiato negli appunti !',
         'toast_saved': 'Salvato con successo !',
         'toast_deleted': 'Eliminato con successo !',
+        'toast_data_refreshed': 'Dati e sincronizzazione aggiornati con successo!',
         'confirm_delete_credential': 'Sei sicuro di voler eliminare questa credenziale ?',
         'confirm_delete_user': 'Sei sicuro di voler eliminare questo utente ?',
         'gen_length': 'Lunghezza password :',
@@ -1001,6 +1003,7 @@ const translations = {
         'toast_copied': 'Copied to clipboard!',
         'toast_saved': 'Saved successfully!',
         'toast_deleted': 'Deleted successfully!',
+        'toast_data_refreshed': 'Data and synchronization refreshed successfully!',
         'confirm_delete_credential': 'Are you sure you want to delete this credential?',
         'confirm_delete_user': 'Are you sure you want to delete this user?',
         'gen_length': 'Password Length:',
@@ -1106,10 +1109,96 @@ function toggleTheme() {
     localStorage.setItem('new_life_theme', isLight ? 'light' : 'dark');
 }
 
+function getAppLastUpdate() {
+    return localStorage.getItem('new_life_last_sync') || 
+           (window.NEW_LIFE_DATA && window.NEW_LIFE_DATA.company && window.NEW_LIFE_DATA.company.updated_at) || 
+           '2026-09-28 07:38:17';
+}
+
+function updateSidebarTimestamp() {
+    const updatedEl = document.getElementById('sidebar-updated-at');
+    if (updatedEl) {
+        updatedEl.textContent = getAppLastUpdate();
+    }
+}
+
+function showGlobalToast(msg, iconClass = 'fa-circle-check') {
+    let toast = document.getElementById('toast-notify');
+    let text = document.getElementById('toast-text');
+
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toast-notify';
+        toast.className = 'toast-toast';
+        toast.innerHTML = `<i class="fa-solid ${iconClass}"></i> <span id="toast-text">${msg}</span>`;
+        document.body.appendChild(toast);
+    } else {
+        const iconEl = toast.querySelector('i');
+        if (iconEl) {
+            iconEl.className = `fa-solid ${iconClass}`;
+        }
+        if (text) {
+            text.innerText = msg;
+        } else {
+            toast.innerHTML = `<i class="fa-solid ${iconClass}"></i> <span id="toast-text">${msg}</span>`;
+        }
+    }
+
+    toast.classList.add('show');
+    clearTimeout(window.globalToastTimeout);
+    window.globalToastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+    }, 2800);
+}
+
+function refreshAppGlobalData(btn) {
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    const formatted = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    
+    localStorage.setItem('new_life_last_sync', formatted);
+    sessionStorage.setItem('new_life_just_refreshed', 'true');
+    
+    const updatedEl = document.getElementById('sidebar-updated-at');
+    if (updatedEl) {
+        updatedEl.textContent = formatted;
+        updatedEl.classList.add('updated-flash');
+    }
+    
+    const icon = btn ? btn.querySelector('i') : document.querySelector('.btn-sidebar-action i');
+    if (icon) {
+        icon.classList.add('fa-spin');
+    }
+    
+    const msg = (translations[currentLang] && translations[currentLang]['toast_data_refreshed']) || 'Dati e sincronizzazione aggiornati con successo!';
+    showGlobalToast(msg, 'fa-rotate');
+    
+    setTimeout(() => {
+        window.location.reload();
+    }, 500);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     applyTranslations();
     updateFlagsUI();
+    updateSidebarTimestamp();
+
+    // Check if just refreshed
+    if (sessionStorage.getItem('new_life_just_refreshed') === 'true') {
+        sessionStorage.removeItem('new_life_just_refreshed');
+        const updatedEl = document.getElementById('sidebar-updated-at');
+        if (updatedEl) {
+            updatedEl.classList.add('updated-flash');
+            setTimeout(() => {
+                if (updatedEl) updatedEl.classList.remove('updated-flash');
+            }, 2500);
+        }
+        const msg = (translations[currentLang] && translations[currentLang]['toast_data_refreshed']) || 'Dati e sincronizzazione aggiornati con successo!';
+        setTimeout(() => {
+            showGlobalToast(msg, 'fa-circle-check');
+        }, 150);
+    }
 
     document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.addEventListener('click', () => {

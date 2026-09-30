@@ -255,6 +255,19 @@ body.theme-light .nav-item.active {
     gap: 0.2rem;
 }
 
+.update-badge strong {
+    font-family: 'JetBrains Mono', 'Segoe UI Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--text-main);
+    transition: all 0.3s ease;
+}
+
+.update-badge strong.updated-flash {
+    color: var(--accent-emerald) !important;
+    text-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+    transform: scale(1.02);
+}
+
 .btn-sidebar-action {
     width: 100%;
     padding: 0.6rem;
