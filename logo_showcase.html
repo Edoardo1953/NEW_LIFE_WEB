@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEW LIFE S.à r.l. - Brand Identity & Logo Suite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand-green: #8DC63F;
+      --brand-blue: #68C3E8;
+      --brand-dark: #0f172a;
+      --brand-slate: #1e293b;
+      --bg-light: #f8fafc;
+      --card-bg: #ffffff;
+      --border-color: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding-bottom: 5rem;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: white;
+      padding: 3.5rem 2rem 3rem;
+      border-bottom: 4px solid var(--brand-green);
+    }
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+    .header-title h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .badge {
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 0.25rem 0.75rem;
+      background: rgba(141, 198, 63, 0.2);
+      color: var(--brand-green);
+      border: 1px solid var(--brand-green);
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .header-title p {
+      color: #94a3b8;
+      font-size: 1.1rem;
+      max-width: 600px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+
+    /* Controls Bar */
+    .controls-bar {
+      background: white;
+      padding: 1rem 1.5rem;
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.05);
+      position: sticky;
+      top: 1rem;
+      z-index: 100;
+    }
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .control-label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .btn-group {
+      display: flex;
+      background: #f1f5f9;
+      padding: 4px;
+      border-radius: 10px;
+      gap: 4px;
+    }
+    .theme-btn {
+      padding: 0.4rem 0.9rem;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: #64748b;
+      transition: all 0.2s;
+    }
+    .theme-btn.active {
+      background: white;
+      color: var(--text-main);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .zoom-slider {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Comparison Section */
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section-title span {
+      color: var(--brand-green);
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    @media (max-width: 768px) {
+      .comparison-grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .card:hover {
+      box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.1);
+    }
+    .card-header {
+      padding: 1.25rem 1.5rem;
+      background: white;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-header h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+    .card-stage {
+      min-height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s ease;
+    }
+
+    /* Canvas Themes */
+    .stage-transparent {
+      background-color: #ffffff;
+      background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+    .stage-grid {
+      background-image: linear-gradient(45deg, #f1f5f9 25%, transparent 25%), 
+                        linear-gradient(-45deg, #f1f5f9 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #f1f5f9 75%), 
+                        linear-gradient(-45deg, transparent 75%, #f1f5f9 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+      background-color: #ffffff;
+    }
+    .stage-white { background: #ffffff !important; }
+    .stage-dark { background: #0f172a !important; }
+    .stage-green { background: #f0fdf4 !important; }
+
+    .logo-preview-img {
+      max-width: 90%;
+      max-height: 180px;
+      object-fit: contain;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .card-footer {
+      padding: 1.25rem 1.5rem;
+      background: white;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .asset-info {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .download-btns {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-svg {
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+    }
+    .btn-svg:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+    .btn-png {
+      background: var(--brand-green);
+      color: white;
+      border: 1px solid #7cb332;
+    }
+    .btn-png:hover {
+      background: #7cb332;
+    }
+
+    /* Grid of variations */
+    .variations-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    /* Specs Section */
+    .specs-card {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      border: 1px solid var(--border-color);
+      margin-bottom: 3rem;
+    }
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    .swatch {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+    .swatch-color {
+      height: 90px;
+      display: flex;
+      align-items: flex-end;
+      padding: 0.75rem;
+      color: white;
+      font-weight: 800;
+      font-size: 1.1rem;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+    .swatch-info {
+      padding: 1rem;
+      background: white;
+      font-size: 0.85rem;
+    }
+    .swatch-info div { margin-bottom: 0.25rem; }
+
+    .tag-diff {
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .tag-old { background: #fee2e2; color: #b91c1c; }
+    .tag-new { background: #dcfce7; color: #15803d; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-content">
+      <div class="header-title">
+        <h1>NEW LIFE <span class="badge">Master Vector Suite</span></h1>
+        <p>Logo rimodellato senza sfondo, con curve matematiche vettoriali pure (SVG) e PNG 4K anti-sgranamento per qualsiasi scala.</p>
+      </div>
+      <div>
+        <a href="uploads/Loghi/logo-newlife-complete.svg" download class="btn btn-png" style="padding: 0.75rem 1.5rem; font-size: 1rem;">
+          📥 Scarica Master SVG
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- Interactive Controls Bar -->
+    <div class="controls-bar">
+      <div class="control-group">
+        <span class="control-label">Sfondo di Test:</span>
+        <div class="btn-group">
+          <button class="theme-btn active" onclick="setStageTheme('grid')">🏁 Trasparente</button>
+          <button class="theme-btn" onclick="setStageTheme('white')">⬜ Bianco</button>
+          <button class="theme-btn" onclick="setStageTheme('dark')">⬛ Dark Slate</button>
+          <button class="theme-btn" onclick="setStageTheme('green')">🍃 Chiaro</button>
+        </div>
+      </div>
+      <div class="control-group zoom-slider">
+        <span class="control-label">Zoom Ingrandimento:</span>
+        <input type="range" id="zoomRange" min="0.8" max="3" step="0.1" value="1" oninput="updateZoom(this.value)">
+        <span id="zoomLabel" style="font-weight: 700; font-size: 0.9rem; min-width: 45px;">100%</span>
+      </div>
+    </div>
+
+    <!-- Section 1: Direct Comparison -->
+    <h2 class="section-title"><span>01.</span> Confronto Qualità & Risoluzione</h2>
+    <div class="comparison-grid">
+      <!-- Original JPG -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Originale JPEG</h3>
+          <span class="tag-diff tag-old">363×167 px • Con Sfondo • Artefatti</span>
+        </div>
+        <div class="card-stage stage-grid">
+          <img src="uploads/Loghi/logo 22.jpg" alt="Logo Originale" class="logo-preview-img zoomable">
+        </div>
+        <div class="card-footer">
+          <div class="asset-info">Presentava sfondo sporco e sbavature/pixel quando ingrandito.</div>
+        </div>
+      </div>
+
+      <!-- Remastered Vector -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Rimodellato Vettoriale (SVG)</h3>
+          <span class="tag-diff tag-new">Vettoriale Puro • Trasparente • 0 Sbavature</span>
+        </div>
+        <div class="card-stage stage-grid stage-container">
+          <img src="uploads/Loghi/logo-newlife-complete.svg" alt="Logo Vettoriale" class="logo-preview-img zoomable">
+        </div>
+        <div class="card-footer">
+          <div class="asset-info">Curve Bézier matematiche fluide, risoluzione infinita.</div>
+          <div class="download-btns">
+            <a href="uploads/Loghi/logo-newlife-complete.svg" download class="btn btn-svg">SVG</a>
+            <a href="uploads/Loghi/logo-newlife-complete.png" download class="btn btn-png">PNG 4K</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Complete Logo Suite -->
+    <h2 class="section-title"><span>02.</span> Suite Completa delle Variazioni</h2>
+    <div class="variations-grid">
+
+      <!-- 1. Corporate Master -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Corporate (Con Nome Societario)</h3>
+          <span class="badge" style="font-size: 0.65rem;">Ufficiale</span>
+        </div>
+        <div class="card-stage stage-grid stage-container">
+          <img src="uploads/Loghi/logo-newlife-corporate.svg" alt="Corporate" class="logo-preview-img zoomable">
+        </div>
+        <div class="card-footer">
+          <div class="asset-info">Include suffisso "S.à r.l. Luxembourg"</div>
+          <div class="download-btns">
+            <a href="uploads/Loghi/logo-newlife-corporate.svg" download class="btn btn-svg">SVG</a>
+            <a href="uploads/Loghi/logo-newlife-corporate.png" download class="btn btn-png">PNG</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Standalone Symbol -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Simbolo Figura Dinamica</h3>
+          <span class="badge" style="font-size: 0.65rem;">Icon / Avatar</span>
+        </div>
+        <div class="card-stage stage-grid stage-container">
+          <img src="uploads/Loghi/logo-newlife-symbol.svg" alt="Simbolo" class="logo-preview-img zoomable" style="max-height: 150px;">
+        </div>
+        <div class="card-footer">
+          <div class="asset-info">Le 5 gocce/ali in perfetta fluidità</div>
+          <div class="download-btns">
+            <a href="uploads/Loghi/logo-newlife-symbol.svg" download class="btn btn-svg">SVG</a>
+            <a href="uploads/Loghi/logo-newlife-symbol.png" download class="btn btn-png">PNG</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Standalone Logotype -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Logotipo "NEW LIFE"</h3>
+          <span class="badge" style="font-size: 0.65rem;">Solo Nome</span>
+        </div>
+        <div class="card-stage stage-grid stage-container">
+          <img src="uploads/Loghi/logo-newlife-text.svg" alt="Logotipo" class="logo-preview-img zoomable">
+        </div>
+        <div class="card-footer">
+          <div class="asset-info">Tipografia geometrica organica e pulita</div>
+          <div class="download-btns">
+            <a href="uploads/Loghi/logo-newlife-text.svg" download class="btn btn-svg">SVG</a>
+            <a href="uploads/Loghi/logo-newlife-text.png" download class="btn btn-png">PNG</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Horizontal Header -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Orizzontale (Simbolo a Sinistra)</h3>
+          <span class="badge" style="font-size: 0.65rem;">Web Header</span>
+        </div>
+        <div class="card-stage stage-grid stage-container">
+          <img src="uploads/Loghi/logo-newlife-horizontal.svg" alt="Orizzontale" class="logo-preview-img zoomable">
+        </div>
+        <div class="card-footer">
+          <div class="asset-info">Ideale per barre di navigazione e testate</div>
+          <div class="download-btns">
+            <a href="uploads/Loghi/logo-newlife-horizontal.svg" download class="btn btn-svg">SVG</a>
+            <a href="uploads/Loghi/logo-newlife-horizontal.png" download class="btn btn-png">PNG</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Stacked Centered -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Verticale Centrato</h3>
+          <span class="badge" style="font-size: 0.65rem;">Stampe / Cover</span>
+        </div>
+        <div class="card-stage stage-grid stage-container">
+          <img src="uploads/Loghi/logo-newlife-stacked.svg" alt="Verticale" class="logo-preview-img zoomable" style="max-height: 170px;">
+        </div>
+        <div class="card-footer">
+          <div class="asset-info">Ideale per copertine documenti e bilanci</div>
+          <div class="download-btns">
+            <a href="uploads/Loghi/logo-newlife-stacked.svg" download class="btn btn-svg">SVG</a>
+            <a href="uploads/Loghi/logo-newlife-stacked.png" download class="btn btn-png">PNG</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. White Monochrome -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Versione Bianca (Monocromatica)</h3>
+          <span class="badge" style="font-size: 0.65rem;">Dark Mode</span>
+        </div>
+        <div class="card-stage stage-dark">
+          <img src="uploads/Loghi/logo-newlife-white.svg" alt="Bianco" class="logo-preview-img zoomable">
+        </div>
+        <div class="card-footer">
+          <div class="asset-info">Perfetto per sfondi scuri, blu navy e footer</div>
+          <div class="download-btns">
+            <a href="uploads/Loghi/logo-newlife-white.svg" download class="btn btn-svg">SVG</a>
+            <a href="uploads/Loghi/logo-newlife-white.png" download class="btn btn-png">PNG</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Section 3: Brand Guidelines & Palette -->
+    <h2 class="section-title"><span>03.</span> Specifiche Tecniche & Palette Colori</h2>
+    <div class="specs-card">
+      <p style="color: var(--text-muted); margin-bottom: 1rem;">
+        I colori originali sono stati campionati, calibrati e standardizzati nei formati digitali RGB/HEX e pronti per la stampa professionale.
+      </p>
+      <div class="palette-grid">
+        <div class="swatch">
+          <div class="swatch-color" style="background: #8DC63F;">#8DC63F</div>
+          <div class="swatch-info">
+            <div><strong>Verde Vitalità (Primario)</strong></div>
+            <div>RGB: 141, 198, 63</div>
+            <div>CMYK: 48, 0, 100, 0</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: #68C3E8;">#68C3E8</div>
+          <div class="swatch-info">
+            <div><strong>Azzurro Cielo / Acqua (Accento)</strong></div>
+            <div>RGB: 104, 195, 232</div>
+            <div>CMYK: 55, 6, 2, 0</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: #0f172a;">#0F172A</div>
+          <div class="swatch-info">
+            <div><strong>Slate Scuro (Testo / Dark UI)</strong></div>
+            <div>RGB: 15, 23, 42</div>
+            <div>CMYK: 80, 70, 50, 60</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function setStageTheme(theme) {
+      document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      const stages = document.querySelectorAll('.stage-container');
+      stages.forEach(stage => {
+        stage.className = 'card-stage stage-container';
+        if (theme === 'grid') stage.classList.add('stage-grid');
+        else if (theme === 'white') stage.classList.add('stage-white');
+        else if (theme === 'dark') stage.classList.add('stage-dark');
+        else if (theme === 'green') stage.classList.add('stage-green');
+      });
+    }
+
+    function updateZoom(val) {
+      document.getElementById('zoomLabel').innerText = Math.round(val * 100) + '%';
+      document.querySelectorAll('.zoomable').forEach(img => {
+        img.style.transform = `scale(${val})`;
+      });
+    }
+  </script>
+</body>
+</html>
