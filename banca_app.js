@@ -32,8 +32,8 @@ function initBanca() {
 
     // Last updated
     const updatedEl = document.getElementById('sidebar-updated-at');
-    if (updatedEl && data.company.updated_at) {
-        updatedEl.textContent = data.company.updated_at;
+    if (updatedEl) {
+        updatedEl.textContent = (typeof getAppLastUpdate === 'function') ? getAppLastUpdate() : (data.company?.updated_at || '--/--/----');
     }
 
     // Populate Filters
