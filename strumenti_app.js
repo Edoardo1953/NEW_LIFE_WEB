@@ -84,6 +84,9 @@ class SimpleUserManager {
     }
 
     init() {
+        if (typeof updateSidebarTimestamp === 'function') {
+            updateSidebarTimestamp();
+        }
         this.bindEvents();
         this.render();
     }
