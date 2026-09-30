@@ -7,7 +7,7 @@ const DEFAULT_AUTH_USERS = [
         id: 'usr_1',
         name: 'TUBIA EDOARDO',
         username: 'tubia.edoardo@gmail.com',
-        password: 'NL*Edoardo2026!Vault',
+        password: 'edo2bia',
         role: 'Gérant / Administrateur',
         pin: 'LuxTrust Mobile'
     },
