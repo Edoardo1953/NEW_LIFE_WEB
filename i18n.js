@@ -171,6 +171,7 @@ const translations = {
         'docs_desc': 'Archive centrale des actes, statuts, bilans RCSL et déclarations fiscales.',
         'doc_drag_hint': 'Glisser-déposer pour réorganiser',
         'btn_upload_doc': 'Téléverser un document',
+        'btn_restore_default_docs': 'Restaurer Documents',
         'doc_category_all': 'Toutes les catégories',
         'doc_cat_bilan': 'Bilans & Comptes Déposés',
         'doc_cat_juridique': 'Actes & Statuts Juridiques',
