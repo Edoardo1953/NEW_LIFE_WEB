@@ -98,6 +98,7 @@ function applyFilters() {
 
     currentFilteredRecords = records.filter(r => {
         if (deletedBankIds.has(r.id)) return false;
+        if (!r.an || r.an === 0 || !r.date || !/^\d{4}/.test(r.date)) return false;
         if (hideStorni && r.is_storno) return false;
         if (yearVal !== 'ALL' && r.an != yearVal) return false;
         if (monthVal !== 'ALL' && r.month != monthVal) return false;
@@ -114,6 +115,19 @@ function applyFilters() {
         return true;
     });
 
+    // Invert order: most recent operations first (descending by date and ID)
+    currentFilteredRecords.sort((a, b) => {
+        if (a.date && b.date) {
+            if (a.date > b.date) return -1;
+            if (a.date < b.date) return 1;
+        } else if (a.date && !b.date) {
+            return -1;
+        } else if (!a.date && b.date) {
+            return 1;
+        }
+        return (b.id || 0) - (a.id || 0);
+    });
+
     renderStatsAndTable(yearVal);
 }
 
@@ -121,14 +135,17 @@ function renderStatsAndTable(yearVal) {
     let totalIn = 0;
     let totalOut = 0;
     let endingBalance = 0;
+    let balanceSet = false;
 
     currentFilteredRecords.forEach(r => {
+        if (!balanceSet && r.progressivo_banca !== 0 && r.progressivo_banca !== undefined && r.progressivo_banca !== null) {
+            endingBalance = r.progressivo_banca;
+            balanceSet = true;
+        }
+
         if (r.code_op === 'SALDO' && yearVal !== 'ALL') return;
 
         if (r.is_storno) {
-            if (r.progressivo_banca !== 0) {
-                endingBalance = r.progressivo_banca;
-            }
             return;
         }
 
@@ -136,9 +153,6 @@ function renderStatsAndTable(yearVal) {
             totalIn += r.total;
         } else {
             totalOut += Math.abs(r.total);
-        }
-        if (r.progressivo_banca !== 0) {
-            endingBalance = r.progressivo_banca;
         }
     });
 
