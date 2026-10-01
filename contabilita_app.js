@@ -150,8 +150,11 @@ function renderAccounting() {
     const is2026 = (yrNum === 2026);
     const maxYear = isCumulative ? 2025 : (isCumulativeAll ? 2026 : yrNum);
 
+    const deletedBankIds = new Set(JSON.parse(localStorage.getItem('new_life_deleted_records') || '[]'));
+
     // Filter records (support 2026 and closed years <= 2025, strictly ignore > 2026)
     currentFilteredRecords = records.filter(r => {
+        if (deletedBankIds.has(r.id)) return false;
         const yr = (method === 'COMPETENCE') ? (r.compet_contabile || r.an) : r.an;
         if (yr > 2026 || yr <= 0) return false;
         if (isCumulative) return yr <= 2025;

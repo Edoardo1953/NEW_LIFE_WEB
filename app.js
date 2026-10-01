@@ -64,8 +64,15 @@ function renderDashboardData(selectedYear) {
     const records = data.records;
     const amort = window.NEW_LIFE_AMORT || { assets: [], totals_by_year: {} };
 
+    const deletedBankIds = new Set(JSON.parse(localStorage.getItem('new_life_deleted_records') || '[]'));
+    const validRecords = records.filter(r => {
+        if (deletedBankIds.has(r.id)) return false;
+        if (!r.an || r.an === 0 || !r.date || !/^\d{4}/.test(r.date)) return false;
+        return true;
+    });
+
     const isAll = (selectedYear === "ALL" || !selectedYear);
-    const filtered = isAll ? records : records.filter(r => r.an == selectedYear);
+    const filtered = isAll ? validRecords : validRecords.filter(r => r.an == selectedYear);
 
     // Calculate Inflows, Outflows, Net
     let totalIn = 0;
@@ -90,12 +97,12 @@ function renderDashboardData(selectedYear) {
 
     const netResult = totalIn - totalOut;
 
-    // Actual latest balance from all records if isAll
+    // Actual latest balance from all valid records if isAll
     let displayBalance = lastProgressiveBalance;
-    if (isAll && records.length > 0) {
-        for (let i = records.length - 1; i >= 0; i--) {
-            if (records[i].progressivo_banca !== 0) {
-                displayBalance = records[i].progressivo_banca;
+    if (isAll && validRecords.length > 0) {
+        for (let i = validRecords.length - 1; i >= 0; i--) {
+            if (validRecords[i].progressivo_banca !== 0) {
+                displayBalance = validRecords[i].progressivo_banca;
                 break;
             }
         }
@@ -145,7 +152,7 @@ function renderDashboardData(selectedYear) {
     renderExpenseChart(filtered);
 
     // Render Recent Transactions
-    renderRecentTable(records);
+    renderRecentTable(validRecords);
 }
 
 function renderCashflowChart(filteredRecords, isAll) {
@@ -336,8 +343,25 @@ function renderRecentTable(records) {
     if (!tbody) return;
     tbody.innerHTML = '';
 
-    // Take last 8 transactions
-    const recent = records.slice(-8).reverse();
+    const deletedBankIds = new Set(JSON.parse(localStorage.getItem('new_life_deleted_records') || '[]'));
+    const validRecords = records.filter(r => {
+        if (deletedBankIds.has(r.id)) return false;
+        if (!r.an || r.an === 0 || !r.date || !/^\d{4}/.test(r.date)) return false;
+        return true;
+    });
+
+    // Sort descending by date and ID so the latest operations appear at the top
+    const sorted = [...validRecords].sort((a, b) => {
+        if (a.date && b.date) {
+            if (a.date > b.date) return -1;
+            if (a.date < b.date) return 1;
+        } else if (a.date && !b.date) return -1;
+        else if (!a.date && b.date) return 1;
+        return (b.id || 0) - (a.id || 0);
+    });
+
+    // Take top 8 most recent transactions
+    const recent = sorted.slice(0, 8);
 
     recent.forEach(r => {
         const tr = document.createElement('tr');

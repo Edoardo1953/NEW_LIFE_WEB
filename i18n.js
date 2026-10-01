@@ -1173,9 +1173,20 @@ function refreshAppGlobalData(btn) {
     const msg = (translations[currentLang] && translations[currentLang]['toast_data_refreshed']) || 'Dati e sincronizzazione aggiornati con successo!';
     showGlobalToast(msg, 'fa-rotate');
     
-    setTimeout(() => {
-        window.location.reload();
-    }, 500);
+    // If running with local python server, trigger Excel re-extraction
+    if (window.location.protocol.startsWith('http')) {
+        fetch('/api/sync-excel', { method: 'POST' })
+            .catch(() => {})
+            .finally(() => {
+                setTimeout(() => {
+                    window.location.reload();
+                }, 600);
+            });
+    } else {
+        setTimeout(() => {
+            window.location.reload();
+        }, 500);
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {

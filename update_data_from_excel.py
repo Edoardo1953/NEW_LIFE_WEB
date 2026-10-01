@@ -141,7 +141,8 @@ def extract_bank_and_accounting():
         if montant == 0.0 and total != 0.0:
             montant = total - tva
 
-        if not date_op and not description and total == 0:
+        # Ignorer les lignes sans date ou code opération valide
+        if not date_op or not code_op:
             continue
 
         # Détection des transferts / virements internes entre comptes (ex: ING vers POST)

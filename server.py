@@ -16,6 +16,12 @@ class NewLifeHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=BASE_DIR, **kwargs)
 
+    def end_headers(self):
+        self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+        self.send_header('Pragma', 'no-cache')
+        self.send_header('Expires', '0')
+        super().end_headers()
+
     def do_OPTIONS(self):
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')
@@ -23,7 +29,46 @@ class NewLifeHandler(http.server.SimpleHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Headers', 'Content-Type')
         self.end_headers()
 
+    def do_GET(self):
+        if self.path.startswith('/api/sync-excel'):
+            try:
+                import update_data_from_excel
+                update_data_from_excel.main()
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": True, "message": "Excel data re-synced successfully"}).encode('utf-8'))
+                return
+            except Exception as e:
+                self.send_response(500)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": False, "error": str(e)}).encode('utf-8'))
+                return
+
+        super().do_GET()
+
     def do_POST(self):
+        if self.path.startswith('/api/sync-excel'):
+            try:
+                import update_data_from_excel
+                update_data_from_excel.main()
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": True, "message": "Excel data re-synced successfully"}).encode('utf-8'))
+                return
+            except Exception as e:
+                self.send_response(500)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": False, "error": str(e)}).encode('utf-8'))
+                return
+
         if self.path.startswith('/api/upload'):
             try:
                 content_length = int(self.headers.get('Content-Length', 0))
@@ -73,6 +118,14 @@ class NewLifeHandler(http.server.SimpleHTTPRequestHandler):
 
 def start_server():
     os.chdir(BASE_DIR)
+    # Auto-sync data from Excel on server start
+    try:
+        import update_data_from_excel
+        print("[Auto-Sync] Extraction des dernières données Excel...")
+        update_data_from_excel.main()
+    except Exception as e:
+        print(f"[Auto-Sync Warning] {e}")
+
     # Allow port reuse
     socketserver.TCPServer.allow_reuse_address = True
     try:
