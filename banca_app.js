@@ -158,15 +158,21 @@ function renderStatsAndTable(yearVal) {
 
     const netFlow = totalIn - totalOut;
 
-    document.getElementById('bank-stat-in').textContent = formatCurrency(totalIn);
-    document.getElementById('bank-stat-out').textContent = formatCurrency(totalOut);
+    const statInEl = document.getElementById('bank-stat-in');
+    if (statInEl) statInEl.textContent = formatCurrency(totalIn);
+    const statOutEl = document.getElementById('bank-stat-out');
+    if (statOutEl) statOutEl.textContent = formatCurrency(totalOut);
     
     const netEl = document.getElementById('bank-stat-net');
-    netEl.textContent = formatCurrency(netFlow);
-    netEl.className = netFlow >= 0 ? 'kpi-value text-emerald' : 'kpi-value text-rose';
+    if (netEl) {
+        netEl.textContent = formatCurrency(netFlow);
+        netEl.className = netFlow >= 0 ? 'kpi-value text-emerald' : 'kpi-value text-rose';
+    }
 
-    document.getElementById('bank-stat-balance').textContent = formatCurrency(endingBalance);
-    document.getElementById('count-rows').textContent = formatNumber(currentFilteredRecords.length);
+    const balEl = document.getElementById('bank-stat-balance');
+    if (balEl) balEl.textContent = formatCurrency(endingBalance);
+    const rowsEl = document.getElementById('count-rows');
+    if (rowsEl) rowsEl.textContent = formatNumber(currentFilteredRecords.length);
 
     // Update restore deleted button visibility
     const restoreBtn = document.getElementById('btn-restore-records');

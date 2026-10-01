@@ -114,24 +114,31 @@ function renderDashboardData(selectedYear) {
     }
 
     // Update DOM KPIs
-    document.getElementById('kpi-balance').textContent = formatCurrency(displayBalance);
-    document.getElementById('kpi-inflows').textContent = formatCurrency(totalIn);
-    document.getElementById('kpi-outflows').textContent = formatCurrency(totalOut);
+    const balEl = document.getElementById('kpi-balance');
+    if (balEl) balEl.textContent = formatCurrency(displayBalance);
+    const inEl = document.getElementById('kpi-inflows');
+    if (inEl) inEl.textContent = formatCurrency(totalIn);
+    const outEl = document.getElementById('kpi-outflows');
+    if (outEl) outEl.textContent = formatCurrency(totalOut);
     
     const netEl = document.getElementById('kpi-net');
-    netEl.textContent = formatCurrency(netResult);
-    if (netResult >= 0) {
-        netEl.className = "kpi-value text-emerald";
-    } else {
-        netEl.className = "kpi-value text-rose";
+    if (netEl) {
+        netEl.textContent = formatCurrency(netResult);
+        if (netResult >= 0) {
+            netEl.className = "kpi-value text-emerald";
+        } else {
+            netEl.className = "kpi-value text-rose";
+        }
     }
 
-    document.getElementById('kpi-vnc').textContent = formatCurrency(currentVNC);
+    const vncEl = document.getElementById('kpi-vnc');
+    if (vncEl) vncEl.textContent = formatCurrency(currentVNC);
 
     // Count documents
     const savedDocs = JSON.parse(localStorage.getItem('new_life_docs') || 'null');
     const docsCount = savedDocs ? savedDocs.length : 1;
-    document.getElementById('kpi-docs').textContent = formatNumber(docsCount);
+    const docsEl = document.getElementById('kpi-docs');
+    if (docsEl) docsEl.textContent = formatNumber(docsCount);
 
     // Render Charts
     renderCashflowChart(filtered, isAll);
