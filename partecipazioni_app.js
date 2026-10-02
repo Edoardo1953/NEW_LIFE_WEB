@@ -42,18 +42,21 @@ function getParticipations() {
             p.legal_form = "Società a Responsabilità Limitata (S.r.l.)";
             p.pcn_account = "233 - PARTICIPATIONS";
             p.pcn_code = "233";
-            p.sector = "Servizi alle Imprese & Attività Commerciali";
-            p.rcs_number = "P.IVA / Cod. Fiscale IT-04892180261";
+            p.sector = "Immobiliare (Compravendita e Locazione Immobili)";
+            p.rcs_number = "P.IVA / Cod. Fiscale 10046910013 (REA TO-1101039)";
             p.headquarters = "Torino (Italia)";
-            p.rep_name = "Tubia Edoardo / Amm. Unico";
+            p.rep_name = "Petrini Vera / Amm. Unica";
             p.entry_date = "2026-09-07";
             p.initial_invested = 4000.00;
             p.divested_amount = 0.00;
             p.vnc = 4000.00;
-            p.pct_ownership = "20.00%";
+            p.pct_ownership = "33.33%";
+            p.shares_held = "€ 4.000 quota";
+            p.shares_total = "€ 12.000 capitale";
+            p.shares_info = "€ 4.000 / € 12.000 (33,33%)";
             p.status = "active";
             p.status_label = "Actif (Acquisition 09/2026)";
-            p.notes = "Acquisition de participation finalisée le 07/09/2026 pour un montant de 4.000 € (solde d'achat), avec acte notarié et modification statutaire New Life (honoraires 1.800 €).";
+            p.notes = "Partecipazione acquisita il 07/09/2026 per un importo di € 4.000,00 su un capitale sociale complessivo di € 12.000,00 (quota di possesso del 33,33%). Soci paritetici: NEW LIFE Sàrl (33,33%), Glenelg S.A. (33,33%), Family & Wealth Advisory Sàrl (33,33%).";
             updated = true;
         }
         if (p.id === 'PART-GEB') {
@@ -67,6 +70,9 @@ function getParticipations() {
             p.headquarters = "Luxembourg";
             p.rep_name = "NEW LIFE Sàrl (General Partner & Gérant Commandité)";
             p.pct_ownership = "Contrôle (General Partner)";
+            p.shares_held = "General Partner";
+            p.shares_total = "Gérant Commandité";
+            p.shares_info = "Contrôle GP (General Partner)";
             p.status_label = "Actif (Contrôle GP)";
             p.notes = "Società lussemburghese (SCSp) controllata e gestita da NEW LIFE Sàrl in qualità di General Partner. Attiva negli investimenti in impianti fotovoltaici a terra in Brasile. Ha acquisito la società operativa brasiliana TRI STAR ENERBRAS ONE SCP con sede a Natal (RN, Brasile).";
             updated = true;
@@ -79,7 +85,11 @@ function getParticipations() {
             p.headquarters = "Luxembourg";
             p.sector = "Hospitality & Luxury Resort (Praia de Pipa)";
             p.rcs_number = "RCS Luxembourg B228941";
-            p.notes = "Società holding lussemburghese (Sàrl) con sede in Lussemburgo, controlla a sua volta la società operativa brasiliana Sombra Resort Brasil Sociedade Unipessoal Limitada con sede a Natal (Brasile), attiva nel settore dell'hospitality e resort di lusso a Praia de Pipa. Investimento storico di € 302.245,51 con cessione parziale di quote e 520 azioni a nov 2024 per € 70.520,00 (VNC a bilancio: € 232.725,00).";
+            p.pct_ownership = "15.867%";
+            p.shares_held = "2.380 azioni";
+            p.shares_total = "15.000 azioni";
+            p.shares_info = "2.380 / 15.000 azioni (15,867%)";
+            p.notes = "Società holding lussemburghese (Sàrl) con sede in Lussemburgo, controlla a sua volta la società operativa brasiliana Sombra Resort Brasil Sociedade Unipessoal Limitada con sede a Natal (Brasile), attiva nel settore dell'hospitality e resort di lusso a Praia de Pipa. NEW LIFE Sàrl detiene 2.380 azioni su un totale di 15.000 azioni (quota del 15,867%). Investimento storico di € 302.245,51 con cessione parziale di quote e 520 azioni a nov 2024 per € 70.520,00 (VNC a bilancio: € 232.725,00).";
             updated = true;
         }
         return p;
@@ -439,6 +449,11 @@ function createParticipationCard(p, allDocs) {
 
     const isReceivable = isCreance(p);
 
+    const sharesHeaderBadge = p.shares_info ? `
+        <span class="badge-shares" style="background: rgba(14, 165, 233, 0.15); color: #38bdf8; border: 1px solid rgba(14, 165, 233, 0.35); font-weight: 700; padding: 0.18rem 0.55rem; border-radius: 6px; font-size: 0.76rem; display: inline-flex; align-items: center; gap: 0.35rem;">
+            <i class="fa-solid fa-chart-pie"></i> ${p.shares_info}
+        </span>` : '';
+
     card.innerHTML = `
         <div>
             <div class="part-card-header">
@@ -446,16 +461,21 @@ function createParticipationCard(p, allDocs) {
                     <div class="part-flag-icon">${p.flag || (isReceivable ? '💶' : '🏢')}</div>
                     <div>
                         <div class="part-entity-title">${p.name}</div>
-                        <div class="part-entity-subtitle">
+                        <div class="part-entity-subtitle" style="flex-wrap: wrap; gap: 0.35rem; margin-top: 0.35rem;">
                             <span class="badge-country"><i class="fa-solid fa-location-dot"></i> ${p.country}</span>
                             <span class="badge-pcn" style="${isReceivable ? 'border-color: rgba(59, 130, 246, 0.4); color: var(--accent-blue);' : ''}"><i class="fa-solid fa-book"></i> PCN ${p.pcn_code || (isReceivable ? '234' : '233')}</span>
+                            ${sharesHeaderBadge}
                         </div>
                     </div>
                 </div>
-                <div>
+                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.35rem;">
                     <span class="badge ${p.status === 'active' ? 'badge-entree' : 'badge-ord'}">
                         ${p.status_label || 'Actif'}
                     </span>
+                    ${!isReceivable && p.pct_ownership ? `
+                    <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.35); font-size: 0.82rem; font-weight: 800; padding: 0.18rem 0.6rem; border-radius: 6px;">
+                        <i class="fa-solid fa-percent"></i> ${p.pct_ownership}
+                    </span>` : ''}
                 </div>
             </div>
 
@@ -466,8 +486,9 @@ function createParticipationCard(p, allDocs) {
                     <span class="part-metric-val ${isReceivable ? 'text-cyan' : 'text-emerald'}">${formatCurrency(p.vnc)}</span>
                 </div>
                 <div class="part-metric-item">
-                    <span class="part-metric-label">${isReceivable ? 'Nature' : 'Détention'}</span>
-                    <span class="part-metric-val text-cyan">${isReceivable ? 'Financement' : (p.pct_ownership || '100%')}</span>
+                    <span class="part-metric-label">${isReceivable ? 'Nature' : 'Quote-part & Azioni'}</span>
+                    <span class="part-metric-val text-cyan" style="font-weight: 800;">${isReceivable ? 'Financement' : (p.pct_ownership || '100%')}</span>
+                    ${p.shares_held ? `<span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600; margin-top: 0.15rem;"><i class="fa-solid fa-layer-group text-blue"></i> ${p.shares_held} ${p.shares_total ? ' / ' + p.shares_total : ''}</span>` : ''}
                 </div>
                 <div class="part-metric-item">
                     <span class="part-metric-label">${isReceivable ? 'Montant Initial' : 'Investi Initial'}</span>
@@ -481,6 +502,7 @@ function createParticipationCard(p, allDocs) {
 
             <!-- Corporate Metadata Grid -->
             <div style="display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.85rem;">
+                ${!isReceivable && p.shares_info ? `<div><i class="fa-solid fa-chart-pie text-blue" style="width: 16px;"></i> <strong>Détention / Azioni possedute :</strong> <span class="text-cyan font-bold" style="font-size: 0.82rem;">${p.shares_info}</span></div>` : ''}
                 <div><i class="fa-solid fa-industry text-blue" style="width: 16px;"></i> <strong>Secteur / Objet :</strong> ${p.sector || '-'}</div>
                 <div><i class="fa-solid fa-hashtag text-blue" style="width: 16px;"></i> <strong>${isReceivable ? 'Compte Comptable :' : 'Immatriculation :'}</strong> ${p.rcs_number || p.pcn_account || '-'}</div>
                 <div><i class="fa-solid fa-building text-blue" style="width: 16px;"></i> <strong>Siège :</strong> ${p.headquarters || '-'}</div>
@@ -674,7 +696,10 @@ function renderPartTable() {
             <td class="text-right">${formatCurrency(p.initial_invested)}</td>
             <td class="text-right text-amber">${formatCurrency(p.divested_amount)}</td>
             <td class="text-right text-bold ${isReceivable ? 'text-cyan' : 'text-emerald'}" style="font-size: 0.95rem;">${formatCurrency(p.vnc)}</td>
-            <td class="text-center"><span class="badge badge-ord">${isReceivable ? 'Financement' : (p.pct_ownership || '-')}</span></td>
+            <td class="text-center">
+                <span class="badge badge-ord" title="${p.shares_info || ''}">${isReceivable ? 'Financement' : (p.pct_ownership || '-')}</span>
+                ${p.shares_held && !isReceivable ? `<div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">${p.shares_held}</div>` : ''}
+            </td>
             <td class="text-center">
                 <button class="btn btn-secondary btn-sm" style="font-size: 0.75rem;" onclick="filterDocsForEntity('${p.id}')">
                     <i class="fa-solid fa-paperclip"></i> ${entityDocs.length} docs

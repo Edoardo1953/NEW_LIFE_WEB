@@ -21,10 +21,13 @@ const DEFAULT_PARTECIPAZIONI = [
         initial_invested: 302245.51,
         divested_amount: 70520.00,
         vnc: 232725.00,
-        pct_ownership: "25.00%",
+        pct_ownership: "15.867%",
+        shares_held: "2.380 azioni",
+        shares_total: "15.000 azioni",
+        shares_info: "2.380 / 15.000 azioni (15,867%)",
         status: "active",
         status_label: "Actif (Cession Partielle 2024)",
-        notes: "Società holding lussemburghese (Sàrl) con sede in Lussemburgo, controlla a sua volta la società operativa brasiliana Sombra Resort Brasil Sociedade Unipessoal Limitada con sede a Natal (Brasile), attiva nel settore dell'hospitality e resort di lusso a Praia de Pipa. Investimento storico di € 302.245,51 con cessione parziale di quote e 520 azioni a nov 2024 per € 70.520,00 (VNC a bilancio: € 232.725,00)."
+        notes: "Società holding lussemburghese (Sàrl) con sede in Lussemburgo, controlla a sua volta la società operativa brasiliana Sombra Resort Brasil Sociedade Unipessoal Limitada con sede a Natal (Brasile), attiva nel settore dell'hospitality e resort di lusso a Praia de Pipa. NEW LIFE Sàrl detiene 2.380 azioni su un totale di 15.000 azioni (quota del 15,867%). Investimento storico di € 302.245,51 con cessione parziale di quote e 520 azioni a nov 2024 per € 70.520,00 (VNC a bilancio: € 232.725,00)."
     },
     {
         id: "PART-GEB",
@@ -45,6 +48,9 @@ const DEFAULT_PARTECIPAZIONI = [
         divested_amount: 0.00,
         vnc: 1000.00,
         pct_ownership: "Contrôle (General Partner)",
+        shares_held: "General Partner",
+        shares_total: "Gérant Commandité",
+        shares_info: "Contrôle GP (General Partner)",
         status: "active",
         status_label: "Actif (Contrôle GP)",
         notes: "Società lussemburghese (SCSp) controllata e gestita da NEW LIFE Sàrl in qualità di General Partner. Attiva negli investimenti in impianti fotovoltaici a terra in Brasile. Ha acquisito la società operativa brasiliana TRI STAR ENERBRAS ONE SCP con sede a Natal (RN, Brasile)."
@@ -59,18 +65,21 @@ const DEFAULT_PARTECIPAZIONI = [
         legal_form: "Società a Responsabilità Limitata (S.r.l.)",
         pcn_account: "233 - PARTICIPATIONS",
         pcn_code: "233",
-        sector: "Servizi alle Imprese & Attività Commerciali",
-        rcs_number: "P.IVA / Cod. Fiscale IT-04892180261",
+        sector: "Immobiliare (Compravendita e Locazione Immobili)",
+        rcs_number: "P.IVA / Cod. Fiscale 10046910013 (REA TO-1101039)",
         headquarters: "Torino (Italia)",
-        rep_name: "Tubia Edoardo / Amm. Unico",
+        rep_name: "Petrini Vera / Amm. Unica",
         entry_date: "2026-09-07",
         initial_invested: 4000.00,
         divested_amount: 0.00,
         vnc: 4000.00,
-        pct_ownership: "20.00%",
+        pct_ownership: "33.33%",
+        shares_held: "€ 4.000 quota",
+        shares_total: "€ 12.000 capitale",
+        shares_info: "€ 4.000 / € 12.000 cap. (33,33%)",
         status: "active",
         status_label: "Actif (Acquisition 09/2026)",
-        notes: "Acquisition de participation finalisée le 07/09/2026 pour un montant de 4.000 € (solde d'achat), avec acte notarié et modification statutaire New Life (honoraires 1.800 €)."
+        notes: "Partecipazione acquisita il 07/09/2026 per un importo di € 4.000,00 su un capitale sociale complessivo di € 12.000,00 (quota di possesso del 33,33%). Soci paritetici: NEW LIFE Sàrl (33,33%), Glenelg S.A. (33,33%), Family & Wealth Advisory Sàrl (33,33%)."
     },
     {
         id: "PART-CREANCES",
@@ -91,6 +100,9 @@ const DEFAULT_PARTECIPAZIONI = [
         divested_amount: 0.00,
         vnc: 1496.67,
         pct_ownership: "N/A",
+        shares_held: "N/A",
+        shares_total: "N/A",
+        shares_info: "Financement Associés",
         status: "active",
         status_label: "Actif",
         notes: "Créances diverses et avances de trésorerie rattachées aux participations et associés."
