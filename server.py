@@ -32,7 +32,9 @@ class NewLifeHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path.startswith('/api/sync-excel'):
             try:
+                import importlib
                 import update_data_from_excel
+                importlib.reload(update_data_from_excel)
                 update_data_from_excel.main()
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json; charset=utf-8')
@@ -53,7 +55,9 @@ class NewLifeHandler(http.server.SimpleHTTPRequestHandler):
     def do_POST(self):
         if self.path.startswith('/api/sync-excel'):
             try:
+                import importlib
                 import update_data_from_excel
+                importlib.reload(update_data_from_excel)
                 update_data_from_excel.main()
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json; charset=utf-8')

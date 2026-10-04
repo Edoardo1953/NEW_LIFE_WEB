@@ -1152,40 +1152,55 @@ function showGlobalToast(msg, iconClass = 'fa-circle-check') {
 }
 
 function refreshAppGlobalData(btn) {
-    const now = new Date();
-    const pad = (n) => String(n).padStart(2, '0');
-    const formatted = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-    
-    localStorage.setItem('new_life_last_sync', formatted);
-    sessionStorage.setItem('new_life_just_refreshed', 'true');
-    
-    const updatedEl = document.getElementById('sidebar-updated-at');
-    if (updatedEl) {
-        updatedEl.textContent = formatted;
-        updatedEl.classList.add('updated-flash');
-    }
-    
     const icon = btn ? btn.querySelector('i') : document.querySelector('.btn-sidebar-action i');
     if (icon) {
         icon.classList.add('fa-spin');
     }
     
-    const msg = (translations[currentLang] && translations[currentLang]['toast_data_refreshed']) || 'Dati e sincronizzazione aggiornati con successo!';
-    showGlobalToast(msg, 'fa-rotate');
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    const formatted = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
     
-    // If running with local python server, trigger Excel re-extraction
+    // If running with local python server (http://localhost:8085)
     if (window.location.protocol.startsWith('http')) {
+        const msgSync = (translations[currentLang] && translations[currentLang]['toast_sync_in_progress']) || 'Sincronizzazione file Excel in corso...';
+        showGlobalToast(msgSync, 'fa-rotate');
+
         fetch('/api/sync-excel', { method: 'POST' })
-            .catch(() => {})
-            .finally(() => {
+            .then(res => {
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return res.json();
+            })
+            .then(data => {
+                if (data && data.success) {
+                    localStorage.setItem('new_life_last_sync', formatted);
+                    sessionStorage.setItem('new_life_just_refreshed', 'true');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 300);
+                } else {
+                    const err = data?.error || 'Errore sconosciuto';
+                    showGlobalToast('Errore sincronizzazione: ' + err, 'fa-triangle-exclamation');
+                    if (icon) icon.classList.remove('fa-spin');
+                }
+            })
+            .catch(err => {
+                console.warn('Sync server non disponibile:', err);
+                const msgOffline = 'Attenzione: Server locale non attivo. Per sincronizzare da Excel avvia "Avvia NEW_LIFE.bat" o esegui "1 - AGGIORNA DATI DA EXCEL.bat"';
+                showGlobalToast(msgOffline, 'fa-triangle-exclamation');
+                if (icon) icon.classList.remove('fa-spin');
                 setTimeout(() => {
                     window.location.reload();
-                }, 600);
+                }, 1500);
             });
     } else {
+        // file:/// protocol
+        const msgFile = 'Attenzione: Per aggiornare i dati da Excel avvia "Avvia NEW_LIFE.bat" o esegui "1 - AGGIORNA DATI DA EXCEL.bat"';
+        showGlobalToast(msgFile, 'fa-triangle-exclamation');
+        if (icon) icon.classList.remove('fa-spin');
         setTimeout(() => {
             window.location.reload();
-        }, 500);
+        }, 1500);
     }
 }
 

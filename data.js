@@ -5,10 +5,10 @@ window.NEW_LIFE_DATA = {
     "country": "Luxembourg",
     "form": "Société à responsabilité limitée",
     "currency": "EUR (€)",
-    "updated_at": "2026-10-01 11:04:27"
+    "updated_at": "2026-10-04 18:45:38"
   },
   "stats": {
-    "total_records": 986,
+    "total_records": 992,
     "years": [
       2018,
       2019,
@@ -31,7 +31,7 @@ window.NEW_LIFE_DATA = {
       2025
     ],
     "latest_closed_year": 2025,
-    "last_balance": 18186.89,
+    "last_balance": 14312.26,
     "suppliers_count": 64,
     "macros_count": 18
   },
@@ -3021,9 +3021,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2019",
       "progressivo_banca": 44575.55,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 73
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 73,
@@ -3060,9 +3059,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2019",
       "progressivo_banca": 49115.22,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 72
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 74,
@@ -4315,9 +4313,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2020",
       "progressivo_banca": 61869.38,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 107
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 107,
@@ -4354,9 +4351,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2020",
       "progressivo_banca": 65745.49,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 106
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 108,
@@ -5839,9 +5835,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2020",
       "progressivo_banca": 48822.39,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 147
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 147,
@@ -5878,9 +5873,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2020",
       "progressivo_banca": 52462.39,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 146
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 148,
@@ -6753,9 +6747,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2020",
       "progressivo_banca": 60718.18,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 171
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 171,
@@ -6792,9 +6785,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2020",
       "progressivo_banca": 65442.49,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 170
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 172,
@@ -7287,9 +7279,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2020",
       "progressivo_banca": 47273.38,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 185
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 185,
@@ -7326,9 +7317,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2020",
       "progressivo_banca": 47573.38,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 184
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 186,
@@ -7707,9 +7697,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2020",
       "progressivo_banca": 39911.57,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 196
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 196,
@@ -7746,9 +7735,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2020",
       "progressivo_banca": 42974.05,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 195
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 197,
@@ -9229,9 +9217,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2021",
       "progressivo_banca": 33128.13,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 236
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 236,
@@ -9268,9 +9255,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2021",
       "progressivo_banca": 35312.58,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 235
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 237,
@@ -10183,9 +10169,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2021",
       "progressivo_banca": 15095.59,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 261
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 261,
@@ -10222,9 +10207,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2021",
       "progressivo_banca": 18354.98,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 260
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 262,
@@ -11363,9 +11347,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2021",
       "progressivo_banca": 22258.49,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 292
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 292,
@@ -11402,9 +11385,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2021",
       "progressivo_banca": 27448.07,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 291
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 293,
@@ -12049,9 +12031,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2021",
       "progressivo_banca": 7325.89,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 310
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 310,
@@ -12088,9 +12069,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2021",
       "progressivo_banca": 14982.06,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 309
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 311,
@@ -12507,9 +12487,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2022",
       "progressivo_banca": 3808.1,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 322
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 322,
@@ -12546,9 +12525,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2022",
       "progressivo_banca": 3807.59,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 321
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 323,
@@ -13269,9 +13247,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2022",
       "progressivo_banca": 37986.05,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 342
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 342,
@@ -13308,9 +13285,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2022",
       "progressivo_banca": 41984.93,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 341
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 343,
@@ -14033,9 +14009,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2022",
       "progressivo_banca": 16986.57,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 362
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 362,
@@ -14072,9 +14047,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2022",
       "progressivo_banca": 20498.26,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 361
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 363,
@@ -17303,9 +17277,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2022",
       "progressivo_banca": 8218.05,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 451
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 448,
@@ -17456,9 +17429,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2022",
       "progressivo_banca": 2311.21,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 447
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 452,
@@ -18869,9 +18841,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2023",
       "progressivo_banca": 54894.97,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 492
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 489,
@@ -19022,9 +18993,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2023",
       "progressivo_banca": 45063.77,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 488
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 493,
@@ -20431,9 +20401,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2023",
       "progressivo_banca": 21194.87,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 530
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 530,
@@ -20470,9 +20439,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2022",
       "progressivo_banca": 21120.37,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 529
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 531,
@@ -20509,9 +20477,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2022",
       "progressivo_banca": 21169.37,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 532
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 532,
@@ -20548,9 +20515,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2022",
       "progressivo_banca": 21120.37,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 531
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 533,
@@ -21157,9 +21123,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2023",
       "progressivo_banca": 32945.92,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 554
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 549,
@@ -21386,9 +21351,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2023",
       "progressivo_banca": 18112.64,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 548
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 555,
@@ -22603,9 +22567,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2023",
       "progressivo_banca": 36285.55,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 590
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 587,
@@ -22756,9 +22719,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2023",
       "progressivo_banca": 22467.92,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 586
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 591,
@@ -23593,9 +23555,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2023",
       "progressivo_banca": 17632.36,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 617
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 613,
@@ -23784,9 +23745,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2023",
       "progressivo_banca": 358.5,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 612
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 618,
@@ -24931,9 +24891,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2024",
       "progressivo_banca": 32564.81,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 652
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 648,
@@ -25122,9 +25081,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2024",
       "progressivo_banca": 22641.09,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 647
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 653,
@@ -26303,9 +26261,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2024",
       "progressivo_banca": 23492.62,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 689
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 684,
@@ -26532,9 +26489,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2024",
       "progressivo_banca": 5025.4,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 683
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 690,
@@ -27255,9 +27211,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2024",
       "progressivo_banca": 37525.4,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 714
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 709,
@@ -27484,9 +27439,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2024",
       "progressivo_banca": 27197.4,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 708
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 715,
@@ -28435,9 +28389,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2024",
       "progressivo_banca": 24828.7,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 743
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 740,
@@ -28588,9 +28541,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2024",
       "progressivo_banca": 17921.11,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 739
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 744,
@@ -29963,9 +29915,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2025",
       "progressivo_banca": 41862.33,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 785
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 780,
@@ -30192,9 +30143,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2025",
       "progressivo_banca": 28012.92,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 779
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 786,
@@ -31411,9 +31361,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2025",
       "progressivo_banca": 11624.73,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 823
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 818,
@@ -31640,9 +31589,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2025",
       "progressivo_banca": 5679.43,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 817
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 824,
@@ -32477,8 +32425,9 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2025",
       "progressivo_banca": 37391.9,
-      "is_storno": false,
-      "is_transfert": false
+      "is_storno": true,
+      "is_transfert": false,
+      "storno_pair_id": 849
     },
     {
       "id": 846,
@@ -32631,7 +32580,7 @@ window.NEW_LIFE_DATA = {
       "progressivo_banca": 36176.77,
       "is_storno": true,
       "is_transfert": false,
-      "storno_pair_id": 850
+      "storno_pair_id": 845
     },
     {
       "id": 850,
@@ -32668,9 +32617,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2025",
       "progressivo_banca": 35731.6,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 849
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 851,
@@ -32783,9 +32731,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2025",
       "progressivo_banca": 43058.35,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 859
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 854,
@@ -33012,9 +32959,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2025",
       "progressivo_banca": 24247.1,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 853
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 860,
@@ -33621,9 +33567,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2025",
       "progressivo_banca": 21511.89,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 890
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 886,
@@ -33812,9 +33757,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2025",
       "progressivo_banca": 11494.97,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 885
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 891,
@@ -35491,9 +35435,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2026",
       "progressivo_banca": 78960.47,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 939
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 935,
@@ -35682,9 +35625,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2026",
       "progressivo_banca": 63182.93,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 934
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 940,
@@ -37129,9 +37071,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2026",
       "progressivo_banca": 39725.75,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 982
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 978,
@@ -37320,9 +37261,8 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2026",
       "progressivo_banca": 30971.39,
-      "is_storno": true,
-      "is_transfert": false,
-      "storno_pair_id": 977
+      "is_storno": false,
+      "is_transfert": false
     },
     {
       "id": 983,
@@ -37853,6 +37793,234 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2026",
       "progressivo_banca": 18186.89,
+      "is_storno": false,
+      "is_transfert": false
+    },
+    {
+      "id": 997,
+      "code_op": "CHA",
+      "date": "2026-10-05",
+      "valeur": "2026-10-05",
+      "mois": "10-2026",
+      "trim": "4° Trim",
+      "sem": "2° Sem",
+      "month": 10,
+      "an": 2026,
+      "compet_contabile": 2026,
+      "ord_ext": "ORD",
+      "e_s": "SORTIES",
+      "d_c": "D",
+      "macro": "61 - AUTRES CHARGES EXTERNES",
+      "class": "FRAIS",
+      "detail": "DIVERSES",
+      "description": "Frais diverses",
+      "type": "",
+      "comptable": "YES",
+      "sp_ce": "CE",
+      "compte": "",
+      "date_facture": "",
+      "intracom": "",
+      "pays": "",
+      "fournisseur": "Tubia Edoardo",
+      "nr_fatt": "",
+      "personnel": "",
+      "montant": 3874.63,
+      "taux_tva": 0.0,
+      "tva": 0.0,
+      "total": 3874.63,
+      "paye_non": "PAYE",
+      "exercice": "2026",
+      "progressivo_banca": 22061.52,
+      "is_storno": false,
+      "is_transfert": false
+    },
+    {
+      "id": 998,
+      "code_op": "CHA",
+      "date": "2026-10-05",
+      "valeur": "2026-10-05",
+      "mois": "10-2026",
+      "trim": "4° Trim",
+      "sem": "2° Sem",
+      "month": 10,
+      "an": 2026,
+      "compet_contabile": 2026,
+      "ord_ext": "ORD",
+      "e_s": "SORTIES",
+      "d_c": "D",
+      "macro": "61 - AUTRES CHARGES EXTERNES",
+      "class": "FRAIS",
+      "detail": "DIVERSES",
+      "description": "Frais diverses",
+      "type": "",
+      "comptable": "YES",
+      "sp_ce": "CE",
+      "compte": "",
+      "date_facture": "",
+      "intracom": "INTR",
+      "pays": "DIV",
+      "fournisseur": "Tubia Edoardo",
+      "nr_fatt": "CASH 28",
+      "personnel": "",
+      "montant": -2706.53,
+      "taux_tva": 0.0,
+      "tva": 0.0,
+      "total": -2706.53,
+      "paye_non": "PAYE",
+      "exercice": "2026",
+      "progressivo_banca": 19354.99,
+      "is_storno": false,
+      "is_transfert": false
+    },
+    {
+      "id": 999,
+      "code_op": "CHA",
+      "date": "2026-10-05",
+      "valeur": "2026-10-05",
+      "mois": "10-2026",
+      "trim": "4° Trim",
+      "sem": "2° Sem",
+      "month": 10,
+      "an": 2026,
+      "compet_contabile": 2026,
+      "ord_ext": "ORD",
+      "e_s": "SORTIES",
+      "d_c": "D",
+      "macro": "61 - AUTRES CHARGES EXTERNES",
+      "class": "FRAIS",
+      "detail": "DIVERSES",
+      "description": "Frais diverses",
+      "type": "",
+      "comptable": "YES",
+      "sp_ce": "CE",
+      "compte": "",
+      "date_facture": "",
+      "intracom": "NON",
+      "pays": "L",
+      "fournisseur": "Tubia Edoardo",
+      "nr_fatt": "CASH 28",
+      "personnel": "",
+      "montant": 0.0,
+      "taux_tva": 0.0,
+      "tva": 0.0,
+      "total": 0.0,
+      "paye_non": "PAYE",
+      "exercice": "2026",
+      "progressivo_banca": 19354.99,
+      "is_storno": false,
+      "is_transfert": false
+    },
+    {
+      "id": 1000,
+      "code_op": "CHA",
+      "date": "2026-10-05",
+      "valeur": "2026-10-05",
+      "mois": "10-2026",
+      "trim": "4° Trim",
+      "sem": "2° Sem",
+      "month": 10,
+      "an": 2026,
+      "compet_contabile": 2026,
+      "ord_ext": "ORD",
+      "e_s": "SORTIES",
+      "d_c": "D",
+      "macro": "61 - AUTRES CHARGES EXTERNES",
+      "class": "FRAIS",
+      "detail": "DIVERSES",
+      "description": "Frais diverses",
+      "type": "",
+      "comptable": "YES",
+      "sp_ce": "CE",
+      "compte": "",
+      "date_facture": "",
+      "intracom": "NON",
+      "pays": "L",
+      "fournisseur": "Tubia Edoardo",
+      "nr_fatt": "CASH 28",
+      "personnel": "",
+      "montant": -418.64,
+      "taux_tva": 0.03,
+      "tva": -12.56,
+      "total": -431.2,
+      "paye_non": "PAYE",
+      "exercice": "2026",
+      "progressivo_banca": 18923.79,
+      "is_storno": false,
+      "is_transfert": false
+    },
+    {
+      "id": 1001,
+      "code_op": "CHA",
+      "date": "2026-10-05",
+      "valeur": "2026-10-05",
+      "mois": "10-2026",
+      "trim": "4° Trim",
+      "sem": "2° Sem",
+      "month": 10,
+      "an": 2026,
+      "compet_contabile": 2026,
+      "ord_ext": "ORD",
+      "e_s": "SORTIES",
+      "d_c": "D",
+      "macro": "61 - AUTRES CHARGES EXTERNES",
+      "class": "FRAIS",
+      "detail": "DIVERSES",
+      "description": "Frais diverses",
+      "type": "",
+      "comptable": "YES",
+      "sp_ce": "CE",
+      "compte": "",
+      "date_facture": "",
+      "intracom": "NON",
+      "pays": "L",
+      "fournisseur": "Tubia Edoardo",
+      "nr_fatt": "CASH 28",
+      "personnel": "",
+      "montant": -629.83,
+      "taux_tva": 0.17,
+      "tva": -107.07,
+      "total": -736.9,
+      "paye_non": "PAYE",
+      "exercice": "2026",
+      "progressivo_banca": 18186.89,
+      "is_storno": false,
+      "is_transfert": false
+    },
+    {
+      "id": 1002,
+      "code_op": "CHA",
+      "date": "2026-10-05",
+      "valeur": "2026-10-05",
+      "mois": "10-2026",
+      "trim": "4° Trim",
+      "sem": "2° Sem",
+      "month": 10,
+      "an": 2026,
+      "compet_contabile": 2026,
+      "ord_ext": "ORD",
+      "e_s": "SORTIES",
+      "d_c": "D",
+      "macro": "61 - AUTRES CHARGES EXTERNES",
+      "class": "FRAIS",
+      "detail": "DIVERSES",
+      "description": "Frais diverses",
+      "type": "",
+      "comptable": "YES",
+      "sp_ce": "CE",
+      "compte": "POST",
+      "date_facture": "",
+      "intracom": "",
+      "pays": "",
+      "fournisseur": "Tubia Edoardo",
+      "nr_fatt": "",
+      "personnel": "",
+      "montant": -3874.63,
+      "taux_tva": 0.0,
+      "tva": 0.0,
+      "total": -3874.63,
+      "paye_non": "PAYE",
+      "exercice": "2026",
+      "progressivo_banca": 14312.26,
       "is_storno": false,
       "is_transfert": false
     }

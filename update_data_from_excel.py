@@ -199,20 +199,38 @@ def extract_bank_and_accounting():
         tot1 = r1["total"]
         dt1 = r1["date"]
         desc1 = r1["description"].lower()
+        compte1 = (r1.get("compte") or "").strip()
+        is_explicit_error = "storno" in desc1 or "errore" in desc1 or "erreur" in desc1 or "annull" in desc1
+        
         # Ne pas marquer les transferts inter-bancaires comme de simples stornos
         if tot1 > 0 and not r1["is_storno"] and not r1.get("is_transfert"):
             for j, r2 in enumerate(records):
-                if i == j or r2["is_storno"] or r2.get("is_transfert"): continue
+                if i == j or r2["is_storno"] or r2.get("is_transfert"):
+                    continue
                 tot2 = r2["total"]
                 dt2 = r2["date"]
                 desc2 = r2["description"].lower()
-                if dt1 == dt2 and abs(tot1 + tot2) < 0.05 and (desc1 == desc2 or r1["code_op"] == r2["code_op"]):
-                    r1["is_storno"] = True
-                    r2["is_storno"] = True
-                    r1["storno_pair_id"] = r2["id"]
-                    r2["storno_pair_id"] = r1["id"]
-                    storno_count += 2
-                    break
+                compte2 = (r2.get("compte") or "").strip()
+                
+                # Les deux écritures doivent être sur le même compte bancaire (ou les deux hors banque)
+                if compte1 != compte2:
+                    continue
+                
+                if abs(tot1 + tot2) < 0.01:
+                    is_match = False
+                    if is_explicit_error or "storno" in desc2 or "errore" in desc2 or "erreur" in desc2 or "annull" in desc2:
+                        if desc1 == desc2 or r1.get("fournisseur") == r2.get("fournisseur"):
+                            is_match = True
+                    elif dt1 == dt2 and desc1 == desc2 and desc1 not in ["frais diverses", "salaires nets"]:
+                        is_match = True
+                    
+                    if is_match:
+                        r1["is_storno"] = True
+                        r2["is_storno"] = True
+                        r1["storno_pair_id"] = r2["id"]
+                        r2["storno_pair_id"] = r1["id"]
+                        storno_count += 2
+                        break
 
     print(f"-> {len(records)} transactions extraites ({storno_count} écritures de storno technique identifiées).")
     return records
