@@ -5,7 +5,7 @@ window.NEW_LIFE_DATA = {
     "country": "Luxembourg",
     "form": "Société à responsabilité limitée",
     "currency": "EUR (€)",
-    "updated_at": "2026-10-04 18:45:38"
+    "updated_at": "2026-10-08 19:02:46"
   },
   "stats": {
     "total_records": 992,

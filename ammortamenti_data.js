@@ -779,7 +779,13 @@ window.NEW_LIFE_AMORT = {
       "val_brute": 71249.13,
       "annuite": 7165.98,
       "cumul": 69552.84,
-      "vnc": 1696.27
+      "vnc": 1696.29
+    },
+    "2031": {
+      "val_brute": 71249.13,
+      "annuite": 1696.29,
+      "cumul": 71249.13,
+      "vnc": 0.0
     }
   }
 };

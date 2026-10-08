@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conformité AML / LBC-FT - NEW LIFE Sàrl</title>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SheetJS & jsPDF -->
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css?v=20261008">
+    <!-- Auth Guard -->
+    <script src="auth.js"></script>
+    <style>
+        .asset-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .asset-card {
+            background: var(--bg-dark-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1.25rem;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        .asset-card:hover {
+            border-color: var(--accent-emerald);
+            transform: translateY(-2px);
+        }
+        .asset-badge-pcn {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            display: inline-block;
+        }
+        .aml-threshold-btn.active {
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar glass-panel">
+            <div class="logo-container">
+                <img src="uploads/Loghi/Loghi NL Claude/NewLife_figura.svg" alt="NEW LIFE" class="logo-img">
+                <div class="logo-title">NEW LIFE Sàrl</div>
+                <div class="logo-subtitle">Luxembourg</div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-section-title" data-i18n="nav_section_modules">MODULES</div>
+                <a href="index.html" class="nav-item">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span data-i18n="nav_dashboard">Vue d’ensemble</span>
+                </a>
+                <a href="banca.html" class="nav-item">
+                    <i class="fa-solid fa-building-columns"></i>
+                    <span data-i18n="nav_banca">Compte Courant</span>
+                </a>
+                <a href="contabilita.html" class="nav-item">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                    <span data-i18n="nav_contabilita">Comptabilité PCN</span>
+                </a>
+                <a href="ammortamenti.html" class="nav-item">
+                    <i class="fa-solid fa-calculator"></i>
+                    <span data-i18n="nav_ammortamenti">Amortissements</span>
+                </a>
+                <a href="partecipazioni.html" class="nav-item">
+                    <i class="fa-solid fa-shapes"></i>
+                    <span data-i18n="nav_partecipazioni">Participations</span>
+                </a>
+                <a href="aml.html" class="nav-item active">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span data-i18n="nav_aml">Conformité AML (LBC-FT)</span>
+                </a>
+                <a href="documenti.html" class="nav-item">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span data-i18n="nav_documenti">Documents Société</span>
+                </a>
+                <a href="strumenti.html" class="nav-item">
+                    <i class="fa-solid fa-toolbox"></i>
+                    <span data-i18n="nav_strumenti">Outils & Passwords</span>
+                </a>
+
+                <div class="nav-section-title" data-i18n="nav_section_tools">GESTION</div>
+                <button class="btn-sidebar-action" onclick="refreshAppGlobalData(this)">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span data-i18n="nav_refresh_data">Actualiser</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="update-badge">
+                    <span data-i18n="last_update">Dernière mise à jour :</span>
+                    <strong id="sidebar-updated-at">--/--/----</strong>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Topbar -->
+            <header class="topbar glass-panel">
+                <div class="topbar-title-area">
+                    <h1 data-i18n="aml_title"><i class="fa-solid fa-shield-halved text-emerald"></i> Registre des Recettes & Conformité AML / LBC-FT</h1>
+                    <p data-i18n="aml_desc">Contrôle anti-blanchiment des entrées de fonds, mandats d'administrateur et dossiers KYC (Loi 12 Nov 2004 / AED / CSSF).</p>
+                </div>
+
+                <div class="topbar-actions">
+                    <!-- AML Manual Button -->
+                    <button id="btn-open-aml-manual" class="btn btn-secondary btn-sm" onclick="openAmlManualModal()" style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; border-color: rgba(16,185,129,0.4); background: rgba(16,185,129,0.08); margin-right: 0.5rem;">
+                        <i class="fa-solid fa-book-open text-emerald"></i>
+                        <span data-i18n="btn_aml_manual">Guide & Manuel AML</span>
+                    </button>
+
+                    <!-- Language Selector -->
+                    <div class="lang-selector">
+                        <button class="lang-btn" data-lang="fr" title="Français">
+                            <img src="https://flagcdn.com/w40/fr.png" alt="FR">
+                        </button>
+                        <button class="lang-btn" data-lang="it" title="Italiano">
+                            <img src="https://flagcdn.com/w40/it.png" alt="IT">
+                        </button>
+                        <button class="lang-btn" data-lang="en" title="English">
+                            <img src="https://flagcdn.com/w40/gb.png" alt="EN">
+                        </button>
+                    </div>
+
+                    <!-- Theme Toggle -->
+                    <button class="theme-toggle-btn" id="theme-toggle-btn" title="Changer de thème">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Summary KPI Strip -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-title" data-i18n="aml_kpi_total_volume">Volume Total Contrôlé</span>
+                        <div class="kpi-icon emerald"><i class="fa-solid fa-vault"></i></div>
+                    </div>
+                    <div class="kpi-value text-emerald" id="aml-kpi-volume">863.676,06 €</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-title" data-i18n="aml_kpi_total_ops">Factures & Recettes</span>
+                        <div class="kpi-icon blue"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                    </div>
+                    <div class="kpi-value text-blue" id="aml-kpi-ops">109</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-title" data-i18n="aml_kpi_compliant_pct">Conformité KYC</span>
+                        <div class="kpi-icon emerald"><i class="fa-solid fa-circle-check"></i></div>
+                    </div>
+                    <div class="kpi-value text-emerald" id="aml-kpi-compliance">100%</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-title" data-i18n="aml_kpi_attention">Vigilance Active</span>
+                        <div class="kpi-icon amber"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    </div>
+                    <div class="kpi-value text-amber" id="aml-kpi-attention">0</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-title" data-i18n="aml_kpi_pep_count">Exposition PEP / RBE</span>
+                        <div class="kpi-icon cyan"><i class="fa-solid fa-user-shield"></i></div>
+                    </div>
+                    <div class="kpi-value text-cyan" id="aml-kpi-pep">0</div>
+                </div>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="tabs-nav">
+                <button class="tab-btn active" data-tab="tab-aml-registry" data-i18n="tab_aml_registry">1. Registre des Entrées & AML</button>
+                <button class="tab-btn" data-tab="tab-aml-clients" data-i18n="tab_aml_clients">2. Cartographie Mandats & Clients</button>
+                <button class="tab-btn" data-tab="tab-aml-matrix" data-i18n="tab_aml_matrix">3. Cadre Légal & Matrice Risques</button>
+                <button class="tab-btn" data-tab="tab-aml-simulator" data-i18n="tab_aml_simulator">4. Simulateur Due Diligence</button>
+            </div>
+
+            <!-- TAB 1: Registre des Entrées & Contrôle AML -->
+            <div class="tab-content active" id="tab-aml-registry">
+                <!-- Advanced Filter Bar -->
+                <div class="filter-bar glass-panel" style="margin-bottom: 1.25rem;">
+                    <!-- Threshold Fast Buttons -->
+                    <div class="filter-group" style="margin-bottom: 0.75rem; width: 100%;">
+                        <label style="font-weight: 700; color: var(--text-muted); font-size: 0.8rem; display: block; margin-bottom: 0.35rem;">
+                            <i class="fa-solid fa-filter text-emerald"></i> <span data-i18n="filter_aml_threshold">Seuils de Vigilance AML</span> :
+                        </label>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <button class="btn btn-primary btn-sm aml-threshold-btn active" data-threshold="0">
+                                <i class="fa-solid fa-layer-group"></i> <span data-i18n="filter_aml_all">Toutes Recettes (≥ 0 €)</span>
+                            </button>
+                            <button class="btn btn-secondary btn-sm aml-threshold-btn" data-threshold="5000">
+                                <i class="fa-solid fa-shield-halved text-blue"></i> <span data-i18n="filter_aml_5k">≥ 5.000 € (Standard)</span>
+                            </button>
+                            <button class="btn btn-secondary btn-sm aml-threshold-btn" data-threshold="10000">
+                                <i class="fa-solid fa-scale-balanced text-cyan"></i> <span data-i18n="filter_aml_10k">≥ 10.000 € (Seuil Légal UE)</span>
+                            </button>
+                            <button class="btn btn-secondary btn-sm aml-threshold-btn" data-threshold="25000">
+                                <i class="fa-solid fa-gem text-purple" style="color: #a78bfa;"></i> <span data-i18n="filter_aml_25k">≥ 25.000 € (Grandes Facturations)</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Dropdown Filters & Search -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; width: 100%;">
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Recherche (Société, facture...)</label>
+                            <input type="text" id="aml-search-input" class="filter-input" style="width: 100%;" placeholder="Rechercher...">
+                        </div>
+
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="filter_client">Société Débitrice</label>
+                            <select id="aml-filter-client" class="filter-select" style="width: 100%;">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="filter_year">Exercice Fiscal</label>
+                            <select id="aml-filter-year" class="filter-select" style="width: 100%;">
+                                <option value="ALL">Tous les exercices</option>
+                                <option value="2026">2026 (En cours)</option>
+                                <option value="2025">2025 (Clôturé)</option>
+                                <option value="2024">2024 (Clôturé)</option>
+                                <option value="2023">2023</option>
+                                <option value="2022">2022</option>
+                                <option value="2021">2021</option>
+                                <option value="2020">2020</option>
+                                <option value="2019">2019</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="filter_entity_type">Type de Société</label>
+                            <select id="aml-filter-entity-type" class="filter-select" style="width: 100%;">
+                                <option value="ALL">Toutes les formes</option>
+                                <option value="SICAV_REGULEE">SICAV / Fonds Régulé CSSF</option>
+                                <option value="SPF_PATRIMONIALE">SPF (Société Patrimoniale)</option>
+                                <option value="SARL_COMMERCIALE">Sàrl Commerciale</option>
+                                <option value="SA_COMMERCIALE">SA Commerciale</option>
+                                <option value="SCSP_INVESTISSEMENT">SCSp Véhicule d'Investissement</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="filter_kyc_status">Statut KYC</label>
+                            <select id="aml-filter-kyc-status" class="filter-select" style="width: 100%;">
+                                <option value="ALL">Tous les statuts</option>
+                                <option value="CONFORME">🟢 Conforme</option>
+                                <option value="A_COMPLETER">🟡 À Compléter</option>
+                                <option value="VIGILANCE_RENFORCEE">🔴 Vigilance Renforcée</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table Container -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h2 class="chart-title"><i class="fa-solid fa-list-check text-emerald"></i> Registre Exhaustif des Encaissements Contrôlés</h2>
+                        <div class="filter-group">
+                            <button id="btn-export-aml-excel" class="btn btn-secondary btn-sm">
+                                <i class="fa-solid fa-file-excel text-emerald"></i> <span data-i18n="btn_export_aml_excel">Excel</span>
+                            </button>
+                            <button id="btn-export-aml-csv" class="btn btn-secondary btn-sm">
+                                <i class="fa-solid fa-file-csv text-blue"></i> <span>CSV</span>
+                            </button>
+                            <button id="btn-export-aml-pdf" class="btn btn-primary btn-sm">
+                                <i class="fa-solid fa-file-pdf"></i> <span data-i18n="btn_export_aml_pdf">Rapport PDF</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="custom-table" id="aml-registry-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th data-i18n="th_client_debtor">Société Débitrice</th>
+                                    <th data-i18n="th_mandate_service">Mandat / Prestation</th>
+                                    <th data-i18n="th_invoice_nr">N° Facture</th>
+                                    <th class="text-right" data-i18n="th_amount_ht">Montant HT</th>
+                                    <th class="text-right" data-i18n="th_tva">TVA</th>
+                                    <th class="text-right" data-i18n="th_amount_ttc">Total TTC (€)</th>
+                                    <th style="text-align: center;" data-i18n="th_aml_level">Seuil AML</th>
+                                    <th style="text-align: center;" data-i18n="th_aml_risk">Risque</th>
+                                    <th style="text-align: center;" data-i18n="th_kyc_status">Statut KYC</th>
+                                    <th style="text-align: center;" data-i18n="th_action_kyc">Dossier</th>
+                                </tr>
+                            </thead>
+                            <tbody id="aml-registry-tbody">
+                                <!-- Injected dynamically via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: Cartographie des Clients & Mandats -->
+            <div class="tab-content" id="tab-aml-clients">
+                <div class="asset-grid" id="aml-clients-container">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+
+            <!-- TAB 3: Cadre Légal & Matrice des Risques -->
+            <div class="tab-content" id="tab-aml-matrix">
+                <div id="aml-matrix-content">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+
+            <!-- TAB 4: Simulateur Due Diligence -->
+            <div class="tab-content" id="tab-aml-simulator">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h2 class="chart-title"><i class="fa-solid fa-wand-magic-sparkles text-emerald"></i> Simulateur d'Évaluation de Risque Client (Due Diligence Tool)</h2>
+                    </div>
+
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+                        Évaluez instantanément le score de risque LBC-FT (0 à 100) et déterminez le niveau de vigilance requis (Standard ou Renforcée) pour tout nouveau mandat d'administrateur ou client.
+                    </p>
+
+                    <div class="charts-grid-equal" style="margin-bottom: 1.5rem;">
+                        <div>
+                            <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 0.35rem;">Forme Juridique & Statut</label>
+                            <select id="sim-entity-type" class="filter-select" style="width: 100%;">
+                                <option value="SICAV_REGULEE">SICAV / Fonds Régulé CSSF (Faible risque)</option>
+                                <option value="INSTITUTION_REGULEE">Société de Gestion / Banque (Faible risque)</option>
+                                <option value="SARL_COMMERCIALE" selected>Société Commerciale Sàrl (Risque Standard)</option>
+                                <option value="SA_COMMERCIALE">Société Anonyme SA (Risque Standard)</option>
+                                <option value="SPF_PATRIMONIALE">SPF - Société de Gestion de Patrimoine Familial</option>
+                                <option value="SCSP_INVESTISSEMENT">SCSp - Société en Commandite Spéciale</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 0.35rem;">Juridiction du Siège Social</label>
+                            <select id="sim-country" class="filter-select" style="width: 100%;">
+                                <option value="LU" selected>Luxembourg (Place financière régulée)</option>
+                                <option value="IT">Italie (Union Européenne)</option>
+                                <option value="FR">France (Union Européenne)</option>
+                                <option value="BE">Belgique (Union Européenne)</option>
+                                <option value="DE">Allemagne (Union Européenne)</option>
+                                <option value="CH">Suisse (Pays tiers équivalent)</option>
+                                <option value="BR">Brésil (Vigilance investissement international)</option>
+                                <option value="OTHER">Autre Pays Tiers (Hors UE)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 0.35rem;">Présence d'une Personne Politiquement Exposée (PEP)</label>
+                            <select id="sim-is-pep" class="filter-select" style="width: 100%;">
+                                <option value="NO" selected>Non (Aucun dirigeant ou UBO n'est PEP)</option>
+                                <option value="YES">Oui (Dirigeant ou Bénéficiaire Effectif PEP)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 0.35rem;">Structure de l'Actionnariat / UBO</label>
+                            <select id="sim-structure" class="filter-select" style="width: 100%;">
+                                <option value="DIRECT" selected>Directe & Transparente (Personne physique directe)</option>
+                                <option value="COMPLEX">Chaîne de détention avec plusieurs holdings</option>
+                                <option value="TRUST">Fiducie / Trust / Structure fiduciaire</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 0.35rem;">Volume Annuel d'Honoraires Prévu (€)</label>
+                            <input type="number" id="sim-volume" class="filter-input" style="width: 100%;" value="20000" placeholder="20000">
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <button id="btn-calc-due-diligence" class="btn btn-primary">
+                            <i class="fa-solid fa-calculator"></i> Calculer l'Évaluation Due Diligence
+                        </button>
+                    </div>
+
+                    <div id="sim-results-box">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Dossier KYC / AML -->
+    <div class="modal-overlay" id="aml-kyc-modal">
+        <div class="modal-container" style="max-width: 750px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-kyc-title"><i class="fa-solid fa-shield-halved text-emerald"></i> Dossier KYC / AML</h3>
+                <button class="modal-close-btn" onclick="closeAmlKycModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-kyc-body">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div>
+                        <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Dénomination Légale</label>
+                        <input type="text" id="kyc-input-legal-name" class="filter-input" style="width: 100%;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Forme Juridique</label>
+                        <select id="kyc-input-entity-type" class="filter-select" style="width: 100%;">
+                            <option value="SICAV_REGULEE">SICAV Régulée CSSF</option>
+                            <option value="INSTITUTION_REGULEE">Institution Régulée / Société de Gestion</option>
+                            <option value="SPF_PATRIMONIALE">SPF (Société Patrimoniale Familiale)</option>
+                            <option value="SARL_COMMERCIALE">Sàrl Commerciale</option>
+                            <option value="SA_COMMERCIALE">SA Commerciale</option>
+                            <option value="SCSP_INVESTISSEMENT">SCSp Véhicule d'Investissement</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">N° RCSL Luxembourg</label>
+                        <input type="text" id="kyc-input-rcs" class="filter-input" style="width: 100%;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">N° Matricule National</label>
+                        <input type="text" id="kyc-input-matricule" class="filter-input" style="width: 100%;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">N° TVA</label>
+                        <input type="text" id="kyc-input-tva" class="filter-input" style="width: 100%;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Pays du Siège</label>
+                        <input type="text" id="kyc-input-country" class="filter-input" style="width: 100%;">
+                    </div>
+                    <div style="grid-column: 1 / -1;">
+                        <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Adresse du Siège Social</label>
+                        <input type="text" id="kyc-input-address" class="filter-input" style="width: 100%;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Code Postal</label>
+                        <input type="text" id="kyc-input-postal-code" class="filter-input" style="width: 100%;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Ville</label>
+                        <input type="text" id="kyc-input-city" class="filter-input" style="width: 100%;">
+                    </div>
+                    <div style="grid-column: 1 / -1;">
+                        <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Nature du Mandat / Prestations</label>
+                        <input type="text" id="kyc-input-mandate" class="filter-input" style="width: 100%;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Niveau de Risque LBC-FT</label>
+                        <select id="kyc-input-risk-level" class="filter-select" style="width: 100%;">
+                            <option value="LOW">🟢 Faible (Low Risk)</option>
+                            <option value="MEDIUM">🟡 Moyen (Medium Risk)</option>
+                            <option value="HIGH">🔴 Élevé (High Risk / EDD)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Statut de Conformité Dossier</label>
+                        <select id="kyc-input-kyc-status" class="filter-select" style="width: 100%;">
+                            <option value="CONFORME">🟢 Conforme (Complet)</option>
+                            <option value="A_COMPLETER">🟡 À Compléter</option>
+                            <option value="VIGILANCE_RENFORCEE">🔴 Vigilance Renforcée</option>
+                        </select>
+                    </div>
+                    <div style="grid-column: 1 / -1; display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.03); padding: 0.75rem; border-radius: 8px;">
+                        <input type="checkbox" id="kyc-input-is-pep" style="width: 18px; height: 18px;">
+                        <label for="kyc-input-is-pep" style="font-weight: 600; font-size: 0.85rem; cursor: pointer;">
+                            Personne Politiquement Exposée (PEP) ou liée à une PEP
+                        </label>
+                    </div>
+                    <div style="grid-column: 1 / -1;">
+                        <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Détails PEP (Fonction officielle, pays...)</label>
+                        <input type="text" id="kyc-input-pep-details" class="filter-input" style="width: 100%;" placeholder="Laisser vide si non PEP">
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <label style="font-weight: 700; font-size: 0.85rem; color: var(--text-main); display: block; margin-bottom: 0.5rem;">
+                        <i class="fa-solid fa-users text-emerald"></i> Bénéficiaires Effectifs (UBO / RBE) :
+                    </label>
+                    <div id="kyc-ubo-list-container">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+
+                <div>
+                    <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Notes d'Audit & Pièces de Conformité</label>
+                    <textarea id="kyc-input-notes" class="filter-input" style="width: 100%; height: 75px;" placeholder="Commentaires de Due Diligence..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeAmlKycModal()">Annuler</button>
+                <button class="btn btn-primary" onclick="saveAmlKycModalData()">
+                    <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="btn_save_kyc">Enregistrer le Dossier</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Manuale / Guide AML LBC-FT -->
+    <div class="modal-overlay" id="aml-manual-modal" style="display: none;">
+        <div class="modal-content glass-panel" style="max-width: 950px; width: 95%; max-height: 90vh; display: flex; flex-direction: column;">
+            <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 0.85rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="fa-solid fa-book-bookmark text-emerald" style="font-size: 1.4rem;"></i>
+                    <div>
+                        <h3 data-i18n="modal_manual_title" style="margin: 0; font-size: 1.15rem; font-weight: 700;">Guide Méthodologique & Manuel d'Utilisation AML / LBC-FT</h3>
+                        <p style="margin: 0; font-size: 0.75rem; color: var(--text-muted);">Loi du 12 Nov. 2004 • AED • Mandats d'Administrateur & Due Diligence</p>
+                    </div>
+                </div>
+                <button class="btn-close" onclick="closeAmlManualModal()" style="background:none; border:none; color:var(--text-muted); font-size:1.25rem; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- Toolbar in modal: Language selector + Actions -->
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 0.5rem;">
+                <div class="filter-group-pills" style="margin: 0; display: flex; gap: 0.35rem;">
+                    <button class="filter-pill manual-lang-pill active" data-manual-lang="it" onclick="setManualModalLang('it')">🇮🇹 Italiano</button>
+                    <button class="filter-pill manual-lang-pill" data-manual-lang="fr" onclick="setManualModalLang('fr')">🇫🇷 Français</button>
+                    <button class="filter-pill manual-lang-pill" data-manual-lang="en" onclick="setManualModalLang('en')">🇬🇧 English</button>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="btn btn-secondary btn-sm" onclick="printManualContent()">
+                        <i class="fa-solid fa-print"></i> <span data-i18n="btn_print_manual">Imprimer</span>
+                    </button>
+                    <button class="btn btn-secondary btn-sm" onclick="openManualPdfTab()">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="btn_open_pdf_tab">Ouvrir PDF</span>
+                    </button>
+                    <button class="btn btn-primary btn-sm" onclick="downloadCurrentManualPdf()">
+                        <i class="fa-solid fa-file-pdf"></i> <span data-i18n="btn_download_manual_pdf">Télécharger PDF</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Reader Body -->
+            <div class="modal-body" id="aml-manual-reader-body" style="overflow-y: auto; padding: 1.5rem; flex: 1; line-height: 1.6; font-size: 0.9rem; color: var(--text-main);">
+                <!-- Dynamically populated via JS -->
+            </div>
+
+            <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
+                <span id="manual-footer-pdf-name" style="font-size: 0.75rem; color: var(--text-muted); font-family: monospace;">docs/Manuale_Conformita_AML_Antiriciclaggio_NEW_LIFE_IT.pdf</span>
+                <button class="btn btn-secondary" onclick="closeAmlManualModal()">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data & Scripts -->
+    <script src="data.js?v=20261008"></script>
+    <script src="aml_data.js?v=20261008"></script>
+    <script src="i18n.js?v=20261008"></script>
+    <script src="aml_app.js?v=20261008"></script>
+</body>
+</html>

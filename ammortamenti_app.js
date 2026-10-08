@@ -3,11 +3,11 @@
  */
 
 function formatCurrency(num) {
-    if (num === null || num === undefined || isNaN(num)) return "0,00 €";
+    if (num === null || num === undefined || isNaN(num)) return "0,00\u00A0€";
     const val = Number(num);
     const parts = val.toFixed(2).split('.');
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    return parts.join(",") + " €";
+    return parts.join(",") + "\u00A0€";
 }
 
 function formatNumber(num, decimals = 0) {
@@ -26,7 +26,9 @@ function populateAmortYearSelect() {
     if (!select) return;
 
     const lang = (typeof currentLang !== 'undefined') ? currentLang : 'fr';
-    const years = [2026, 2025, 2024, 2023, 2022];
+    const amort = window.NEW_LIFE_AMORT || { totals_by_year: {} };
+    let years = Object.keys(amort.totals_by_year || {}).map(y => parseInt(y)).sort((a, b) => b - a);
+    if (years.length === 0) years = [2031, 2030, 2029, 2028, 2027, 2026, 2025, 2024, 2023, 2022];
 
     select.innerHTML = '';
     years.forEach(yr => {
@@ -34,8 +36,10 @@ function populateAmortYearSelect() {
         opt.value = yr;
         if (yr === 2026) {
             opt.textContent = (lang === 'it') ? '2026 (in corso)' : ((lang === 'en') ? '2026 (in progress)' : '2026 (en cours)');
-        } else {
+        } else if (yr < 2026) {
             opt.textContent = (lang === 'it') ? `${yr} (chiuso)` : ((lang === 'en') ? `${yr} (closed)` : `${yr} (clôturé)`);
+        } else {
+            opt.textContent = (lang === 'it') ? `${yr} (proiezione)` : ((lang === 'en') ? `${yr} (projection)` : `${yr} (projection)`);
         }
         if (yr === currentAmortYear) opt.selected = true;
         select.appendChild(opt);
@@ -52,6 +56,7 @@ function updateAmortKPIs() {
     const yr = currentAmortYear;
     const lang = (typeof currentLang !== 'undefined') ? currentLang : 'fr';
     const isCurrent = (yr === 2026);
+    const isFuture = (yr > 2026);
 
     let t = (amort.totals_by_year && amort.totals_by_year[yr]) ? { ...amort.totals_by_year[yr] } : null;
 
@@ -87,7 +92,9 @@ function updateAmortKPIs() {
     const bCumul = document.getElementById('badge-kpi-cumul');
     const bVnc = document.getElementById('badge-kpi-vnc');
 
-    const yearSuffix = isCurrent ? (lang === 'it' ? ' (in corso)' : (lang === 'en' ? ' (in progress)' : ' (en cours)')) : '';
+    const yearSuffix = isCurrent 
+        ? (lang === 'it' ? ' (in corso)' : (lang === 'en' ? ' (in progress)' : ' (en cours)')) 
+        : (isFuture ? (lang === 'it' ? ' (proiezione)' : (lang === 'en' ? ' (projection)' : ' (projection)')) : '');
 
     if (bBrute) bBrute.textContent = `${yr}${yearSuffix}`;
     if (bDot) bDot.textContent = `${yr}${yearSuffix}`;
@@ -254,7 +261,7 @@ function renderConsolidatedTotals(totalsByYear) {
     tbody.innerHTML = '';
 
     const amort = window.NEW_LIFE_AMORT || { assets: [] };
-    const years = Object.keys(totalsByYear).sort();
+    const years = Object.keys(totalsByYear).sort((a, b) => parseInt(a) - parseInt(b));
     
     years.forEach(yr => {
         const rowData = totalsByYear[yr];
@@ -407,7 +414,7 @@ function calculateSimulation() {
 
 function exportAmortExcel() {
     const amort = window.NEW_LIFE_AMORT || { assets: [], totals_by_year: {} };
-    const years = Object.keys(amort.totals_by_year).sort();
+    const years = Object.keys(amort.totals_by_year).sort((a, b) => parseInt(a) - parseInt(b));
     
     const rows = years.map(yr => {
         const data = amort.totals_by_year[yr];

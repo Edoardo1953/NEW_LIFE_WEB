@@ -56,7 +56,7 @@ body {
 .text-cyan { color: var(--accent-cyan) !important; }
 .text-muted { color: var(--text-muted) !important; }
 .text-bold { font-weight: 700; }
-.text-right { text-align: right; }
+.text-right { text-align: right; white-space: nowrap; }
 .text-center { text-align: center; }
 
 .glass-panel {
@@ -606,6 +606,11 @@ body.theme-light .custom-table th {
     border-bottom: 1px solid var(--border-subtle);
     color: var(--text-main);
     vertical-align: middle;
+}
+
+.custom-table td.text-right {
+    text-align: right;
+    white-space: nowrap;
 }
 
 .custom-table tr:hover {

@@ -19,11 +19,11 @@ let journalFilterSection = '';
 let mastriniFilterSearch = '';
 
 function formatCurrency(num) {
-    if (num === null || num === undefined || isNaN(num)) return "0,00 €";
+    if (num === null || num === undefined || isNaN(num)) return "0,00\u00A0€";
     const val = Number(num);
     const parts = val.toFixed(2).split('.');
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    return parts.join(",") + " €";
+    return parts.join(",") + "\u00A0€";
 }
 
 function formatNumber(num, decimals = 0) {
@@ -390,7 +390,9 @@ function renderAccounting() {
                 }).filter(Boolean);
             }
         } else if (isCumulative && amort && amort.totals_by_year) {
-            dotationAnnuite = Object.values(amort.totals_by_year).reduce((sum, item) => sum + (item.annuite || 0), 0);
+            dotationAnnuite = Object.entries(amort.totals_by_year)
+                .filter(([y]) => parseInt(y) <= 2025)
+                .reduce((sum, [, item]) => sum + (item.annuite || 0), 0);
         } else if (isCumulativeAll && amort && amort.totals_by_year && amort.totals_by_year[2026]) {
             dotationAnnuite = amort.totals_by_year[2026].annuite || 0;
             if (amort.assets) {

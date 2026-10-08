@@ -6,11 +6,11 @@ let cashflowChartInstance = null;
 let expenseChartInstance = null;
 
 function formatCurrency(num) {
-    if (num === null || num === undefined || isNaN(num)) return "0,00 €";
+    if (num === null || num === undefined || isNaN(num)) return "0,00\u00A0€";
     const val = Number(num);
     const parts = val.toFixed(2).split('.');
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    return parts.join(",") + " €";
+    return parts.join(",") + "\u00A0€";
 }
 
 function formatNumber(num, decimals = 0) {

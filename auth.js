@@ -27,6 +27,7 @@ const DEFAULT_PAGE_PERMISSIONS = {
     'contabilita.html': true,
     'ammortamenti.html': true,
     'partecipazioni.html': true,
+    'aml.html': true,
     'documenti.html': true,
     'strumenti.html': true
 };

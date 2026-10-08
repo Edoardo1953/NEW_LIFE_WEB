@@ -564,7 +564,8 @@ def extract_amortissements():
         2027: {"val_brute": 71249.13, "annuite": 10143.55, "cumul": 47293.87, "vnc": 23955.23},
         2028: {"val_brute": 71249.13, "annuite": 7546.49, "cumul": 54840.37, "vnc": 16408.74},
         2029: {"val_brute": 71249.13, "annuite": 7546.49, "cumul": 62386.86, "vnc": 8862.25},
-        2030: {"val_brute": 71249.13, "annuite": 7165.98, "cumul": 69552.84, "vnc": 1696.27}
+        2030: {"val_brute": 71249.13, "annuite": 7165.98, "cumul": 69552.84, "vnc": 1696.29},
+        2031: {"val_brute": 71249.13, "annuite": 1696.29, "cumul": 71249.13, "vnc": 0.0}
     }
 
     return {"assets": assets, "totals_by_year": totals_by_year}

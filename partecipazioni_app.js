@@ -185,13 +185,13 @@ function savePartDocs(docs) {
 
 // --- Formatters (Punto per le migliaia, virgola per i decimali) ---
 function formatCurrency(val) {
-    if (val === undefined || val === null || isNaN(val)) return '0,00 €';
+    if (val === undefined || val === null || isNaN(val)) return '0,00\u00A0€';
     const num = Number(val);
     const parts = Math.abs(num).toFixed(2).split('.');
     const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     const decimalPart = parts[1];
     const sign = num < 0 ? '-' : '';
-    return `${sign}${integerPart},${decimalPart} €`;
+    return `${sign}${integerPart},${decimalPart}\u00A0€`;
 }
 
 function formatNumber(val, decimals = 2) {

@@ -50,6 +50,42 @@ const DEFAULT_DOCUMENTS = [
         type: "PDF Document",
         notes: "Attestation de conformité et déclaration légale RBE Luxembourg.",
         available: true
+    },
+    {
+        id: "DOC-AML-MANUAL-IT",
+        title: "Manuale di Conformità AML & Guida Metodologica Antiriciclaggio (IT)",
+        category: "conformite",
+        date: "2026-10-08",
+        filename: "Manuale_Conformita_AML_Antiriciclaggio_NEW_LIFE_IT.pdf",
+        filepath: "docs/Manuale_Conformita_AML_Antiriciclaggio_NEW_LIFE_IT.pdf",
+        size: "85.00 Ko",
+        type: "PDF Document",
+        notes: "Manuale operativo e normativo AML/LBC-FT per NEW LIFE Sàrl (Legge 12 Nov. 2004, AED, RBE, Mandati di Amministratore e Simulatore di Due Diligence).",
+        available: true
+    },
+    {
+        id: "DOC-AML-MANUAL-FR",
+        title: "Manuel de Conformité AML & Guide Méthodologique LBC-FT (FR)",
+        category: "conformite",
+        date: "2026-10-08",
+        filename: "Manuel_Conformite_AML_LBC-FT_NEW_LIFE_FR.pdf",
+        filepath: "docs/Manuel_Conformite_AML_LBC-FT_NEW_LIFE_FR.pdf",
+        size: "85.00 Ko",
+        type: "PDF Document",
+        notes: "Manuel officiel de conformité LBC-FT et procédures de Due Diligence pour NEW LIFE Sàrl selon la Loi du 12 novembre 2004 et la supervision AED.",
+        available: true
+    },
+    {
+        id: "DOC-AML-MANUAL-EN",
+        title: "AML / CFT Compliance Manual & Due Diligence Guide (EN)",
+        category: "conformite",
+        date: "2026-10-08",
+        filename: "User_Manual_AML_CFT_Compliance_NEW_LIFE_EN.pdf",
+        filepath: "docs/User_Manual_AML_CFT_Compliance_NEW_LIFE_EN.pdf",
+        size: "85.00 Ko",
+        type: "PDF Document",
+        notes: "Operational AML/CFT Compliance Manual and Due Diligence Risk Assessment guide under Luxembourg Law and AED supervision.",
+        available: true
     }
 ];
 
@@ -112,6 +148,8 @@ function getCategoryBadge(cat) {
     switch (cat) {
         case 'bilan':
             return '<span class="badge badge-entree"><i class="fa-solid fa-file-invoice"></i> Bilan RCSL</span>';
+        case 'conformite':
+            return '<span class="badge badge-entree" style="background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3);"><i class="fa-solid fa-shield-halved"></i> Conformité AML</span>';
         case 'juridique':
             return '<span class="badge badge-ord"><i class="fa-solid fa-scale-balanced"></i> Juridique</span>';
         case 'registres':
