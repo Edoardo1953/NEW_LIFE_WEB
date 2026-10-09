@@ -697,6 +697,10 @@ def main():
             "name": "NEW LIFE Sàrl",
             "country": "Luxembourg",
             "form": "Société à responsabilité limitée",
+            "share_capital": "31.000 € (interamente versato e liberato)",
+            "rcs": "B 225.643",
+            "matricule": "2018 2432 026",
+            "tva": "TVA 11773678",
             "currency": "EUR (€)",
             "updated_at": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         },

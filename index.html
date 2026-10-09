@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vue d'ensemble - NEW LIFE Sàrl</title>
-    <!-- Google Fonts Inter -->
+    <title>La Société - NEW LIFE Sàrl</title>
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="style.css?v=20260930">
+    <link rel="stylesheet" href="style.css?v=20261008">
     <!-- Auth Guard -->
     <script src="auth.js"></script>
 </head>
@@ -28,8 +28,12 @@
             <nav class="nav-menu">
                 <div class="nav-section-title" data-i18n="nav_section_modules">MODULES</div>
                 <a href="index.html" class="nav-item active">
+                    <i class="fa-solid fa-building"></i>
+                    <span data-i18n="nav_societe">La Société</span>
+                </a>
+                <a href="tableau_financier.html" class="nav-item">
                     <i class="fa-solid fa-chart-line"></i>
-                    <span data-i18n="nav_dashboard">Vue d’ensemble</span>
+                    <span data-i18n="nav_tableau_financier">Tableau Financier</span>
                 </a>
                 <a href="banca.html" class="nav-item">
                     <i class="fa-solid fa-building-columns"></i>
@@ -80,8 +84,8 @@
             <!-- Topbar -->
             <header class="topbar glass-panel">
                 <div class="topbar-title-area">
-                    <h1 data-i18n="dash_title"><i class="fa-solid fa-chart-pie text-emerald"></i> Tableau de Bord Financier</h1>
-                    <p data-i18n="dash_welcome">Synthèse générale des flux et de la situation comptable de NEW LIFE Sàrl.</p>
+                    <h1><i class="fa-solid fa-building text-emerald"></i> <span data-i18n="nav_societe">La Société</span></h1>
+                    <p data-i18n="dash_welcome">Fiche permanente d'identité, gouvernance, mandats et conformité de NEW LIFE Sàrl.</p>
                 </div>
 
                 <div class="topbar-actions">
@@ -105,135 +109,240 @@
                 </div>
             </header>
 
-            <!-- Quick Filter Bar -->
-            <div class="filter-bar glass-panel">
-                <div class="filter-group">
-                    <label style="font-weight: 600; color: var(--text-muted);"><i class="fa-solid fa-calendar-days"></i> <span data-i18n="filter_year">Année</span> :</label>
-                    <select id="dash-year-select" class="filter-select">
-                        <option value="ALL" data-i18n="filter_all_years">Toutes les années (Global)</option>
-                    </select>
+            <!-- Quick Action Bar -->
+            <div class="filter-bar glass-panel" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                    <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald); font-weight: 700; padding: 0.45rem 0.85rem;">
+                        <i class="fa-solid fa-circle-check"></i> R.C.S. Luxembourg B 225.643
+                    </span>
+                    <span class="badge" style="background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); font-weight: 700; padding: 0.45rem 0.85rem;">
+                        <i class="fa-solid fa-fingerprint"></i> Matricule 2018 2432 026
+                    </span>
+                    <span class="badge" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; font-weight: 700; padding: 0.45rem 0.85rem;">
+                        <i class="fa-solid fa-receipt"></i> TVA 11773678
+                    </span>
+                    <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald); font-weight: 700; padding: 0.45rem 0.85rem;">
+                        <i class="fa-solid fa-coins"></i> <span data-i18n="badge_share_capital">Cap. Soc. 31.000 € (i.v. e liberato)</span>
+                    </span>
+                    <span class="badge" style="background: rgba(168, 85, 247, 0.15); color: #c084fc; font-weight: 700; padding: 0.45rem 0.85rem;">
+                        <i class="fa-solid fa-stamp"></i> <span data-i18n="badge_bilan_rcsl">Bilan RCSL 2025 Déposé</span>
+                    </span>
                 </div>
 
-                <div class="filter-group">
-                    <a href="partecipazioni.html" class="btn btn-secondary btn-sm">
-                        <i class="fa-solid fa-shapes text-emerald"></i>
-                        <span data-i18n="nav_partecipazioni">Participations</span>
+                <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                    <a href="tableau_financier.html" class="btn btn-primary btn-sm">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span data-i18n="nav_tableau_financier">Tableau Financier</span>
                     </a>
                     <a href="documenti.html" class="btn btn-secondary btn-sm">
-                        <i class="fa-solid fa-file-shield text-blue"></i>
-                        <span data-i18n="btn_new_doc">Documents Société</span>
+                        <i class="fa-solid fa-folder-tree text-blue"></i>
+                        <span data-i18n="nav_documenti">Documents Société</span>
                     </a>
-                    <a href="banca.html" class="btn btn-primary btn-sm">
-                        <i class="fa-solid fa-arrow-right-arrow-left"></i>
-                        <span data-i18n="view_all_transactions">Voir les opérations</span>
+                    <a href="aml.html" class="btn btn-secondary btn-sm">
+                        <i class="fa-solid fa-shield-halved text-emerald"></i>
+                        <span data-i18n="nav_aml">Conformité AML</span>
                     </a>
                 </div>
             </div>
 
-            <!-- KPI Cards Grid -->
-            <div class="kpi-grid">
-                <!-- Solde Bancaire -->
-                <div class="kpi-card">
-                    <div class="kpi-header">
-                        <span class="kpi-title" data-i18n="kpi_bank_balance">Solde Bancaire Actuel</span>
-                        <div class="kpi-icon emerald"><i class="fa-solid fa-vault"></i></div>
-                    </div>
-                    <div class="kpi-value" id="kpi-balance">0,00 €</div>
-                    <div class="kpi-sub"><i class="fa-solid fa-building-columns text-emerald"></i> Compte courant professionnel</div>
-                </div>
-
-                <!-- Résultat d'Exploitation Net -->
-                <div class="kpi-card">
-                    <div class="kpi-header">
-                        <span class="kpi-title" data-i18n="kpi_net_result">Résultat Net Période</span>
-                        <div class="kpi-icon amber"><i class="fa-solid fa-scale-balanced"></i></div>
-                    </div>
-                    <div class="kpi-value" id="kpi-net">0,00 €</div>
-                    <div class="kpi-sub"><i class="fa-solid fa-calculator text-amber"></i> Solde économique net</div>
-                </div>
-
-                <!-- Valeur Nette Cespiti -->
-                <div class="kpi-card">
-                    <div class="kpi-header">
-                        <span class="kpi-title" data-i18n="kpi_assets_vnc">Valeur Nette Immobilisations</span>
-                        <div class="kpi-icon cyan"><i class="fa-solid fa-cubes"></i></div>
-                    </div>
-                    <div class="kpi-value text-cyan" id="kpi-vnc">0,00 €</div>
-                    <div class="kpi-sub"><i class="fa-solid fa-shield-halved text-cyan"></i> Cespiti & Actifs VNC</div>
-                </div>
-
-                <!-- Documents Archivés -->
-                <div class="kpi-card">
-                    <div class="kpi-header">
-                        <span class="kpi-title" data-i18n="kpi_docs_count">Documents Juridiques</span>
-                        <div class="kpi-icon blue"><i class="fa-solid fa-file-pdf"></i></div>
-                    </div>
-                    <div class="kpi-value text-blue" id="kpi-docs">1</div>
-                    <div class="kpi-sub"><i class="fa-solid fa-stamp text-blue"></i> Bilan RCSL 2025 déposé</div>
-                </div>
-            </div>
-
-            <!-- Charts Grid -->
-            <div class="dashboard-charts-grid">
-                <!-- Cashflow Chart -->
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <h2 class="chart-title">
-                            <i class="fa-solid fa-chart-column text-emerald"></i>
-                            <span data-i18n="chart_cashflow_title">Évolution du Solde & Flux Mensuels</span>
-                        </h2>
-                    </div>
-                    <div class="chart-wrapper">
-                        <canvas id="cashflowChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- Expense Breakdown Chart -->
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <h2 class="chart-title">
-                            <i class="fa-solid fa-chart-pie text-amber"></i>
-                            <span data-i18n="chart_expense_distrib">Répartition des Charges (PCN)</span>
-                        </h2>
-                    </div>
-                    <div class="chart-wrapper">
-                        <canvas id="expenseChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Transactions Table -->
+            <!-- Fiche Sociétaire Principale (Toujours ouverte) -->
             <div class="chart-card">
-                <div class="chart-header">
-                    <h2 class="chart-title">
-                        <i class="fa-solid fa-clock-rotate-left text-blue"></i>
-                        <span data-i18n="recent_transactions">Dernières Opérations Bancaires</span>
+                <div class="chart-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+                    <h2 class="chart-title" style="margin: 0; display: flex; align-items: center; gap: 0.6rem;">
+                        <i class="fa-solid fa-building-columns text-emerald"></i>
+                        <span data-i18n="corp_data_title">Fiche Sociétaire & Données Officielles</span>
                     </h2>
-                    <a href="banca.html" class="btn btn-secondary btn-sm" data-i18n="view_all_transactions">
-                        Voir toutes les opérations <i class="fa-solid fa-arrow-right"></i>
-                    </a>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                        <button class="btn btn-primary btn-sm" onclick="openCorporateProfileModal()" title="Modifier les données sociétaires" style="display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 700;">
+                            <i class="fa-solid fa-pencil"></i> <span data-i18n="btn_edit_corp">Modifier la Fiche</span>
+                        </button>
+                        <button class="btn btn-secondary btn-sm" onclick="resetCorporateProfile()" title="Réinitialiser les valeurs par défaut" style="display: inline-flex; align-items: center; gap: 0.35rem;">
+                            <i class="fa-solid fa-arrow-rotate-left"></i>
+                        </button>
+                    </div>
                 </div>
 
-                <div class="table-container">
-                    <table class="custom-table" id="recent-table">
-                        <thead>
-                            <tr>
-                                <th data-i18n="th_date">Date</th>
-                                <th data-i18n="th_e_s">Sens</th>
-                                <th data-i18n="th_description">Description / Libellé</th>
-                                <th data-i18n="th_fournisseur">Fournisseur / Tiers</th>
-                                <th data-i18n="th_macro">Catégorie</th>
-                                <th class="text-right" data-i18n="th_total">Total TTC</th>
-                                <th class="text-right" data-i18n="th_solde">Solde Reconstitué</th>
-                            </tr>
-                        </thead>
-                        <tbody id="recent-tbody">
-                            <!-- Populated dynamically via app.js -->
-                        </tbody>
-                    </table>
+                <!-- Dynamically populated via app.js (renderCorporateProfile) -->
+                <div id="corporate-profile-card-content">
+                    <!-- Populated dynamically via JS -->
                 </div>
             </div>
         </main>
+    </div>
+
+    <!-- Modal d'Édition des Données Sociétaires -->
+    <div class="modal-overlay" id="corporate-profile-modal">
+        <div class="modal-container" style="max-width: 920px; max-height: 90vh; display: flex; flex-direction: column;">
+            <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding: 1.25rem 1.5rem;">
+                <h3 class="modal-title" style="margin: 0; font-size: 1.15rem; font-weight: 700; display: flex; align-items: center; gap: 0.6rem;">
+                    <i class="fa-solid fa-pencil text-emerald"></i>
+                    <span data-i18n="modal_corp_title">Modifier les Données Sociétaires & Légales</span>
+                </h3>
+                <button class="modal-close-btn" onclick="closeCorporateProfileModal()">&times;</button>
+            </div>
+
+            <div class="modal-body" style="padding: 1.5rem; overflow-y: auto; flex: 1;">
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;" data-i18n="modal_corp_subtitle">
+                    Mettez à jour les informations permanentes de <strong>NEW LIFE Sàrl</strong>. Les modifications sont enregistrées localement et appliquées immédiatement.
+                </p>
+
+                <!-- Section 1 : Identité & Immatriculation -->
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 10px; padding: 1rem; margin-bottom: 1.25rem;">
+                    <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--accent-emerald); margin-bottom: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fa-solid fa-id-card"></i> <span data-i18n="corp_identity_title">1. Identité & Immatriculation Légale</span>
+                    </h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.85rem;">
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_denomination">Dénomination Sociale</label>
+                            <input type="text" id="edit-corp-company-name" class="filter-input" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_legal_form">Forme Juridique</label>
+                            <input type="text" id="edit-corp-legal-form" class="filter-input" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_capital">Capitale Sociale</label>
+                            <input type="text" id="edit-corp-share-capital" class="filter-input" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_rcs">N° R.C.S. Luxembourg</label>
+                            <input type="text" id="edit-corp-rcs" class="filter-input" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_matricule">N° Matricule National</label>
+                            <input type="text" id="edit-corp-matricule" class="filter-input" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_tva">N° TVA Lussemburghese</label>
+                            <input type="text" id="edit-corp-tva" class="filter-input" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_constitution">Date de Constitution</label>
+                            <input type="text" id="edit-corp-inc-date" class="filter-input" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_office">Siège Social</label>
+                            <input type="text" id="edit-corp-office" class="filter-input" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_nationality">Nationalité & Juridiction</label>
+                            <input type="text" id="edit-corp-nationality" class="filter-input" style="width: 100%;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2 : Gouvernance & Actionnariat (RBE) -->
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 10px; padding: 1rem; margin-bottom: 1.25rem;">
+                    <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--accent-blue); margin-bottom: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fa-solid fa-user-tie"></i> <span data-i18n="corp_gov_title">2. Gouvernance & Bénéficiaires Effectifs (RBE)</span>
+                    </h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.85rem;">
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_gerant">Gérant / Dirigeant</label>
+                            <input type="text" id="edit-corp-gerant" class="filter-input" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_powers">Pouvoirs de Signature</label>
+                            <input type="text" id="edit-corp-powers" class="filter-input" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_ubo_name">Nom Bénéficiaire Effectif (UBO)</label>
+                            <input type="text" id="edit-corp-ubo-name" class="filter-input" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_ubo_pct">% Détention Capital / Droits de Vote</label>
+                            <input type="number" id="edit-corp-ubo-pct" class="filter-input" style="width: 100%;" min="0" max="100">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_ubo_nat">Nationalité & Résidence UBO</label>
+                            <input type="text" id="edit-corp-ubo-nat" class="filter-input" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_rbe_status">Statut Déclaration RBE</label>
+                            <input type="text" id="edit-corp-rbe-status" class="filter-input" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_pep_status">Statut PEP</label>
+                            <input type="text" id="edit-corp-pep-status" class="filter-input" style="width: 100%;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3 : Objet Social & Activité -->
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 10px; padding: 1rem; margin-bottom: 1.25rem;">
+                    <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--accent-amber); margin-bottom: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fa-solid fa-briefcase"></i> <span data-i18n="corp_activity_title">3. Objet Social & Activité Économique</span>
+                    </h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.85rem;">
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_activity">Activité Principale</label>
+                            <input type="text" id="edit-corp-activity" class="filter-input" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_nace">Code NACE / Branche</label>
+                            <input type="text" id="edit-corp-nace" class="filter-input" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_mandates">Mandats d'Administrateur Actifs</label>
+                            <input type="text" id="edit-corp-mandates" class="filter-input" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_currency">Devise Fonctionnelle</label>
+                            <input type="text" id="edit-corp-currency" class="filter-input" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_fiscal_period">Période de l'Exercice Fiscal</label>
+                            <input type="text" id="edit-corp-fiscal-period" class="filter-input" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_services">Nature des Prestations</label>
+                            <input type="text" id="edit-corp-services" class="filter-input" style="width: 100%;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4 : Conformité, Fiscalité & Banque -->
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 10px; padding: 1rem;">
+                    <h4 style="font-size: 0.95rem; font-weight: 700; color: #a855f7; margin-bottom: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fa-solid fa-scale-balanced"></i> <span data-i18n="corp_compliance_title">4. Conformité, Fiscalité & Banque</span>
+                    </h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.85rem;">
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_aml_auth">Autorité de Surveillance AML</label>
+                            <input type="text" id="edit-corp-aml-authority" class="filter-input" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_framework">Cadre Réglementaire</label>
+                            <input type="text" id="edit-corp-legal-framework" class="filter-input" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_last_bilan">Dernier Bilan RCSL Déposé</label>
+                            <input type="text" id="edit-corp-last-bilan" class="filter-input" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_bank">Établissement Bancaire Principal</label>
+                            <input type="text" id="edit-corp-primary-bank" class="filter-input" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_accounting_std">Plan Comptable (Norme)</label>
+                            <input type="text" id="edit-corp-accounting-std" class="filter-input" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;" data-i18n="corp_lbl_cssf">Régime de Surveillance CSSF</label>
+                            <input type="text" id="edit-corp-cssf-supervision" class="filter-input" style="width: 100%;">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding: 1rem 1.5rem;">
+                <button class="btn btn-secondary" onclick="closeCorporateProfileModal()" data-i18n="btn_cancel">Annuler</button>
+                <button class="btn btn-primary" onclick="saveCorporateProfileFromModal()" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="btn_save">Enregistrer les Modifications</span>
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Data & Application Logic Scripts -->

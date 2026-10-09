@@ -60,7 +60,7 @@ Le module **Conformité AML / LBC-FT** (`aml.html`) est articulé autour de 4 on
 - **Bouton Fiche KYC :** Accès direct au dossier de conformité pour chaque opération.
 
 ### 3.2. Onglet 2 : Cartographie des Mandats & Clients
-- Fiches synthétiques détaillées pour chacune des 14 sociétés clientes (*Europa Plus, Pals Advisors, Ersel International, SICAV Banca Generali, SPF Ariel/Fortau/Micro/Oira/Orte, Green Enerbras, Glenelg*).
+- Fiches synthétiques détaillées pour chacune des 14 sociétés clientes (*Europa Plus S.A., Pals Advisors Sàrl (liquidée), Ersel Gestion Internationale SA, SICAV Banca Generali, SPF Ariel/Fortau/Micro/Oira/Orte, Macro International SA (en liquidation), Green Enerbras, Glenelg*).
 - Visualisation du volume total facturé, du mandat exercé, des UBO déclarés et des pièces au dossier.
 
 ### 3.3. Onglet 3 : Cadre Légal & Matrice des Risques

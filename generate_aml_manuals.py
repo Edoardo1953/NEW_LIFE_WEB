@@ -78,7 +78,7 @@ Le module **Conformité AML / LBC-FT** (`aml.html`) est articulé autour de 4 on
 - **Bouton Fiche KYC :** Accès direct au dossier de conformité pour chaque opération.
 
 ### 3.2. Onglet 2 : Cartographie des Mandats & Clients
-- Fiches synthétiques détaillées pour chacune des 14 sociétés clientes (*Europa Plus, Pals Advisors, Ersel International, SICAV Banca Generali, SPF Ariel/Fortau/Micro/Oira/Orte, Green Enerbras, Glenelg*).
+- Fiches synthétiques détaillées pour chacune des 14 sociétés clientes (*Europa Plus S.A., Pals Advisors Sàrl (liquidée), Ersel Gestion Internationale SA, SICAV Banca Generali, SPF Ariel/Fortau/Micro/Oira/Orte, Macro International SA (en liquidation), Green Enerbras, Glenelg*).
 - Visualisation du volume total facturé, du mandat exercé, des UBO déclarés et des pièces au dossier.
 
 ### 3.3. Onglet 3 : Cadre Légal & Matrice des Risques
@@ -186,7 +186,7 @@ Il modulo **Conformità AML / LBC-FT** (`aml.html`) include 4 sezioni specializz
 - **Pulsante Fascicolo KYC :** Accesso immediato con un click alla scheda di conformità per ciascuna riga.
 
 ### 3.2. Tab 2 : Mappatura Mandati & Clienti
-- Schede anagrafiche complete per le 14 società clienti (*Europa Plus, Pals Advisors, Ersel International, SICAV Banca Generali, SPF Ariel/Fortau/Micro/Oira/Orte, Green Enerbras, Glenelg*).
+- Schede anagrafiche complete per le 14 società clienti (*Europa Plus S.A., Pals Advisors Sàrl (liquidata), Ersel Gestion Internationale SA, SICAV Banca Generali, SPF Ariel/Fortau/Micro/Oira/Orte, Macro International SA (in liquidazione), Green Enerbras, Glenelg*).
 - Dati di visura RCSL, matricola, mandato esercitato, titolari effettivi UBO e checklist documentale.
 
 ### 3.3. Tab 3 : Quadro Legale & Matrice dei Rischi
@@ -294,7 +294,7 @@ The **AML / CFT Compliance** module (`aml.html`) comprises 4 specialized tabs:
 - **KYC File Button:** Instant one-click modal opening for compliance review on any transaction.
 
 ### 3.2. Tab 2 : Clients & Mandates Map
-- Comprehensive profile cards for all 14 client companies (*Europa Plus, Pals Advisors, Ersel International, Banca Generali SICAVs, SPF Ariel/Fortau/Micro/Oira/Orte, Green Enerbras, Glenelg*).
+- Comprehensive profile cards for all 14 client companies (*Europa Plus S.A., Pals Advisors Sàrl (liquidated), Ersel Gestion Internationale SA, Banca Generali SICAVs, SPF Ariel/Fortau/Micro/Oira/Orte, Macro International SA (in liquidation), Green Enerbras, Glenelg*).
 - Display of RCS number, corporate form, directorship mandate nature, identified UBOs, cumulative billed volume, and document checklist.
 
 ### 3.3. Tab 3 : Legal Framework & Risk Matrix

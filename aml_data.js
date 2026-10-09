@@ -6,16 +6,16 @@
 window.NEW_LIFE_AML_CLIENTS = {
     "EUROPA PLUS": {
         "id": "CLI-001",
-        "name": "EUROPA PLUS",
-        "legal_name": "EUROPA PLUS Sàrl",
-        "entity_type": "SARL_COMMERCIALE",
-        "entity_type_label": "Société Commerciale (Sàrl)",
+        "name": "EUROPA PLUS S.A.",
+        "legal_name": "EUROPA PLUS S.A.",
+        "entity_type": "SA_COMMERCIALE",
+        "entity_type_label": "Société Commerciale (SA)",
         "rcs_number": "B 178.432",
         "matricule": "2013 2412 890",
         "tva_number": "LU 26348912",
-        "address": "12, Rue Robert Stümper",
-        "postal_code": "L-2557",
-        "city": "Luxembourg (Cloche d'Or)",
+        "address": "7, rue de Bitbourg",
+        "postal_code": "L-1273",
+        "city": "Luxembourg",
         "country": "Luxembourg",
         "country_code": "LU",
         "mandate_nature": "Mandat d'Administrateur / Conseil Stratégique & Gestion",
@@ -40,10 +40,10 @@ window.NEW_LIFE_AML_CLIENTS = {
     },
     "PALS ADVISORS": {
         "id": "CLI-002",
-        "name": "PALS ADVISORS",
-        "legal_name": "PALS ADVISORS Sàrl",
+        "name": "PALS ADVISORS Sàrl (liquidée)",
+        "legal_name": "PALS ADVISORS Sàrl (liquidée)",
         "entity_type": "SARL_COMMERCIALE",
-        "entity_type_label": "Société de Conseil & Advisory (Sàrl)",
+        "entity_type_label": "Société de Conseil & Advisory (Sàrl - Liquidée)",
         "rcs_number": "B 192.345",
         "matricule": "2014 2409 567",
         "tva_number": "LU 27129034",
@@ -64,24 +64,25 @@ window.NEW_LIFE_AML_CLIENTS = {
         "last_review_date": "2025-12-20",
         "next_review_date": "2026-12-20",
         "documents": [
-            { "name": "Extrait RCSL Récent", "status": "VALID", "date": "2025-05-10" },
+            { "name": "Extrait RCSL Récent / Radiation", "status": "VALID", "date": "2025-05-10" },
             { "name": "Déclaration RBE", "status": "VALID", "date": "2025-05-10" },
             { "name": "Pièce d'Identité UBO", "status": "VALID", "date": "2025-05-10" },
-            { "name": "Convention de Mandat & Advisory", "status": "VALID", "date": "2019-01-01" }
+            { "name": "Convention de Mandat & Advisory", "status": "VALID", "date": "2019-01-01" },
+            { "name": "Acte de Clôture de Liquidation", "status": "VALID", "date": "2025-05-10" }
         ],
-        "notes": "Honoraires d'advisory et d'administrateur perçus sur les exercices 2019-2020. Dossier complet et archivé conformément au délai légal de 5 ans."
+        "notes": "Société liquidée. Honoraires d'advisory et d'administrateur perçus sur les exercices 2019-2020. Dossier complet et archivé conformément au délai légal de 5 ans."
     },
     "ERSEL INTERNATIONAL": {
         "id": "CLI-003",
-        "name": "ERSEL INTERNATIONAL",
-        "legal_name": "ERSEL INTERNATIONAL S.A.",
+        "name": "ERSEL GESTION INTERNATIONALE SA",
+        "legal_name": "ERSEL GESTION INTERNATIONALE SA",
         "entity_type": "INSTITUTION_REGULEE",
         "entity_type_label": "Société de Gestion / Banque Privée (SA)",
         "rcs_number": "B 31.542",
         "matricule": "1989 2201 456",
         "tva_number": "LU 14238901",
-        "address": "17, Rue Goethe",
-        "postal_code": "L-1637",
+        "address": "35, boulevard Joseph II",
+        "postal_code": "L-1840",
         "city": "Luxembourg",
         "country": "Luxembourg",
         "country_code": "LU",
@@ -372,10 +373,10 @@ window.NEW_LIFE_AML_CLIENTS = {
     },
     "MACRO INTERNATIONAL SA": {
         "id": "CLI-012",
-        "name": "MACRO INTERNATIONAL SA",
-        "legal_name": "MACRO INTERNATIONAL S.A.",
+        "name": "MACRO INTERNATIONAL SA (en liquidation)",
+        "legal_name": "MACRO INTERNATIONAL S.A. (en liquidation)",
         "entity_type": "SA_COMMERCIALE",
-        "entity_type_label": "Société Commerciale & Investissement (SA)",
+        "entity_type_label": "Société Commerciale & Investissement (SA - En Liquidation)",
         "rcs_number": "B 141.890",
         "matricule": "2008 2211 456",
         "tva_number": "LU 23189023",
@@ -396,12 +397,12 @@ window.NEW_LIFE_AML_CLIENTS = {
         "last_review_date": "2025-12-15",
         "next_review_date": "2026-12-15",
         "documents": [
-            { "name": "Extrait RCSL", "status": "VALID", "date": "2025-09-01" },
+            { "name": "Extrait RCSL (En Liquidation)", "status": "VALID", "date": "2025-09-01" },
             { "name": "Déclaration RBE", "status": "VALID", "date": "2025-09-01" },
             { "name": "Pièce d'Identité UBO", "status": "VALID", "date": "2025-09-01" },
             { "name": "Mandat d'Administrateur", "status": "VALID", "date": "2019-01-01" }
         ],
-        "notes": "Prestations d'administrateur facturées régulièrement de 2019 à 2025. Conforme."
+        "notes": "Société actuellement en cours de liquidation. Prestations d'administrateur facturées régulièrement de 2019 à 2025. Conforme."
     },
     "GREEN ENERBRAS ONE SCSp": {
         "id": "CLI-013",

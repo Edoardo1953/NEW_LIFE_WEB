@@ -4,8 +4,12 @@ window.NEW_LIFE_DATA = {
     "name": "NEW LIFE Sàrl",
     "country": "Luxembourg",
     "form": "Société à responsabilité limitée",
+    "share_capital": "31.000 € (interamente versato e liberato)",
+    "rcs": "B 225.643",
+    "matricule": "2018 2432 026",
+    "tva": "TVA 11773678",
     "currency": "EUR (€)",
-    "updated_at": "2026-10-08 19:02:46"
+    "updated_at": "2026-10-09 11:07:47"
   },
   "stats": {
     "total_records": 992,

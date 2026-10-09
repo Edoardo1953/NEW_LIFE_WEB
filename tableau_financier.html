@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau Financier - NEW LIFE Sàrl</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css?v=20261008">
+    <!-- Auth Guard -->
+    <script src="auth.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar glass-panel">
+            <div class="logo-container">
+                <img src="uploads/Loghi/Loghi NL Claude/NewLife_figura.svg" alt="NEW LIFE" class="logo-img">
+                <div class="logo-title">NEW LIFE Sàrl</div>
+                <div class="logo-subtitle">Luxembourg</div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-section-title" data-i18n="nav_section_modules">MODULES</div>
+                <a href="index.html" class="nav-item">
+                    <i class="fa-solid fa-building"></i>
+                    <span data-i18n="nav_societe">La Société</span>
+                </a>
+                <a href="tableau_financier.html" class="nav-item active">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span data-i18n="nav_tableau_financier">Tableau Financier</span>
+                </a>
+                <a href="banca.html" class="nav-item">
+                    <i class="fa-solid fa-building-columns"></i>
+                    <span data-i18n="nav_banca">Compte Courant</span>
+                </a>
+                <a href="contabilita.html" class="nav-item">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                    <span data-i18n="nav_contabilita">Comptabilité PCN</span>
+                </a>
+                <a href="ammortamenti.html" class="nav-item">
+                    <i class="fa-solid fa-calculator"></i>
+                    <span data-i18n="nav_ammortamenti">Amortissements</span>
+                </a>
+                <a href="partecipazioni.html" class="nav-item">
+                    <i class="fa-solid fa-shapes"></i>
+                    <span data-i18n="nav_partecipazioni">Participations</span>
+                </a>
+                <a href="aml.html" class="nav-item">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span data-i18n="nav_aml">Conformité AML (LBC-FT)</span>
+                </a>
+                <a href="documenti.html" class="nav-item">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span data-i18n="nav_documenti">Documents Société</span>
+                </a>
+                <a href="strumenti.html" class="nav-item">
+                    <i class="fa-solid fa-toolbox"></i>
+                    <span data-i18n="nav_strumenti">Outils & Passwords</span>
+                </a>
+
+                <div class="nav-section-title" data-i18n="nav_section_tools">GESTION</div>
+                <button class="btn-sidebar-action" onclick="refreshAppGlobalData(this)">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span data-i18n="nav_refresh_data">Actualiser</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="update-badge">
+                    <span data-i18n="last_update">Dernière mise à jour :</span>
+                    <strong id="sidebar-updated-at">--/--/----</strong>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Topbar -->
+            <header class="topbar glass-panel">
+                <div class="topbar-title-area">
+                    <h1 data-i18n="dash_title"><i class="fa-solid fa-chart-pie text-emerald"></i> Tableau Financier</h1>
+                    <p data-i18n="dash_welcome">Synthèse générale des flux, des recettes et de la situation comptable de NEW LIFE Sàrl.</p>
+                </div>
+
+                <div class="topbar-actions">
+                    <!-- Language Selector -->
+                    <div class="lang-selector">
+                        <button class="lang-btn" data-lang="fr" title="Français">
+                            <img src="https://flagcdn.com/w40/fr.png" alt="FR">
+                        </button>
+                        <button class="lang-btn" data-lang="it" title="Italiano">
+                            <img src="https://flagcdn.com/w40/it.png" alt="IT">
+                        </button>
+                        <button class="lang-btn" data-lang="en" title="English">
+                            <img src="https://flagcdn.com/w40/gb.png" alt="EN">
+                        </button>
+                    </div>
+
+                    <!-- Theme Toggle Button -->
+                    <button class="theme-toggle-btn" id="theme-toggle-btn" title="Changer de thème">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Quick Filter Bar -->
+            <div class="filter-bar glass-panel">
+                <div class="filter-group">
+                    <label style="font-weight: 600; color: var(--text-muted);"><i class="fa-solid fa-calendar-days"></i> <span data-i18n="filter_year">Année</span> :</label>
+                    <select id="dash-year-select" class="filter-select">
+                        <option value="ALL" data-i18n="filter_all_years">Toutes les années (Global)</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <a href="index.html" class="btn btn-secondary btn-sm">
+                        <i class="fa-solid fa-building text-emerald"></i>
+                        <span data-i18n="nav_societe">La Société</span>
+                    </a>
+                    <a href="partecipazioni.html" class="btn btn-secondary btn-sm">
+                        <i class="fa-solid fa-shapes text-blue"></i>
+                        <span data-i18n="nav_partecipazioni">Participations</span>
+                    </a>
+                    <a href="banca.html" class="btn btn-primary btn-sm">
+                        <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                        <span data-i18n="view_all_transactions">Voir les opérations</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- KPI Cards Grid -->
+            <div class="kpi-grid">
+                <!-- Solde Bancaire -->
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-title" data-i18n="kpi_bank_balance">Solde Bancaire Actuel</span>
+                        <div class="kpi-icon emerald"><i class="fa-solid fa-vault"></i></div>
+                    </div>
+                    <div class="kpi-value" id="kpi-balance">0,00 €</div>
+                    <div class="kpi-sub"><i class="fa-solid fa-building-columns text-emerald"></i> Compte courant professionnel</div>
+                </div>
+
+                <!-- Résultat d'Exploitation Net -->
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-title" data-i18n="kpi_net_result">Résultat Net Période</span>
+                        <div class="kpi-icon amber"><i class="fa-solid fa-scale-balanced"></i></div>
+                    </div>
+                    <div class="kpi-value" id="kpi-net">0,00 €</div>
+                    <div class="kpi-sub"><i class="fa-solid fa-calculator text-amber"></i> Solde économique net</div>
+                </div>
+
+                <!-- Valeur Nette Cespiti -->
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-title" data-i18n="kpi_assets_vnc">Valeur Nette Immobilisations</span>
+                        <div class="kpi-icon cyan"><i class="fa-solid fa-cubes"></i></div>
+                    </div>
+                    <div class="kpi-value text-cyan" id="kpi-vnc">0,00 €</div>
+                    <div class="kpi-sub"><i class="fa-solid fa-shield-halved text-cyan"></i> Cespiti & Actifs VNC</div>
+                </div>
+
+                <!-- Documents Archivés -->
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-title" data-i18n="kpi_docs_count">Documents Juridiques</span>
+                        <div class="kpi-icon blue"><i class="fa-solid fa-file-pdf"></i></div>
+                    </div>
+                    <div class="kpi-value text-blue" id="kpi-docs">1</div>
+                    <div class="kpi-sub"><i class="fa-solid fa-stamp text-blue"></i> Bilan RCSL 2025 déposé</div>
+                </div>
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="dashboard-charts-grid">
+                <!-- Cashflow Chart -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h2 class="chart-title">
+                            <i class="fa-solid fa-chart-column text-emerald"></i>
+                            <span data-i18n="chart_cashflow_title">Évolution du Solde & Flux Mensuels</span>
+                        </h2>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="cashflowChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Expense Breakdown Chart -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h2 class="chart-title">
+                            <i class="fa-solid fa-chart-pie text-amber"></i>
+                            <span data-i18n="chart_expense_distrib">Répartition des Charges (PCN)</span>
+                        </h2>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="expenseChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Data & Application Logic Scripts -->
+    <script src="data.js?v=20261001"></script>
+    <script src="ammortamenti_data.js?v=20261001"></script>
+    <script src="i18n.js?v=20261001"></script>
+    <script src="app.js?v=20261001"></script>
+</body>
+</html>

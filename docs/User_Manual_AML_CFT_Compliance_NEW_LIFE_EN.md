@@ -60,7 +60,7 @@ The **AML / CFT Compliance** module (`aml.html`) comprises 4 specialized tabs:
 - **KYC File Button:** Instant one-click modal opening for compliance review on any transaction.
 
 ### 3.2. Tab 2 : Clients & Mandates Map
-- Comprehensive profile cards for all 14 client companies (*Europa Plus, Pals Advisors, Ersel International, Banca Generali SICAVs, SPF Ariel/Fortau/Micro/Oira/Orte, Green Enerbras, Glenelg*).
+- Comprehensive profile cards for all 14 client companies (*Europa Plus S.A., Pals Advisors Sàrl (liquidated), Ersel Gestion Internationale SA, Banca Generali SICAVs, SPF Ariel/Fortau/Micro/Oira/Orte, Macro International SA (in liquidation), Green Enerbras, Glenelg*).
 - Display of RCS number, corporate form, directorship mandate nature, identified UBOs, cumulative billed volume, and document checklist.
 
 ### 3.3. Tab 3 : Legal Framework & Risk Matrix

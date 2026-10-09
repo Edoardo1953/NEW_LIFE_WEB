@@ -23,6 +23,7 @@ const DEFAULT_AUTH_USERS = [
 
 const DEFAULT_PAGE_PERMISSIONS = {
     'index.html': true,
+    'tableau_financier.html': true,
     'banca.html': true,
     'contabilita.html': true,
     'ammortamenti.html': true,

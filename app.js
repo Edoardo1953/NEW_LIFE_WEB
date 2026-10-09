@@ -147,12 +147,9 @@ function renderDashboardData(selectedYear) {
     const docsEl = document.getElementById('kpi-docs');
     if (docsEl) docsEl.textContent = formatNumber(docsCount);
 
-    // Render Charts
+    // Render Charts if elements exist
     renderCashflowChart(filtered, isAll);
     renderExpenseChart(filtered);
-
-    // Render Recent Transactions
-    renderRecentTable(validRecords);
 }
 
 function renderCashflowChart(filteredRecords, isAll) {
@@ -338,53 +335,319 @@ function renderExpenseChart(filteredRecords) {
     });
 }
 
-function renderRecentTable(records) {
-    const tbody = document.getElementById('recent-tbody');
-    if (!tbody) return;
-    tbody.innerHTML = '';
+// -------------------------------------------------------------
+// Fiche Sociétaire & Données Officielles (Éditable & Persistante)
+// -------------------------------------------------------------
 
-    const deletedBankIds = new Set(JSON.parse(localStorage.getItem('new_life_deleted_records') || '[]'));
-    const validRecords = records.filter(r => {
-        if (deletedBankIds.has(r.id)) return false;
-        if (!r.an || r.an === 0 || !r.date || !/^\d{4}/.test(r.date)) return false;
-        return true;
-    });
+const DEFAULT_CORPORATE_PROFILE = {
+    company_name: "NEW LIFE Sàrl",
+    legal_form: "Société à responsabilité limitée (Sàrl)",
+    share_capital: "31.000 € (interamente versato e liberato)",
+    rcs_number: "B 225.643",
+    matricule: "2018 2432 026",
+    tva_number: "TVA 11773678",
+    incorporation_date: "01/12/2018",
+    registered_office: "Luxembourg (Grand-Duché)",
+    nationality: "Luxembourgeoise (UE)",
+    gerant: "Edoardo Tubia",
+    powers: "Signature Individuelle",
+    ubo_name: "Edoardo Tubia",
+    ubo_percentage: 100,
+    ubo_nationality: "Italienne (Résident Lux)",
+    rbe_status: "Déposée & Validée LBR (10/2025)",
+    pep_status: "Non PEP",
+    activity_primary: "Conseil & Mandats Corporate",
+    nace_code: "70.220 (Conseil pour les affaires et la gestion)",
+    mandates_count: "14 Sociétés & Fonds Régulés",
+    currency: "EUR (€)",
+    fiscal_period: "01/01 - 31/12",
+    services_nature: "Administrateur Indépendant & Advisory",
+    aml_authority: "AED Luxembourg",
+    legal_framework: "Loi du 12 Nov. 2004",
+    last_bilan: "Exercice 2025 RCSL déposé",
+    primary_bank: "POST Luxembourg (WebBanking Pro)",
+    accounting_standard: "PCN Luxembourg",
+    cssf_supervision: "Non-assujettie (Régime AED)"
+};
 
-    // Sort descending by date and ID so the latest operations appear at the top
-    const sorted = [...validRecords].sort((a, b) => {
-        if (a.date && b.date) {
-            if (a.date > b.date) return -1;
-            if (a.date < b.date) return 1;
-        } else if (a.date && !b.date) return -1;
-        else if (!a.date && b.date) return 1;
-        return (b.id || 0) - (a.id || 0);
-    });
-
-    // Take top 8 most recent transactions
-    const recent = sorted.slice(0, 8);
-
-    recent.forEach(r => {
-        const tr = document.createElement('tr');
-        const isEntree = r.total >= 0;
-        const badgeClass = isEntree ? 'badge-entree' : 'badge-sortie';
-        let badgeText = isEntree ? 'Entrée' : 'Sortie';
-        if (isEntree && (r.description.toLowerCase().includes('storno') || r.e_s.includes('SORTIE') || r.code_op === 'DIV' || r.code_op === 'CHA')) {
-            badgeText = 'Storno (+)';
+function getCorporateProfile() {
+    try {
+        const raw = localStorage.getItem('new_life_corporate_profile');
+        if (raw) {
+            return { ...DEFAULT_CORPORATE_PROFILE, ...JSON.parse(raw) };
         }
-        const totalFormatted = formatCurrency(r.total);
-        const soldeFormatted = formatCurrency(r.progressivo_banca);
+    } catch (e) {
+        console.error('Error loading corporate profile:', e);
+    }
+    return { ...DEFAULT_CORPORATE_PROFILE };
+}
 
-        tr.innerHTML = `
-            <td style="font-weight: 600;">${r.date || '-'}</td>
-            <td><span class="badge ${badgeClass}">${badgeText}</span></td>
-            <td><strong style="color: var(--text-main);">${r.description || '-'}</strong></td>
-            <td>${r.fournisseur || '<span style="color: var(--text-muted);">-</span>'}</td>
-            <td><span class="badge badge-ord">${r.macro || r.class || '-'}</span></td>
-            <td class="text-right" style="font-weight: 700; color: ${isEntree ? 'var(--accent-emerald)' : 'var(--accent-rose)'};">${isEntree && r.total > 0 ? '+' : ''}${totalFormatted}</td>
-            <td class="text-right" style="font-weight: 600;">${soldeFormatted}</td>
-        `;
-        tbody.appendChild(tr);
-    });
+function saveCorporateProfile(data) {
+    try {
+        localStorage.setItem('new_life_corporate_profile', JSON.stringify(data));
+    } catch (e) {
+        console.error('Error saving corporate profile:', e);
+    }
+}
+
+function resetCorporateProfile() {
+    const confirmMsg = (typeof currentLang !== 'undefined' && currentLang === 'it')
+        ? "Ripristinare tutti i dati societari ai valori predefiniti?"
+        : "Voulez-vous restaurer les données sociétaires aux valeurs par défaut ?";
+    if (confirm(confirmMsg)) {
+        localStorage.removeItem('new_life_corporate_profile');
+        renderCorporateProfile();
+    }
+}
+
+function renderCorporateProfile() {
+    const container = document.getElementById('corporate-profile-card-content');
+    if (!container) return;
+
+    const p = getCorporateProfile();
+
+    container.innerHTML = `
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+            
+            <!-- 1. Identité & Immatriculation -->
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.15rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.85rem; color: var(--accent-emerald); font-weight: 700; font-size: 0.95rem;">
+                    <i class="fa-solid fa-id-card"></i>
+                    <span data-i18n="corp_identity_title">${t('corp_identity_title')}</span>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
+                        <span style="color: var(--text-muted);">${t('corp_lbl_denomination')} :</span>
+                        <strong style="color: var(--text-main);">${p.company_name}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
+                        <span style="color: var(--text-muted);">${t('corp_lbl_legal_form')} :</span>
+                        <strong>${p.legal_form}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
+                        <span style="color: var(--text-muted);">${t('corp_lbl_capital')} :</span>
+                        <strong style="color: var(--accent-emerald);">${p.share_capital || '31.000 € (interamente versato e liberato)'}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
+                        <span style="color: var(--text-muted);">${t('corp_lbl_rcs')} :</span>
+                        <strong style="color: var(--accent-blue);">${p.rcs_number}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
+                        <span style="color: var(--text-muted);">${t('corp_lbl_matricule')} :</span>
+                        <strong style="color: var(--accent-purple);">${p.matricule}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
+                        <span style="color: var(--text-muted);">${t('corp_lbl_tva')} :</span>
+                        <strong style="color: #f59e0b;">${p.tva_number || 'TVA 11773678'}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
+                        <span style="color: var(--text-muted);">${t('corp_lbl_constitution')} :</span>
+                        <strong>${p.incorporation_date}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: var(--text-muted);">${t('corp_lbl_office')} :</span>
+                        <strong>${p.registered_office}</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Gouvernance & Actionnariat -->
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.15rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.85rem; color: var(--accent-blue); font-weight: 700; font-size: 0.95rem;">
+                    <i class="fa-solid fa-user-tie"></i>
+                    <span data-i18n="corp_gov_title">${t('corp_gov_title')}</span>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
+                        <span style="color: var(--text-muted);">${t('corp_lbl_gerant')} :</span>
+                        <strong style="color: var(--text-main);">${p.gerant}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
+                        <span style="color: var(--text-muted);">${t('corp_lbl_powers')} :</span>
+                        <strong>${p.powers}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
+                        <span style="color: var(--text-muted);">${t('corp_lbl_ubo_name')} :</span>
+                        <strong style="color: var(--accent-emerald);">${p.ubo_name} (${p.ubo_percentage}%)</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
+                        <span style="color: var(--text-muted);">${t('corp_lbl_rbe_status')} :</span>
+                        <span class="text-emerald" style="font-weight: 600;"><i class="fa-solid fa-check-double"></i> ${p.rbe_status}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
+                        <span style="color: var(--text-muted);">${t('corp_lbl_pep_status')} :</span>
+                        <strong class="text-emerald">${p.pep_status}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: var(--text-muted);">${t('corp_lbl_ubo_nat')} :</span>
+                        <strong>${p.ubo_nationality}</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Objet Social & Activité -->
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.15rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.85rem; color: var(--accent-amber); font-weight: 700; font-size: 0.95rem;">
+                    <i class="fa-solid fa-briefcase"></i>
+                    <span data-i18n="corp_activity_title">${t('corp_activity_title')}</span>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
+                        <span style="color: var(--text-muted);">${t('corp_lbl_activity')} :</span>
+                        <strong style="color: var(--text-main);">${p.activity_primary}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
+                        <span style="color: var(--text-muted);">${t('corp_lbl_nace')} :</span>
+                        <strong>${p.nace_code}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
+                        <span style="color: var(--text-muted);">${t('corp_lbl_mandates')} :</span>
+                        <strong style="color: var(--accent-blue);">${p.mandates_count}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
+                        <span style="color: var(--text-muted);">${t('corp_lbl_currency')} :</span>
+                        <strong>${p.currency}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
+                        <span style="color: var(--text-muted);">${t('corp_lbl_fiscal_period')} :</span>
+                        <strong>${p.fiscal_period}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: var(--text-muted);">${t('corp_lbl_services')} :</span>
+                        <strong>${p.services_nature}</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Conformité, Fiscalité & Banque -->
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.15rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.85rem; color: #a855f7; font-weight: 700; font-size: 0.95rem;">
+                    <i class="fa-solid fa-scale-balanced"></i>
+                    <span data-i18n="corp_compliance_title">${t('corp_compliance_title')}</span>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
+                        <span style="color: var(--text-muted);">${t('corp_lbl_aml_auth')} :</span>
+                        <strong style="color: var(--accent-emerald);">${p.aml_authority}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
+                        <span style="color: var(--text-muted);">${t('corp_lbl_framework')} :</span>
+                        <strong>${p.legal_framework}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
+                        <span style="color: var(--text-muted);">${t('corp_lbl_last_bilan')} :</span>
+                        <strong style="color: var(--accent-emerald);"><i class="fa-solid fa-file-circle-check"></i> ${p.last_bilan}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
+                        <span style="color: var(--text-muted);">${t('corp_lbl_bank')} :</span>
+                        <strong>${p.primary_bank}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
+                        <span style="color: var(--text-muted);">${t('corp_lbl_accounting_std')} :</span>
+                        <strong>${p.accounting_standard}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: var(--text-muted);">${t('corp_lbl_cssf')} :</span>
+                        <span style="color: var(--text-muted);">${p.cssf_supervision}</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    `;
+}
+
+function openCorporateProfileModal() {
+    const modal = document.getElementById('corporate-profile-modal');
+    if (!modal) return;
+
+    const p = getCorporateProfile();
+
+    document.getElementById('edit-corp-company-name').value = p.company_name || '';
+    document.getElementById('edit-corp-legal-form').value = p.legal_form || '';
+    document.getElementById('edit-corp-share-capital').value = p.share_capital || '31.000 € (interamente versato e liberato)';
+    document.getElementById('edit-corp-rcs').value = p.rcs_number || '';
+    document.getElementById('edit-corp-matricule').value = p.matricule || '';
+    document.getElementById('edit-corp-tva').value = p.tva_number || 'TVA 11773678';
+    document.getElementById('edit-corp-inc-date').value = p.incorporation_date || '';
+    document.getElementById('edit-corp-office').value = p.registered_office || '';
+    document.getElementById('edit-corp-nationality').value = p.nationality || '';
+
+    document.getElementById('edit-corp-gerant').value = p.gerant || '';
+    document.getElementById('edit-corp-powers').value = p.powers || '';
+    document.getElementById('edit-corp-ubo-name').value = p.ubo_name || '';
+    document.getElementById('edit-corp-ubo-pct').value = p.ubo_percentage || 100;
+    document.getElementById('edit-corp-ubo-nat').value = p.ubo_nationality || '';
+    document.getElementById('edit-corp-rbe-status').value = p.rbe_status || '';
+    document.getElementById('edit-corp-pep-status').value = p.pep_status || 'Non PEP';
+
+    document.getElementById('edit-corp-activity').value = p.activity_primary || '';
+    document.getElementById('edit-corp-nace').value = p.nace_code || '';
+    document.getElementById('edit-corp-mandates').value = p.mandates_count || '';
+    document.getElementById('edit-corp-currency').value = p.currency || 'EUR (€)';
+    document.getElementById('edit-corp-fiscal-period').value = p.fiscal_period || '01/01 - 31/12';
+    document.getElementById('edit-corp-services').value = p.services_nature || '';
+
+    document.getElementById('edit-corp-aml-authority').value = p.aml_authority || '';
+    document.getElementById('edit-corp-legal-framework').value = p.legal_framework || '';
+    document.getElementById('edit-corp-last-bilan').value = p.last_bilan || '';
+    document.getElementById('edit-corp-primary-bank').value = p.primary_bank || '';
+    document.getElementById('edit-corp-accounting-std').value = p.accounting_standard || '';
+    document.getElementById('edit-corp-cssf-supervision').value = p.cssf_supervision || '';
+
+    modal.classList.add('active');
+}
+
+function closeCorporateProfileModal() {
+    const modal = document.getElementById('corporate-profile-modal');
+    if (modal) modal.classList.remove('active');
+}
+
+function saveCorporateProfileFromModal() {
+    const updated = {
+        company_name: document.getElementById('edit-corp-company-name').value.trim() || DEFAULT_CORPORATE_PROFILE.company_name,
+        legal_form: document.getElementById('edit-corp-legal-form').value.trim() || DEFAULT_CORPORATE_PROFILE.legal_form,
+        share_capital: document.getElementById('edit-corp-share-capital').value.trim() || DEFAULT_CORPORATE_PROFILE.share_capital,
+        rcs_number: document.getElementById('edit-corp-rcs').value.trim() || DEFAULT_CORPORATE_PROFILE.rcs_number,
+        matricule: document.getElementById('edit-corp-matricule').value.trim() || DEFAULT_CORPORATE_PROFILE.matricule,
+        tva_number: document.getElementById('edit-corp-tva').value.trim() || DEFAULT_CORPORATE_PROFILE.tva_number,
+        incorporation_date: document.getElementById('edit-corp-inc-date').value.trim() || DEFAULT_CORPORATE_PROFILE.incorporation_date,
+        registered_office: document.getElementById('edit-corp-office').value.trim() || DEFAULT_CORPORATE_PROFILE.registered_office,
+        nationality: document.getElementById('edit-corp-nationality').value.trim() || DEFAULT_CORPORATE_PROFILE.nationality,
+
+        gerant: document.getElementById('edit-corp-gerant').value.trim() || DEFAULT_CORPORATE_PROFILE.gerant,
+        powers: document.getElementById('edit-corp-powers').value.trim() || DEFAULT_CORPORATE_PROFILE.powers,
+        ubo_name: document.getElementById('edit-corp-ubo-name').value.trim() || DEFAULT_CORPORATE_PROFILE.ubo_name,
+        ubo_percentage: parseFloat(document.getElementById('edit-corp-ubo-pct').value) || 100,
+        ubo_nationality: document.getElementById('edit-corp-ubo-nat').value.trim() || DEFAULT_CORPORATE_PROFILE.ubo_nationality,
+        rbe_status: document.getElementById('edit-corp-rbe-status').value.trim() || DEFAULT_CORPORATE_PROFILE.rbe_status,
+        pep_status: document.getElementById('edit-corp-pep-status').value.trim() || DEFAULT_CORPORATE_PROFILE.pep_status,
+
+        activity_primary: document.getElementById('edit-corp-activity').value.trim() || DEFAULT_CORPORATE_PROFILE.activity_primary,
+        nace_code: document.getElementById('edit-corp-nace').value.trim() || DEFAULT_CORPORATE_PROFILE.nace_code,
+        mandates_count: document.getElementById('edit-corp-mandates').value.trim() || DEFAULT_CORPORATE_PROFILE.mandates_count,
+        currency: document.getElementById('edit-corp-currency').value.trim() || DEFAULT_CORPORATE_PROFILE.currency,
+        fiscal_period: document.getElementById('edit-corp-fiscal-period').value.trim() || DEFAULT_CORPORATE_PROFILE.fiscal_period,
+        services_nature: document.getElementById('edit-corp-services').value.trim() || DEFAULT_CORPORATE_PROFILE.services_nature,
+
+        aml_authority: document.getElementById('edit-corp-aml-authority').value.trim() || DEFAULT_CORPORATE_PROFILE.aml_authority,
+        legal_framework: document.getElementById('edit-corp-legal-framework').value.trim() || DEFAULT_CORPORATE_PROFILE.legal_framework,
+        last_bilan: document.getElementById('edit-corp-last-bilan').value.trim() || DEFAULT_CORPORATE_PROFILE.last_bilan,
+        primary_bank: document.getElementById('edit-corp-primary-bank').value.trim() || DEFAULT_CORPORATE_PROFILE.primary_bank,
+        accounting_standard: document.getElementById('edit-corp-accounting-std').value.trim() || DEFAULT_CORPORATE_PROFILE.accounting_standard,
+        cssf_supervision: document.getElementById('edit-corp-cssf-supervision').value.trim() || DEFAULT_CORPORATE_PROFILE.cssf_supervision
+    };
+
+    saveCorporateProfile(updated);
+    renderCorporateProfile();
+    closeCorporateProfileModal();
+
+    const successMsg = (typeof t === 'function') ? t('corp_saved_success') : "Fiche sociétaire mise à jour avec succès !";
+    if (typeof showGlobalToast === 'function') {
+        showGlobalToast(successMsg, 'fa-circle-check');
+    } else {
+        alert(successMsg);
+    }
 }
 
 // Hook language change
@@ -393,6 +656,11 @@ window.onLanguageChange = function() {
     if (yearSelect) {
         renderDashboardData(yearSelect.value);
     }
+    renderCorporateProfile();
 };
 
-document.addEventListener('DOMContentLoaded', initDashboard);
+document.addEventListener('DOMContentLoaded', () => {
+    initDashboard();
+    renderCorporateProfile();
+});
+

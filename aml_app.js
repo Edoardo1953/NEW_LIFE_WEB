@@ -51,7 +51,18 @@ function getEnrichedClient(clientName) {
     const defaultRegistry = window.NEW_LIFE_AML_CLIENTS || {};
     const customStorage = getAmlCustomStorage();
     
-    let base = defaultRegistry[clientName];
+    let resolvedKey = clientName;
+    if (clientName === 'ERSEL GESTION INTERNATIONALE SA' || clientName === 'ERSEL GESTION INTERNATIONALE' || clientName === 'ERSEL INTERNATIONAL S.A.') {
+        resolvedKey = 'ERSEL INTERNATIONAL';
+    } else if (clientName === 'EUROPA PLUS S.A.' || clientName === 'EUROPA PLUS SA' || clientName === 'EUROPA PLUS Sàrl') {
+        resolvedKey = 'EUROPA PLUS';
+    } else if (clientName && clientName.startsWith('PALS ADVISORS')) {
+        resolvedKey = 'PALS ADVISORS';
+    } else if (clientName && clientName.startsWith('MACRO INTERNATIONAL')) {
+        resolvedKey = 'MACRO INTERNATIONAL SA';
+    }
+
+    let base = defaultRegistry[resolvedKey] || defaultRegistry[clientName];
     if (!base) {
         // Détecter ou générer un profil par défaut si nouveau
         base = {
@@ -134,7 +145,7 @@ function getAmlInflows() {
         const isChiffreAffaires = macro.startsWith('70') || classe.startsWith('70');
         const isClientInvoice = nrFatt.startsWith('FACT') || desc.includes('facturation');
         const isKnownClient = [
-            'PALS ADVISORS', 'EUROPA PLUS', 'ERSEL INTERNATIONAL', 
+            'PALS ADVISORS', 'EUROPA PLUS', 'EUROPA PLUS S.A.', 'ERSEL INTERNATIONAL', 'ERSEL GESTION INTERNATIONALE SA', 'ERSEL GESTION INTERNATIONALE',
             'BG COLLECTION INVETMENTS (ex SELECTION) SICAV', 'BG COLLECTION INVESTMENTS SICAV',
             'LUX IM SICAV (ex BG Sicav)', 'LUX IM SICAV',
             'BG PRIVATE MARKETS (ex ALTERNATIVE) SICAV', 'BG PRIVATE MARKETS SICAV',
@@ -267,7 +278,7 @@ function renderAmlRegistryTable() {
 
     if (records.length === 0) {
         const msg = (lang === 'it') ? 'Nessuna operazione trovata con i filtri selezionati.' : ((lang === 'en') ? 'No operations match the selected filters.' : 'Aucune opération trouvée avec les filtres sélectionnés.');
-        tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; color: var(--text-muted); padding: 2.5rem;">${msg}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="11" style="text-align: center; color: var(--text-muted); padding: 2.5rem;">${msg}</td></tr>`;
         return;
     }
 
@@ -278,34 +289,41 @@ function renderAmlRegistryTable() {
         const amtTotal = r.total || 0;
 
         // Badges Risque & KYC
-        let riskBadge = '';
+        let riskLabel = (lang === 'it') ? 'Basso' : ((lang === 'en') ? 'Low' : 'Faible');
+        let riskBadge = `<span class="badge" style="background: rgba(16, 185, 129, 0.2); color: var(--accent-emerald); font-weight: 700;"><i class="fa-solid fa-shield-check"></i> ${riskLabel}</span>`;
         if (r.aml_risk_level === 'HIGH') {
-            riskBadge = '<span class="badge" style="background: rgba(244, 63, 94, 0.2); color: var(--accent-rose); font-weight: 700;"><i class="fa-solid fa-triangle-exclamation"></i> Élevé</span>';
+            riskLabel = (lang === 'it') ? 'Elevato' : ((lang === 'en') ? 'High' : 'Élevé');
+            riskBadge = `<span class="badge" style="background: rgba(244, 63, 94, 0.2); color: var(--accent-rose); font-weight: 700;"><i class="fa-solid fa-triangle-exclamation"></i> ${riskLabel}</span>`;
         } else if (r.aml_risk_level === 'MEDIUM') {
-            riskBadge = '<span class="badge" style="background: rgba(245, 158, 11, 0.2); color: var(--accent-amber); font-weight: 700;"><i class="fa-solid fa-shield"></i> Moyen</span>';
-        } else {
-            riskBadge = '<span class="badge" style="background: rgba(16, 185, 129, 0.2); color: var(--accent-emerald); font-weight: 700;"><i class="fa-solid fa-shield-check"></i> Faible</span>';
+            riskLabel = (lang === 'it') ? 'Medio' : ((lang === 'en') ? 'Medium' : 'Moyen');
+            riskBadge = `<span class="badge" style="background: rgba(245, 158, 11, 0.2); color: var(--accent-amber); font-weight: 700;"><i class="fa-solid fa-shield"></i> ${riskLabel}</span>`;
         }
 
         let kycBadge = '';
         if (r.aml_kyc_status === 'CONFORME') {
-            kycBadge = '<span class="badge" style="background: rgba(16, 185, 129, 0.2); color: var(--accent-emerald); font-weight: 700;"><i class="fa-solid fa-circle-check"></i> Conforme</span>';
+            const kycTxt = (lang === 'en') ? 'Compliant' : 'Conforme';
+            kycBadge = `<span class="badge" style="background: rgba(16, 185, 129, 0.2); color: var(--accent-emerald); font-weight: 700;"><i class="fa-solid fa-circle-check"></i> ${kycTxt}</span>`;
         } else if (r.aml_kyc_status === 'VIGILANCE_RENFORCEE') {
-            kycBadge = '<span class="badge" style="background: rgba(244, 63, 94, 0.2); color: var(--accent-rose); font-weight: 700;"><i class="fa-solid fa-circle-exclamation"></i> Vigilance Renf.</span>';
+            const kycTxt = (lang === 'it') ? 'Vigilanza Raff.' : ((lang === 'en') ? 'Enhanced Vig.' : 'Vigilance Renf.');
+            kycBadge = `<span class="badge" style="background: rgba(244, 63, 94, 0.2); color: var(--accent-rose); font-weight: 700;"><i class="fa-solid fa-circle-exclamation"></i> ${kycTxt}</span>`;
         } else {
-            kycBadge = '<span class="badge" style="background: rgba(245, 158, 11, 0.2); color: var(--accent-amber); font-weight: 700;"><i class="fa-solid fa-clock"></i> À Compléter</span>';
+            const kycTxt = (lang === 'it') ? 'Da Completare' : ((lang === 'en') ? 'Pending' : 'À Compléter');
+            kycBadge = `<span class="badge" style="background: rgba(245, 158, 11, 0.2); color: var(--accent-amber); font-weight: 700;"><i class="fa-solid fa-clock"></i> ${kycTxt}</span>`;
         }
 
         let thresholdBadge = '';
         if (amtTotal >= 25000) {
             thresholdBadge = '<span class="badge" style="background: rgba(139, 92, 246, 0.2); color: #a78bfa; font-size: 0.75rem;">≥ 25.000 €</span>';
         } else if (amtTotal >= 10000) {
-            thresholdBadge = '<span class="badge" style="background: rgba(6, 182, 212, 0.2); color: var(--accent-cyan); font-size: 0.75rem;">≥ 10.000 € (UE)</span>';
+            const ueLabel = (lang === 'en') ? 'EU' : 'UE';
+            thresholdBadge = `<span class="badge" style="background: rgba(6, 182, 212, 0.2); color: var(--accent-cyan); font-size: 0.75rem;">≥ 10.000 € (${ueLabel})</span>`;
         } else if (amtTotal >= 5000) {
             thresholdBadge = '<span class="badge" style="background: rgba(59, 130, 246, 0.2); color: var(--accent-blue); font-size: 0.75rem;">≥ 5.000 €</span>';
         } else {
             thresholdBadge = '<span class="badge" style="background: rgba(255, 255, 255, 0.05); color: var(--text-muted); font-size: 0.75rem;">Standard</span>';
         }
+
+        const kycBtnTitle = (lang === 'it') ? 'Apri fascicolo KYC' : ((lang === 'en') ? 'Open KYC file' : 'Ouvrir le dossier KYC');
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -330,7 +348,7 @@ function renderAmlRegistryTable() {
             <td style="text-align: center; white-space: nowrap;">${riskBadge}</td>
             <td style="text-align: center; white-space: nowrap;">${kycBadge}</td>
             <td style="text-align: center; white-space: nowrap;">
-                <button class="btn btn-secondary btn-sm" onclick="openAmlKycModal('${r.client_name.replace(/'/g, "\\'")}')" title="Ouvrir le dossier KYC">
+                <button class="btn btn-secondary btn-sm" onclick="openAmlKycModal('${r.client_name.replace(/'/g, "\\'")}')" title="${kycBtnTitle}">
                     <i class="fa-solid fa-folder-open text-emerald"></i> KYC
                 </button>
             </td>
@@ -339,40 +357,86 @@ function renderAmlRegistryTable() {
     });
 }
 
-// Rendu du Tableau 2 : Cartographie des Clients & Mandats
+// Gestion de l'ordre personnalisé des fiches Cartographie (Drag & Drop)
+function getAmlCardsOrder() {
+    const clientsRegistry = window.NEW_LIFE_AML_CLIENTS || {};
+    const defaultKeys = Object.keys(clientsRegistry);
+    try {
+        const raw = localStorage.getItem('new_life_aml_cards_order');
+        if (raw) {
+            const saved = JSON.parse(raw);
+            if (Array.isArray(saved) && saved.length > 0) {
+                const validSaved = saved.filter(k => defaultKeys.includes(k));
+                const missingKeys = defaultKeys.filter(k => !validSaved.includes(k));
+                return [...validSaved, ...missingKeys];
+            }
+        }
+    } catch (e) {
+        console.error('Error loading card order:', e);
+    }
+    return defaultKeys;
+}
+
+function saveAmlCardsOrder(orderArray) {
+    try {
+        localStorage.setItem('new_life_aml_cards_order', JSON.stringify(orderArray));
+    } catch (e) {
+        console.error('Error saving card order:', e);
+    }
+}
+
+function resetAmlCardsOrder() {
+    localStorage.removeItem('new_life_aml_cards_order');
+    renderAmlClientsGrid();
+}
+
+let draggedClientKey = null;
+
+// Rendu du Tableau 2 : Cartographie des Clients & Mandats (avec Drag & Drop libre)
 function renderAmlClientsGrid() {
     const container = document.getElementById('aml-clients-container');
     if (!container) return;
     container.innerHTML = '';
 
-    const clientsRegistry = window.NEW_LIFE_AML_CLIENTS || {};
     const allInflows = getAmlInflows();
+    const orderedKeys = getAmlCardsOrder();
     const lang = (typeof currentLang !== 'undefined') ? currentLang : 'fr';
 
-    const clientKeys = Object.keys(clientsRegistry);
+    const handleTitle = (lang === 'it') ? 'Trascina per riordinare' : ((lang === 'en') ? 'Drag to reorder' : 'Glisser-déposer pour réorganiser');
+    const exemptLabel = (lang === 'it') ? 'Esente' : ((lang === 'en') ? 'Exempt' : 'Exonéré');
 
-    clientKeys.forEach(clientKey => {
+    orderedKeys.forEach(clientKey => {
         const client = getEnrichedClient(clientKey);
         
         // Calculer totaux historiques pour ce client
         const clientOps = allInflows.filter(r => r.client_name === clientKey);
         const totalVol = clientOps.reduce((s, r) => s + Math.abs(r.total || 0), 0);
         const countOps = clientOps.length;
-        const yearsActive = Array.from(new Set(clientOps.map(r => r.an))).sort();
 
         // Badges
         const riskColor = client.aml_risk_level === 'HIGH' ? 'var(--accent-rose)' : (client.aml_risk_level === 'MEDIUM' ? 'var(--accent-amber)' : 'var(--accent-emerald)');
+        const riskText = client.aml_risk_level === 'HIGH' ? ((lang === 'it') ? 'Elevato' : ((lang === 'en') ? 'High' : 'Élevé')) : (client.aml_risk_level === 'MEDIUM' ? ((lang === 'it') ? 'Medio' : ((lang === 'en') ? 'Medium' : 'Moyen')) : ((lang === 'it') ? 'Basso' : ((lang === 'en') ? 'Low' : 'Faible')));
+
         const kycBadge = client.aml_kyc_status === 'CONFORME' 
-            ? '<span class="badge" style="background: rgba(16, 185, 129, 0.2); color: var(--accent-emerald); font-weight: 700;"><i class="fa-solid fa-circle-check"></i> Conforme</span>'
-            : '<span class="badge" style="background: rgba(245, 158, 11, 0.2); color: var(--accent-amber); font-weight: 700;"><i class="fa-solid fa-clock"></i> À Compléter</span>';
+            ? `<span class="badge" style="background: rgba(16, 185, 129, 0.2); color: var(--accent-emerald); font-weight: 700;"><i class="fa-solid fa-circle-check"></i> ${lang === 'en' ? 'Compliant' : 'Conforme'}</span>`
+            : `<span class="badge" style="background: rgba(245, 158, 11, 0.2); color: var(--accent-amber); font-weight: 700;"><i class="fa-solid fa-clock"></i> ${lang === 'it' ? 'Da Completare' : (lang === 'en' ? 'Pending' : 'À Compléter')}</span>`;
 
         const uboNames = (client.ubo_list || []).map(u => `${u.name} (${u.percentage}%)`).join(', ');
 
+        const pepText = client.is_pep 
+            ? `<span class="text-rose">${(lang === 'it' ? 'SÌ (PEP)' : (lang === 'en' ? 'YES (PEP)' : 'OUI (PEP)'))}</span>` 
+            : `<span class="text-emerald">${(lang === 'it' ? 'No' : (lang === 'en' ? 'No' : 'Non'))}</span>`;
+
         const card = document.createElement('div');
-        card.className = 'asset-card';
+        card.className = 'asset-card draggable-card';
+        card.setAttribute('draggable', 'true');
+        card.dataset.clientKey = clientKey;
         card.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
-                <span class="asset-badge-pcn" style="background: rgba(59, 130, 246, 0.15); color: var(--accent-blue);">${client.entity_type_label}</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <div style="display: flex; align-items: center; gap: 0.4rem;">
+                    <span class="drag-handle" title="${handleTitle}"><i class="fa-solid fa-grip-vertical"></i></span>
+                    <span class="asset-badge-pcn" style="background: rgba(59, 130, 246, 0.15); color: var(--accent-blue);">${client.entity_type_label}</span>
+                </div>
                 ${kycBadge}
             </div>
 
@@ -386,44 +450,96 @@ function renderAmlClientsGrid() {
             <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 10px; padding: 0.85rem; margin-bottom: 1rem;">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.5rem; font-size: 0.8rem;">
                     <div>
-                        <span style="color: var(--text-muted);">N° RCSL :</span>
+                        <span style="color: var(--text-muted);">${t('aml_lbl_rcsl')}</span>
                         <strong>${client.rcs_number}</strong>
                     </div>
                     <div>
-                        <span style="color: var(--text-muted);">N° TVA :</span>
-                        <strong>${client.tva_number || 'Exonéré'}</strong>
+                        <span style="color: var(--text-muted);">${t('aml_lbl_tva')}</span>
+                        <strong>${client.tva_number || exemptLabel}</strong>
                     </div>
                     <div>
-                        <span style="color: var(--text-muted);">Risque LBC-FT :</span>
-                        <strong style="color: ${riskColor};">${client.aml_risk_level}</strong>
+                        <span style="color: var(--text-muted);">${t('aml_lbl_risk')}</span>
+                        <strong style="color: ${riskColor};">${riskText}</strong>
                     </div>
                     <div>
-                        <span style="color: var(--text-muted);">Statut PEP :</span>
-                        <strong>${client.is_pep ? '<span class="text-rose">OUI (PEP)</span>' : '<span class="text-emerald">Non</span>'}</strong>
+                        <span style="color: var(--text-muted);">${t('aml_lbl_pep')}</span>
+                        <strong>${pepText}</strong>
                     </div>
                 </div>
 
                 <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.5rem; font-size: 0.8rem;">
-                    <span style="color: var(--text-muted); display: block;">Mandat d'Administrateur :</span>
+                    <span style="color: var(--text-muted); display: block;">${t('aml_lbl_mandate')}</span>
                     <strong style="color: var(--accent-blue);">${client.mandate_nature}</strong>
                 </div>
 
                 <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.5rem; margin-top: 0.5rem; font-size: 0.8rem;">
-                    <span style="color: var(--text-muted); display: block;">Bénéficiaires Effectifs (RBE) :</span>
+                    <span style="color: var(--text-muted); display: block;">${t('aml_lbl_ubo')}</span>
                     <span style="font-weight: 600; color: var(--text-main);">${uboNames}</span>
                 </div>
             </div>
 
             <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
                 <div>
-                    <span style="font-size: 0.75rem; color: var(--text-muted);">Volume facturé (${countOps} ops) :</span>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">${t('aml_lbl_vol_invoiced')} (${countOps} ${t('aml_lbl_ops_count')}) :</span>
                     <p style="font-weight: 800; font-size: 1.1rem; color: var(--accent-emerald); margin: 0;">${formatCurrency(totalVol)}</p>
                 </div>
                 <button class="btn btn-primary btn-sm" onclick="openAmlKycModal('${clientKey.replace(/'/g, "\\'")}')">
-                    <i class="fa-solid fa-id-card-clip"></i> Dossier KYC
+                    <i class="fa-solid fa-id-card-clip"></i> ${t('aml_btn_dossier_kyc')}
                 </button>
             </div>
         `;
+
+        // Événements Drag & Drop
+        card.addEventListener('dragstart', (e) => {
+            if (e.target.closest('button') || e.target.closest('a') || e.target.closest('input')) {
+                e.preventDefault();
+                return;
+            }
+            draggedClientKey = clientKey;
+            card.classList.add('is-dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', clientKey);
+        });
+
+        card.addEventListener('dragend', () => {
+            card.classList.remove('is-dragging');
+            document.querySelectorAll('.asset-card').forEach(c => c.classList.remove('drag-over-target'));
+            draggedClientKey = null;
+        });
+
+        card.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            if (draggedClientKey && draggedClientKey !== clientKey) {
+                card.classList.add('drag-over-target');
+            }
+        });
+
+        card.addEventListener('dragleave', (e) => {
+            if (!card.contains(e.relatedTarget)) {
+                card.classList.remove('drag-over-target');
+            }
+        });
+
+        card.addEventListener('drop', (e) => {
+            e.preventDefault();
+            card.classList.remove('drag-over-target');
+            const sourceKey = e.dataTransfer.getData('text/plain') || draggedClientKey;
+            const targetKey = clientKey;
+
+            if (sourceKey && targetKey && sourceKey !== targetKey) {
+                const currentOrder = getAmlCardsOrder();
+                const fromIdx = currentOrder.indexOf(sourceKey);
+                const toIdx = currentOrder.indexOf(targetKey);
+                if (fromIdx !== -1 && toIdx !== -1) {
+                    currentOrder.splice(fromIdx, 1);
+                    currentOrder.splice(toIdx, 0, sourceKey);
+                    saveAmlCardsOrder(currentOrder);
+                    renderAmlClientsGrid();
+                }
+            }
+        });
+
         container.appendChild(card);
     });
 }
@@ -433,9 +549,52 @@ function renderAmlMatrix() {
     const matrixContainer = document.getElementById('aml-matrix-content');
     if (!matrixContainer) return;
 
-    const matrix = window.NEW_LIFE_AML_RISK_MATRIX || {};
-    const supervisorList = matrix.regulatory_framework?.supervisors || [];
-    const obligations = matrix.regulatory_framework?.obligations || [];
+    const lang = (typeof currentLang !== 'undefined') ? currentLang : 'fr';
+
+    const supervisors = {
+        'fr': [
+            { name: "AED (Administration de l'Enregistrement, des Domaines et de la TVA)", scope: "Professionnels TCSP, administrateurs indépendants et sociétés luxembourgeoises non régulées par un ordre professionnel." },
+            { name: "CSSF (Commission de Surveillance du Secteur Financier)", scope: "Établissements financiers, SICAV, fonds d'investissement et professionnels du secteur financier (PSF)." },
+            { name: "CRF (Cellule de Renseignement Financier / Parquet)", scope: "Réception et traitement du renseignement financier lié aux déclarations de soupçon (STR / goAML)." }
+        ],
+        'it': [
+            { name: "AED (Administration de l'Enregistrement, des Domaines et de la TVA)", scope: "Professionisti TCSP, amministratori societari indipendenti e società commerciali lussemburghesi non soggette a ordini professionali." },
+            { name: "CSSF (Commission de Surveillance du Secteur Financier)", scope: "Istituti finanziari, banche, SICAV, fondi d'investimento e professionisti del settore finanziario (PSF)." },
+            { name: "CRF (Cellule de Renseignement Financier / Procura)", scope: "Ricezione e analisi delle dichiarazioni di operazioni sospette (STR) tramite il portale goAML." }
+        ],
+        'en': [
+            { name: "AED (Administration de l'Enregistrement, des Domaines et de la TVA)", scope: "Trust and Company Service Providers (TCSPs), independent directors, and unregulated commercial companies." },
+            { name: "CSSF (Commission de Surveillance du Secteur Financier)", scope: "Credit institutions, SICAVs, investment funds, and specialized financial sector professionals (PSFs)." },
+            { name: "CRF (Financial Intelligence Unit / Parquet)", scope: "Receipt, analysis, and dissemination of Suspicious Transaction Reports (STRs) via goAML." }
+        ]
+    };
+
+    const obligations = {
+        'fr': [
+            "Identification et vérification de l'identité du client et de ses bénéficiaires effectifs (UBO / RBE)",
+            "Évaluation du profil de risque AML de la relation d'affaires (Risk-Based Approach)",
+            "Surveillance continue des transactions et contrôle de cohérence avec la nature du mandat",
+            "Conservation obligatoire de tous les dossiers et pièces justificatives pendant au moins 5 ans",
+            "Obligation légale de déclaration sans délai de toute transaction suspecte auprès de la CRF (goAML)"
+        ],
+        'it': [
+            "Identificazione e adeguata verifica dell'identità del cliente e dei titolari effettivi (UBO / RBE)",
+            "Valutazione del profilo di rischio antiriciclaggio della relazione d'affari (Risk-Based Approach)",
+            "Monitoraggio continuo delle transazioni e verifica della coerenza con il mandato di amministrazione",
+            "Conservazione obbligatoria di tutti i fascicoli e dei giustificativi contabili per almeno 5 anni",
+            "Obbligo di legge di segnalazione tempestiva di qualsiasi operazione sospetta alla CRF (goAML)"
+        ],
+        'en': [
+            "Customer Due Diligence (CDD) and identification of Ultimate Beneficial Owners (UBO / RBE)",
+            "Assessment of the customer AML/CFT risk profile using a structured Risk-Based Approach",
+            "Ongoing monitoring of transactions and verifying consistency with the directorship engagement",
+            "Mandatory 5-year record keeping for all KYC files and accounting supporting documentation",
+            "Statutory obligation to immediately file Suspicious Transaction Reports (STR) with the CRF (goAML)"
+        ]
+    };
+
+    const supervisorList = supervisors[lang] || supervisors['fr'];
+    const obligationList = obligations[lang] || obligations['fr'];
 
     let supHtml = supervisorList.map(s => `
         <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 10px; padding: 1rem; margin-bottom: 0.75rem;">
@@ -444,7 +603,7 @@ function renderAmlMatrix() {
         </div>
     `).join('');
 
-    let oblHtml = obligations.map(o => `
+    let oblHtml = obligationList.map(o => `
         <li style="margin-bottom: 0.5rem; color: var(--text-main); font-size: 0.9rem;">
             <i class="fa-solid fa-circle-check text-emerald" style="margin-right: 0.5rem;"></i> ${o}
         </li>
@@ -454,27 +613,27 @@ function renderAmlMatrix() {
         <div class="charts-grid-equal" style="margin-bottom: 1.5rem;">
             <div class="chart-card">
                 <div class="chart-header">
-                    <h3 class="chart-title"><i class="fa-solid fa-scale-balanced text-emerald"></i> Cadre Légal & Autorités de Contrôle au Luxembourg</h3>
+                    <h3 class="chart-title"><i class="fa-solid fa-scale-balanced text-emerald"></i> ${t('aml_mat_title_legal')}</h3>
                 </div>
                 <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
-                    Application stricte de la <strong>Loi du 12 novembre 2004</strong> relative à la lutte contre le blanchiment et le financement du terrorisme (LBC/FT), modifiée par les directives européennes (4e, 5e et 6e Directives AML).
+                    ${t('aml_mat_legal_intro')}
                 </p>
                 ${supHtml}
             </div>
 
             <div class="chart-card">
                 <div class="chart-header">
-                    <h3 class="chart-title"><i class="fa-solid fa-list-check text-emerald"></i> Obligations Professionnelles de NEW LIFE Sàrl</h3>
+                    <h3 class="chart-title"><i class="fa-solid fa-list-check text-emerald"></i> ${t('aml_mat_title_obligations')}</h3>
                 </div>
                 <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
-                    En tant que prestataire fournissant des services d'administrateur indépendant et de gestion d'entreprises :
+                    ${t('aml_mat_obligations_intro')}
                 </p>
                 <ul style="list-style: none; padding: 0;">
                     ${oblHtml}
                 </ul>
                 <div style="margin-top: 1.25rem; background: rgba(59, 130, 246, 0.1); border: 1px solid var(--accent-blue); border-radius: 8px; padding: 0.85rem;">
                     <p style="margin: 0; font-size: 0.8rem; color: var(--accent-blue); font-weight: 600;">
-                        <i class="fa-solid fa-info-circle"></i> Délais de conservation : Tous les justificatifs KYC et pièces justificatives de facturation sont conservés pendant une durée minimale de 5 ans à compter de la fin du mandat.
+                        <i class="fa-solid fa-info-circle"></i> ${t('aml_mat_retention_note')}
                     </p>
                 </div>
             </div>
@@ -492,7 +651,9 @@ function openAmlKycModal(clientName) {
     const modal = document.getElementById('aml-kyc-modal');
     if (!modal) return;
 
-    document.getElementById('modal-kyc-title').innerHTML = `<i class="fa-solid fa-shield-halved text-emerald"></i> Dossier KYC / AML : ${client.legal_name}`;
+    const lang = (typeof currentLang !== 'undefined') ? currentLang : 'fr';
+    const modalPrefix = (lang === 'it') ? 'Fascicolo KYC / AML' : ((lang === 'en') ? 'KYC / AML File' : 'Dossier KYC / AML');
+    document.getElementById('modal-kyc-title').innerHTML = `<i class="fa-solid fa-shield-halved text-emerald"></i> ${modalPrefix} : ${client.legal_name}`;
     
     // Remplir les champs du formulaire
     document.getElementById('kyc-input-legal-name').value = client.legal_name || '';
@@ -514,15 +675,19 @@ function openAmlKycModal(clientName) {
     // UBO & Documents
     const uboContainer = document.getElementById('kyc-ubo-list-container');
     if (uboContainer) {
+        const phName = (lang === 'it') ? 'Nome UBO' : ((lang === 'en') ? 'UBO Name' : 'Nom UBO');
+        const phNat = (lang === 'it') ? 'Nazionalità' : ((lang === 'en') ? 'Nationality' : 'Nationalité');
+        const emptyUboMsg = (lang === 'it') ? 'Nessun UBO registrato.' : ((lang === 'en') ? 'No UBO recorded.' : 'Aucun UBO enregistré.');
+
         let uboRows = (client.ubo_list || []).map((u, i) => `
             <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; align-items: center;">
-                <input type="text" class="filter-input ubo-name" style="flex: 2;" value="${u.name}" placeholder="Nom UBO">
-                <input type="text" class="filter-input ubo-nat" style="flex: 1;" value="${u.nationality}" placeholder="Nationalité">
+                <input type="text" class="filter-input ubo-name" style="flex: 2;" value="${u.name}" placeholder="${phName}">
+                <input type="text" class="filter-input ubo-nat" style="flex: 1;" value="${u.nationality}" placeholder="${phNat}">
                 <input type="number" class="filter-input ubo-pct" style="width: 80px;" value="${u.percentage}" placeholder="%">
                 <span class="badge" style="background: rgba(16,185,129,0.15); color: var(--accent-emerald); font-size: 0.75rem;"><i class="fa-solid fa-check"></i> RBE</span>
             </div>
         `).join('');
-        uboContainer.innerHTML = uboRows || '<p style="color: var(--text-muted); font-size: 0.8rem;">Aucun UBO enregistré.</p>';
+        uboContainer.innerHTML = uboRows || `<p style="color: var(--text-muted); font-size: 0.8rem;">${emptyUboMsg}</p>`;
     }
 
     modal.classList.add('active');
@@ -600,6 +765,7 @@ function calculateDueDiligenceScore() {
     const isPep = document.getElementById('sim-is-pep').value === 'YES';
     const structure = document.getElementById('sim-structure').value;
     const volume = parseFloat(document.getElementById('sim-volume').value) || 0;
+    const lang = (typeof currentLang !== 'undefined') ? currentLang : 'fr';
 
     let score = 10; // Base score (Faible)
     let factors = [];
@@ -607,67 +773,79 @@ function calculateDueDiligenceScore() {
     // Facteur Entité
     if (entityType === 'SICAV_REGULEE' || entityType === 'INSTITUTION_REGULEE') {
         score += 5;
-        factors.push("Entité financière régulée sous supervision directe (CSSF/BCE) - Facteur atténuant.");
+        factors.push((lang === 'it') ? "Entità finanziaria regolata sotto vigilanza diretta (CSSF/BCE) - Fattore attenuante." : ((lang === 'en') ? "Regulated financial entity under direct supervisory authority (CSSF/ECB) - Mitigating factor." : "Entité financière régulée sous supervision directe (CSSF/BCE) - Facteur atténuant."));
     } else if (entityType === 'SPF_PATRIMONIALE') {
         score += 15;
-        factors.push("SPF Familiale (Loi 2007) : Gestion de patrimoine privé, contrôle UBO obligatoire.");
+        factors.push((lang === 'it') ? "SPF Familiare (Legge 2007): Gestione di patrimonio privato, verifica UBO obbligatoria." : ((lang === 'en') ? "Family SPF (2007 Law): Private wealth management, mandatory UBO verification." : "SPF Familiale (Loi 2007) : Gestion de patrimoine privé, contrôle UBO obligatoire."));
     } else if (entityType === 'SCSP_INVESTISSEMENT') {
         score += 20;
-        factors.push("Société en Commandite Spéciale (SCSp) : Véhicule d'investissement, vérification des associés commanditaires.");
+        factors.push((lang === 'it') ? "Società in Accomandita Speciale (SCSp): Veicolo d'investimento, verifica dei soci accomandanti." : ((lang === 'en') ? "Special Limited Partnership (SCSp): Investment vehicle, verification of limited partners." : "Société en Commandite Spéciale (SCSp) : Véhicule d'investissement, vérification des associés commanditaires."));
     } else {
         score += 10;
-        factors.push("Société commerciale standard (SA/Sàrl).");
+        factors.push((lang === 'it') ? "Società commerciale standard (SA/Sàrl)." : ((lang === 'en') ? "Standard commercial company (SA/Sàrl)." : "Société commerciale standard (SA/Sàrl)."));
     }
 
     // Facteur Pays
     if (country === 'LU' || country === 'IT' || country === 'FR' || country === 'BE' || country === 'DE') {
         score += 5;
-        factors.push("Juridiction UE / Zone Euro à haut niveau d'équivalence AML.");
+        factors.push((lang === 'it') ? "Giurisdizione UE / Area Euro ad alto livello di equivalenza AML." : ((lang === 'en') ? "EU / Eurozone jurisdiction with high AML equivalence standards." : "Juridiction UE / Zone Euro à haut niveau d'équivalence AML."));
     } else if (country === 'CH' || country === 'UK' || country === 'US') {
         score += 10;
-        factors.push("Place financière tierce équivalente GAFI.");
+        factors.push((lang === 'it') ? "Piazza finanziaria terza equivalente GAFI/FATF." : ((lang === 'en') ? "FATF-equivalent third-country financial centre." : "Place financière tierce équivalente GAFI."));
     } else {
         score += 35;
-        factors.push("Juridiction internationale non-UE / Pays tiers à vigilance renforcée.");
+        factors.push((lang === 'it') ? "Giurisdizione extra-UE / Paese terzo a vigilanza rafforzata." : ((lang === 'en') ? "Non-EU international jurisdiction / High-risk third country." : "Juridiction internationale non-UE / Pays tiers à vigilance renforcée."));
     }
 
     // Facteur PEP
     if (isPep) {
         score += 35;
-        factors.push("Présence d'une Personne Politiquement Exposée (PEP) : Vigilance renforcée légale requise.");
+        factors.push((lang === 'it') ? "Presenza di Persona Politicamente Esposta (PEP): Vigilanza rafforzata per legge obbligatoria." : ((lang === 'en') ? "Presence of Politically Exposed Person (PEP): Statutory Enhanced Due Diligence (EDD) mandatory." : "Présence d'une Personne Politiquement Exposée (PEP) : Vigilance renforcée légale requise."));
     }
 
     // Facteur Structure Actionnariat
     if (structure === 'COMPLEX') {
         score += 25;
-        factors.push("Chaîne de détention complexe / Holdings multiples : Remontée obligatoire jusqu'à la personne physique (UBO).");
+        factors.push((lang === 'it') ? "Catena proprietaria complessa / Holding multiple: Risalita obbligatoria fino alla persona fisica (UBO)." : ((lang === 'en') ? "Complex multi-tiered holding structure: Mandatory ultimate natural person (UBO) tracing." : "Chaîne de détention complexe / Holdings multiples : Remontée obligatoire jusqu'à la personne physique (UBO)."));
     } else if (structure === 'TRUST') {
         score += 30;
-        factors.push("Présence de Fiducie / Trust : Due Diligence approfondie sur le constituant et les bénéficiaires.");
+        factors.push((lang === 'it') ? "Presenza di Trust / Struttura fiduciaria: Due Diligence approfondita sul disponente e sui beneficiari." : ((lang === 'en') ? "Fiduciary / Trust structure: In-depth due diligence on settlor, protector, and beneficiaries." : "Présence de Fiducie / Trust : Due Diligence approfondie sur le constituant et les bénéficiaires."));
     }
 
     // Facteur Volume
     if (volume >= 50000) {
         score += 15;
-        factors.push("Volume d'honoraires prévus élevé (≥ 50.000 €).");
+        factors.push((lang === 'it') ? "Volume di compensi previsti elevato (≥ 50.000 €)." : ((lang === 'en') ? "High projected annual fee volume (≥ €50,000)." : "Volume d'honoraires prévus élevé (≥ 50.000 €)."));
     } else if (volume >= 25000) {
         score += 10;
-        factors.push("Volume d'honoraires standard significatif (≥ 25.000 €).");
+        factors.push((lang === 'it') ? "Volume di compensi significativo (≥ 25.000 €)." : ((lang === 'en') ? "Significant projected annual fee volume (≥ €25,000)." : "Volume d'honoraires standard significatif (≥ 25.000 €)."));
     }
 
     // Qualification Finale
-    let riskLevel = 'FAIBLE (Low)';
+    let riskLevel = (lang === 'it') ? 'BASSO (Low)' : ((lang === 'en') ? 'LOW (Faible)' : 'FAIBLE (Low)');
     let badgeClass = 'text-emerald';
-    let recommendations = "Due Diligence standard : Extrait RCS récent, pièce d'identité de l'UBO, déclaration RBE et convention de mandat.";
+    let recommendations = (lang === 'it') 
+        ? "Adeguata verifica standard: Visura RCS recente, documento d'identità dell'UBO, certificato RBE e contratto di mandato." 
+        : ((lang === 'en') 
+            ? "Standard Customer Due Diligence: Recent RCS extract, valid UBO ID, official RBE extract, and signed engagement agreement." 
+            : "Due Diligence standard : Extrait RCS récent, pièce d'identité de l'UBO, déclaration RBE et convention de mandat.");
 
     if (score >= 60 || isPep) {
-        riskLevel = 'ÉLEVÉ (High) - Vigilance Renforcée';
+        riskLevel = (lang === 'it') ? 'ELEVATO (High) - Vigilanza Rafforzata' : ((lang === 'en') ? 'HIGH (Élevé) - Enhanced Due Diligence' : 'ÉLEVÉ (High) - Vigilance Renforcée');
         badgeClass = 'text-rose';
-        recommendations = "Vigilance Renforcée (EDD) obligatoire : Justification documentée de l'origine des fonds, approbation préalable de la direction, revue annuelle renforcée et conservation intégrale des pièces 5 ans.";
+        recommendations = (lang === 'it')
+            ? "Vigilanza Rafforzata (EDD) obbligatoria: Giustificazione documentata dell'origine dei fondi, approvazione preventiva della direzione, riesame annuale rafforzato e conservazione fascicolo per 5 anni."
+            : ((lang === 'en')
+                ? "Mandatory Enhanced Due Diligence (EDD): Documented source of funds/wealth, senior management pre-approval, annual compliance review, and 5-year strict file retention."
+                : "Vigilance Renforcée (EDD) obligatoire : Justification documentée de l'origine des fonds, approbation préalable de la direction, revue annuelle renforcée et conservation intégrale des pièces 5 ans.");
     } else if (score >= 35) {
-        riskLevel = 'MOYEN (Medium) - Vigilance Active';
+        riskLevel = (lang === 'it') ? 'MEDIO (Medium) - Vigilanza Attiva' : ((lang === 'en') ? 'MEDIUM (Moyen) - Active Vigilance' : 'MOYEN (Medium) - Vigilance Active');
         badgeClass = 'text-amber';
-        recommendations = "Due Diligence standard approfondie : Contrôle RBE vérifié auprès du LBR, organigramme de détention signé, revue périodique tous les 2 ans.";
+        recommendations = (lang === 'it')
+            ? "Adeguata verifica standard approfondita: Certificato RBE verificato presso il registro LBR, organigramma del gruppo firmato, riesame periodico ogni 2 anni."
+            : ((lang === 'en')
+                ? "Enhanced Standard Due Diligence: RBE verified with LBR registry, signed ownership chart, biennial periodic review."
+                : "Due Diligence standard approfondie : Contrôle RBE vérifié auprès du LBR, organigramme de détention signé, revue périodique tous les 2 ans.");
     }
 
     const resContainer = document.getElementById('sim-results-box');
@@ -676,18 +854,18 @@ function calculateDueDiligenceScore() {
             <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.25rem;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                     <div>
-                        <span style="font-size: 0.8rem; color: var(--text-muted);">Score Global de Risque AML :</span>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">${t('aml_sim_res_title')}</span>
                         <h3 style="font-size: 1.6rem; font-weight: 800;" class="${badgeClass}">${score} / 100 &bull; ${riskLevel}</h3>
                     </div>
                 </div>
 
-                <h4 style="font-size: 0.9rem; color: var(--text-main); margin-bottom: 0.5rem;"><i class="fa-solid fa-list-check text-emerald"></i> Facteurs Clés d'Analyse :</h4>
+                <h4 style="font-size: 0.9rem; color: var(--text-main); margin-bottom: 0.5rem;"><i class="fa-solid fa-list-check text-emerald"></i> ${t('aml_sim_res_factors')}</h4>
                 <ul style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; padding-left: 1.25rem;">
                     ${factors.map(f => `<li>${f}</li>`).join('')}
                 </ul>
 
                 <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid var(--accent-emerald); border-radius: 8px; padding: 0.85rem;">
-                    <strong style="color: var(--accent-emerald); font-size: 0.85rem; display: block; margin-bottom: 0.25rem;"><i class="fa-solid fa-shield-check"></i> Recommandations de Conformité :</strong>
+                    <strong style="color: var(--accent-emerald); font-size: 0.85rem; display: block; margin-bottom: 0.25rem;"><i class="fa-solid fa-shield-check"></i> ${t('aml_sim_res_recommendations')}</strong>
                     <p style="margin: 0; font-size: 0.8rem; color: var(--text-main);">${recommendations}</p>
                 </div>
             </div>
@@ -1139,18 +1317,147 @@ function printManualContent() {
 }
 
 // Initialisation de la vue AML
+function populateAmlSimulatorOptions() {
+    const lang = (typeof currentLang !== 'undefined') ? currentLang : 'fr';
+    const selEntity = document.getElementById('sim-entity-type');
+    if (selEntity) {
+        const curVal = selEntity.value || 'SARL_COMMERCIALE';
+        if (lang === 'it') {
+            selEntity.innerHTML = `
+                <option value="SICAV_REGULEE">SICAV / Fondo Regolato CSSF (Basso rischio)</option>
+                <option value="INSTITUTION_REGULEE">Società di Gestione / Banca (Basso rischio)</option>
+                <option value="SARL_COMMERCIALE">Società Commerciale Sàrl (Rischio Standard)</option>
+                <option value="SA_COMMERCIALE">Società per Azioni SA (Rischio Standard)</option>
+                <option value="SPF_PATRIMONIALE">SPF - Gestione di Patrimonio Familiare</option>
+                <option value="SCSP_INVESTISSEMENT">SCSp - Società in Accomandita Speciale</option>
+            `;
+        } else if (lang === 'en') {
+            selEntity.innerHTML = `
+                <option value="SICAV_REGULEE">CSSF Regulated SICAV / Fund (Low Risk)</option>
+                <option value="INSTITUTION_REGULEE">Management Company / Bank (Low Risk)</option>
+                <option value="SARL_COMMERCIALE">Commercial Sàrl Company (Standard Risk)</option>
+                <option value="SA_COMMERCIALE">Commercial SA Company (Standard Risk)</option>
+                <option value="SPF_PATRIMONIALE">SPF - Private Wealth Management Company</option>
+                <option value="SCSP_INVESTISSEMENT">SCSp - Special Limited Partnership</option>
+            `;
+        } else {
+            selEntity.innerHTML = `
+                <option value="SICAV_REGULEE">SICAV / Fonds Régulé CSSF (Faible risque)</option>
+                <option value="INSTITUTION_REGULEE">Société de Gestion / Banque (Faible risque)</option>
+                <option value="SARL_COMMERCIALE">Société Commerciale Sàrl (Risque Standard)</option>
+                <option value="SA_COMMERCIALE">Société Anonyme SA (Risque Standard)</option>
+                <option value="SPF_PATRIMONIALE">SPF - Société de Gestion de Patrimoine Familial</option>
+                <option value="SCSP_INVESTISSEMENT">SCSp - Société en Commandite Spéciale</option>
+            `;
+        }
+        selEntity.value = curVal;
+    }
+
+    const selCountry = document.getElementById('sim-country');
+    if (selCountry) {
+        const curVal = selCountry.value || 'LU';
+        if (lang === 'it') {
+            selCountry.innerHTML = `
+                <option value="LU">Lussemburgo (Piazza finanziaria regolata)</option>
+                <option value="IT">Italia (Unione Europea)</option>
+                <option value="FR">Francia (Unione Europea)</option>
+                <option value="BE">Belgio (Unione Europea)</option>
+                <option value="DE">Germania (Unione Europea)</option>
+                <option value="CH">Svizzera (Paese terzo equivalente)</option>
+                <option value="BR">Brasile (Vigilanza investimenti internazionali)</option>
+                <option value="OTHER">Altro Paese Terzo (Extra UE)</option>
+            `;
+        } else if (lang === 'en') {
+            selCountry.innerHTML = `
+                <option value="LU">Luxembourg (Regulated financial centre)</option>
+                <option value="IT">Italy (European Union)</option>
+                <option value="FR">France (European Union)</option>
+                <option value="BE">Belgium (European Union)</option>
+                <option value="DE">Germany (European Union)</option>
+                <option value="CH">Switzerland (Equivalent third country)</option>
+                <option value="BR">Brazil (International investment vigilance)</option>
+                <option value="OTHER">Other Third Country (Non-EU)</option>
+            `;
+        } else {
+            selCountry.innerHTML = `
+                <option value="LU">Luxembourg (Place financière régulée)</option>
+                <option value="IT">Italie (Union Européenne)</option>
+                <option value="FR">France (Union Européenne)</option>
+                <option value="BE">Belgique (Union Européenne)</option>
+                <option value="DE">Allemagne (Union Européenne)</option>
+                <option value="CH">Suisse (Pays tiers équivalent)</option>
+                <option value="BR">Brésil (Vigilance investissement international)</option>
+                <option value="OTHER">Autre Pays Tiers (Hors UE)</option>
+            `;
+        }
+        selCountry.value = curVal;
+    }
+
+    const selPep = document.getElementById('sim-is-pep');
+    if (selPep) {
+        const curVal = selPep.value || 'NO';
+        if (lang === 'it') {
+            selPep.innerHTML = `
+                <option value="NO">No (Nessun dirigente o UBO è PEP)</option>
+                <option value="YES">Sì (Dirigente o Titolare Effettivo PEP)</option>
+            `;
+        } else if (lang === 'en') {
+            selPep.innerHTML = `
+                <option value="NO">No (No director or UBO is PEP)</option>
+                <option value="YES">Yes (Director or Beneficial Owner is PEP)</option>
+            `;
+        } else {
+            selPep.innerHTML = `
+                <option value="NO">Non (Aucun dirigeant ou UBO n'est PEP)</option>
+                <option value="YES">Oui (Dirigeant ou Bénéficiaire Effectif PEP)</option>
+            `;
+        }
+        selPep.value = curVal;
+    }
+
+    const selStructure = document.getElementById('sim-structure');
+    if (selStructure) {
+        const curVal = selStructure.value || 'DIRECT';
+        if (lang === 'it') {
+            selStructure.innerHTML = `
+                <option value="DIRECT">Diretta & Trasparente (Persona fisica diretta)</option>
+                <option value="COMPLEX">Catena di controllo con diverse holding</option>
+                <option value="TRUST">Fiducia / Trust / Struttura fiduciaria</option>
+            `;
+        } else if (lang === 'en') {
+            selStructure.innerHTML = `
+                <option value="DIRECT">Direct & Transparent (Direct natural person)</option>
+                <option value="COMPLEX">Multi-layered holding structure</option>
+                <option value="TRUST">Fiduciary / Trust structure</option>
+            `;
+        } else {
+            selStructure.innerHTML = `
+                <option value="DIRECT">Directe & Transparente (Personne physique directe)</option>
+                <option value="COMPLEX">Chaîne de détention avec plusieurs holdings</option>
+                <option value="TRUST">Fiducie / Trust / Structure fiduciaire</option>
+            `;
+        }
+        selStructure.value = curVal;
+    }
+}
+
+// Initialisation de la vue AML
 function populateAmlFilters() {
+    const lang = (typeof currentLang !== 'undefined') ? currentLang : 'fr';
     // Client Filter
     const selClient = document.getElementById('aml-filter-client');
     if (selClient) {
         const registry = window.NEW_LIFE_AML_CLIENTS || {};
-        selClient.innerHTML = '<option value="ALL">Toutes les sociétés débitrices</option>';
+        const curVal = amlFilterClient || 'ALL';
+        const allClientsLabel = (lang === 'it') ? 'Tutte le società debitrici' : ((lang === 'en') ? 'All debtor companies' : 'Toutes les sociétés débitrices');
+        selClient.innerHTML = `<option value="ALL">${allClientsLabel}</option>`;
         Object.keys(registry).forEach(c => {
             const opt = document.createElement('option');
             opt.value = c;
             opt.textContent = c;
             selClient.appendChild(opt);
         });
+        selClient.value = curVal;
         selClient.onchange = (e) => {
             amlFilterClient = e.target.value;
             updateAmlView();
@@ -1228,6 +1535,7 @@ function initAmlApp() {
     });
 
     populateAmlFilters();
+    populateAmlSimulatorOptions();
     updateAmlView();
     renderAmlMatrix();
 
@@ -1253,7 +1561,15 @@ function initAmlApp() {
 const prevAmlLangChange = window.onLanguageChange;
 window.onLanguageChange = function(lang) {
     if (typeof prevAmlLangChange === 'function') prevAmlLangChange(lang);
+    populateAmlFilters();
+    populateAmlSimulatorOptions();
     updateAmlView();
+    renderAmlMatrix();
+    calculateDueDiligenceScore();
+    if (typeof setManualModalLang === 'function') {
+        setManualModalLang(lang);
+    }
 };
 
 document.addEventListener('DOMContentLoaded', initAmlApp);
+
