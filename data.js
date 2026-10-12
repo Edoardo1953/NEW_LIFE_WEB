@@ -9,10 +9,10 @@ window.NEW_LIFE_DATA = {
     "matricule": "2018 2432 026",
     "tva": "TVA 11773678",
     "currency": "EUR (€)",
-    "updated_at": "09/10/2026 11:07:47"
+    "updated_at": "12/10/2026 10:00:16"
   },
   "stats": {
-    "total_records": 992,
+    "total_records": 993,
     "years": [
       2018,
       2019,
@@ -35,7 +35,7 @@ window.NEW_LIFE_DATA = {
       2025
     ],
     "latest_closed_year": 2025,
-    "last_balance": 14312.26,
+    "last_balance": 14204.62,
     "suppliers_count": 64,
     "macros_count": 18
   },
@@ -38025,6 +38025,44 @@ window.NEW_LIFE_DATA = {
       "paye_non": "PAYE",
       "exercice": "2026",
       "progressivo_banca": 14312.26,
+      "is_storno": false,
+      "is_transfert": false
+    },
+    {
+      "id": 1003,
+      "code_op": "CHA",
+      "date": "2026-10-12",
+      "valeur": "2026-10-12",
+      "mois": "10-2026",
+      "trim": "4° Trim",
+      "sem": "2° Sem",
+      "month": 10,
+      "an": 2026,
+      "compet_contabile": 2026,
+      "ord_ext": "ORD",
+      "e_s": "SORTIES",
+      "d_c": "D",
+      "macro": "61 - AUTRES CHARGES EXTERNES",
+      "class": "613 - REMUNERATIONS D'INTERMEDIAIRES",
+      "detail": "61342 - HONORAIRES COMPTA. FISC. AUDIT",
+      "description": "Sécrétariat Social",
+      "type": "",
+      "comptable": "YES",
+      "sp_ce": "CE",
+      "compte": "POST",
+      "date_facture": "2026-10-08",
+      "intracom": "NON",
+      "pays": "L",
+      "fournisseur": "AFC Luxembourg",
+      "nr_fatt": "",
+      "personnel": "",
+      "montant": -92.0,
+      "taux_tva": 0.17,
+      "tva": -15.64,
+      "total": -107.64,
+      "paye_non": "PAYE",
+      "exercice": "2026",
+      "progressivo_banca": 14204.62,
       "is_storno": false,
       "is_transfert": false
     }

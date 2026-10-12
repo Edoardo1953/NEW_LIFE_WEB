@@ -204,19 +204,6 @@ function formatNumber(val, decimals = 2) {
     return decimals > 0 ? `${sign}${integerPart},${decimalPart}` : `${sign}${integerPart}`;
 }
 
-const formatDate = window.formatDate || function(d) {
-    if (!d) return '';
-    const m = String(d).match(/^(\d{4})[-/.](\d{2})[-/.](\d{2})/);
-    return m ? `${m[3]}/${m[2]}/${m[1]}` : d;
-};
-
-const toInputDate = window.toInputDate || function(d) {
-    if (!d) return '';
-    if (/^\d{4}-\d{2}-\d{2}$/.test(d)) return d;
-    const m = String(d).match(/^(\d{2})[\/-](\d{2})[\/-](\d{4})/);
-    return m ? `${m[3]}-${m[2]}-${m[1]}` : d;
-};
-
 function getCategoryBadge(cat) {
     switch (cat) {
         case 'acte':

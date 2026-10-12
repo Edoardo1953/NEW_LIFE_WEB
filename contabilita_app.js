@@ -34,12 +34,6 @@ function formatNumber(num, decimals = 0) {
     return decimals > 0 ? parts.join(",") : parts[0];
 }
 
-const formatDate = window.formatDate || function(d) {
-    if (!d) return '';
-    const m = String(d).match(/^(\d{4})[-/.](\d{2})[-/.](\d{2})/);
-    return m ? `${m[3]}/${m[2]}/${m[1]}` : d;
-};
-
 function populateYearSelect() {
     const yearSelect = document.getElementById('contab-year-select');
     if (!yearSelect || !window.NEW_LIFE_DATA) return;
