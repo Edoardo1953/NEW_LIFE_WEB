@@ -1674,7 +1674,9 @@ function refreshAppGlobalData(btn) {
                     localStorage.setItem('new_life_last_sync', formatted);
                     sessionStorage.setItem('new_life_just_refreshed', 'true');
                     setTimeout(() => {
-                        window.location.reload();
+                        const url = new URL(window.location.href);
+                        url.searchParams.set('_t', Date.now().toString());
+                        window.location.href = url.toString();
                     }, 300);
                 } else {
                     const err = data?.error || 'Errore sconosciuto';
@@ -1688,7 +1690,9 @@ function refreshAppGlobalData(btn) {
                 showGlobalToast(msgOffline, 'fa-triangle-exclamation');
                 if (icon) icon.classList.remove('fa-spin');
                 setTimeout(() => {
-                    window.location.reload();
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('_t', Date.now().toString());
+                    window.location.href = url.toString();
                 }, 1500);
             });
     } else {
@@ -1697,7 +1701,7 @@ function refreshAppGlobalData(btn) {
         showGlobalToast(msgFile, 'fa-triangle-exclamation');
         if (icon) icon.classList.remove('fa-spin');
         setTimeout(() => {
-            window.location.reload();
+            window.location.reload(true);
         }, 1500);
     }
 }

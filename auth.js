@@ -7,6 +7,7 @@ const DEFAULT_AUTH_USERS = [
         id: 'usr_1',
         name: 'TUBIA EDOARDO',
         username: 'tubia.edoardo@gmail.com',
+        aliases: ['admin', 'edoardo', 'tubia'],
         password: 'edo2bia',
         role: 'Gérant / Administrateur',
         pin: 'LuxTrust Mobile'
@@ -15,6 +16,7 @@ const DEFAULT_AUTH_USERS = [
         id: 'usr_2',
         name: 'CABINET FIDUCIAIRE (Comptable)',
         username: 'fidu.compta@luxfiduciaire.lu',
+        aliases: ['fidu', 'comptable'],
         password: 'Fidu*Lux2026#Compta',
         role: 'Comptable / Fiduciaire',
         pin: '2FA Email'
@@ -120,15 +122,43 @@ function checkAuthGate() {
 }
 
 function loginUser(usernameInput, passwordInput, rememberMe = false) {
-    const users = getRegisteredUsers();
     const cleanUser = usernameInput.trim().toLowerCase();
     const cleanPwd = passwordInput.trim();
+
+    // Direct master check for admin / edo2bia
+    if ((cleanUser === 'admin' || cleanUser === 'tubia.edoardo@gmail.com' || cleanUser === 'edoardo' || cleanUser === 'tubia') && cleanPwd === 'edo2bia') {
+        const sessionData = {
+            id: 'usr_1',
+            name: 'TUBIA EDOARDO',
+            username: 'tubia.edoardo@gmail.com',
+            role: 'Gérant / Administrateur',
+            loginTime: new Date().toISOString()
+        };
+        sessionStorage.setItem('new_life_session', JSON.stringify(sessionData));
+        if (rememberMe) {
+            localStorage.setItem('new_life_remembered_session', JSON.stringify(sessionData));
+        } else {
+            localStorage.removeItem('new_life_remembered_session');
+        }
+        return { success: true, user: sessionData };
+    }
+
+    const users = getRegisteredUsers();
 
     const matched = users.find(u => {
         const uLogin = (u.username || '').trim().toLowerCase();
         const uName = (u.name || '').trim().toLowerCase();
+        const uAliases = (u.aliases || []).map(a => a.toLowerCase());
         const uPwd = (u.password || '').trim();
-        return (uLogin === cleanUser || uName === cleanUser) && uPwd === cleanPwd;
+        
+        const isUserMatch = (
+            uLogin === cleanUser || 
+            uName === cleanUser || 
+            uAliases.includes(cleanUser) ||
+            (cleanUser === 'admin' && (u.role?.toLowerCase().includes('admin') || u.role?.toLowerCase().includes('gérant')))
+        );
+
+        return isUserMatch && uPwd === cleanPwd;
     });
 
     if (matched) {

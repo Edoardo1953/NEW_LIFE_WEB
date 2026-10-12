@@ -736,6 +736,22 @@ def main():
         f.write(";\n")
     print(f"Fichier généré : {amort_js_path}")
 
+    # Aggiorna versione nei file HTML per aggirare la cache del browser
+    try:
+        import glob
+        ts = str(int(datetime.datetime.now().timestamp()))
+        for h in glob.glob(os.path.join(BASE_DIR, "*.html")):
+            with open(h, "r", encoding="utf-8") as f_html:
+                c_html = f_html.read()
+            import re
+            c_html = re.sub(r'data\.js(\?v=\d+)?', f'data.js?v={ts}', c_html)
+            c_html = re.sub(r'ammortamenti_data\.js(\?v=\d+)?', f'ammortamenti_data.js?v={ts}', c_html)
+            with open(h, "w", encoding="utf-8") as f_html:
+                f_html.write(c_html)
+        print(f"Version cache HTML mise à jour (v={ts}).")
+    except Exception as e:
+        print(f"Warning mise a jour cache HTML: {e}")
+
     # 3. Documents
     sync_documents()
 
