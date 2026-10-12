@@ -9,7 +9,7 @@ window.NEW_LIFE_DATA = {
     "matricule": "2018 2432 026",
     "tva": "TVA 11773678",
     "currency": "EUR (€)",
-    "updated_at": "12/10/2026 10:25:16"
+    "updated_at": "12/10/2026 10:37:25"
   },
   "stats": {
     "total_records": 993,
