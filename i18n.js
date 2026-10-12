@@ -1541,10 +1541,76 @@ function toggleTheme() {
     localStorage.setItem('new_life_theme', isLight ? 'light' : 'dark');
 }
 
+// --- Global Date Formatting Utilities (DD/MM/YYYY) ---
+function formatDate(dateVal) {
+    if (!dateVal && dateVal !== 0) return '';
+    if (typeof dateVal !== 'string') {
+        if (dateVal instanceof Date) {
+            if (isNaN(dateVal.getTime())) return '';
+            const d = String(dateVal.getDate()).padStart(2, '0');
+            const m = String(dateVal.getMonth() + 1).padStart(2, '0');
+            const y = dateVal.getFullYear();
+            return `${d}/${m}/${y}`;
+        }
+        dateVal = String(dateVal);
+    }
+    const trimmed = dateVal.trim();
+    if (!trimmed) return '';
+
+    // If already in DD/MM/YYYY format (or DD/MM/YYYY HH:mm:ss)
+    if (/^\d{2}\/\d{2}\/\d{4}/.test(trimmed)) {
+        return trimmed;
+    }
+
+    // Match YYYY-MM-DD or YYYY/MM/DD with optional time
+    const matchIso = trimmed.match(/^(\d{4})[-/.](\d{2})[-/.](\d{2})(?:[T\s](\d{2}:\d{2}(?::\d{2})?))?/);
+    if (matchIso) {
+        const [_, y, m, d, time] = matchIso;
+        return time ? `${d}/${m}/${y} ${time}` : `${d}/${m}/${y}`;
+    }
+
+    // Match DD-MM-YYYY with optional time
+    const matchDash = trimmed.match(/^(\d{2})-(\d{2})-(\d{4})(?:[T\s](\d{2}:\d{2}(?::\d{2})?))?/);
+    if (matchDash) {
+        const [_, d, m, y, time] = matchDash;
+        return time ? `${d}/${m}/${y} ${time}` : `${d}/${m}/${y}`;
+    }
+
+    return trimmed;
+}
+
+function formatDateOnly(dateVal) {
+    const formatted = formatDate(dateVal);
+    if (!formatted) return '';
+    return formatted.split(' ')[0];
+}
+
+function toInputDate(dateVal) {
+    if (!dateVal) return '';
+    if (typeof dateVal !== 'string') {
+        if (dateVal instanceof Date && !isNaN(dateVal.getTime())) {
+            return dateVal.toISOString().split('T')[0];
+        }
+        dateVal = String(dateVal);
+    }
+    const trimmed = dateVal.trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return trimmed;
+    const match = trimmed.match(/^(\d{2})[\/-](\d{2})[\/-](\d{4})/);
+    if (match) {
+        return `${match[3]}-${match[2]}-${match[1]}`;
+    }
+    return '';
+}
+
+window.formatDate = formatDate;
+window.formatDateOnly = formatDateOnly;
+window.toInputDate = toInputDate;
+
 function getAppLastUpdate() {
-    return localStorage.getItem('new_life_last_sync') || 
+    const raw = localStorage.getItem('new_life_last_sync') || 
            (window.NEW_LIFE_DATA && window.NEW_LIFE_DATA.company && window.NEW_LIFE_DATA.company.updated_at) || 
-           '2026-09-28 07:38:17';
+           '28/09/2026 07:38:17';
+    return formatDate(raw);
 }
 
 function updateSidebarTimestamp() {
@@ -1591,7 +1657,7 @@ function refreshAppGlobalData(btn) {
     
     const now = new Date();
     const pad = (n) => String(n).padStart(2, '0');
-    const formatted = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    const formatted = `${pad(now.getDate())}/${pad(now.getMonth() + 1)}/${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
     
     // If running with local python server (http://localhost:8085)
     if (window.location.protocol.startsWith('http')) {

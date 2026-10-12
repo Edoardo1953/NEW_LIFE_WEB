@@ -702,7 +702,7 @@ def main():
             "matricule": "2018 2432 026",
             "tva": "TVA 11773678",
             "currency": "EUR (€)",
-            "updated_at": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            "updated_at": datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         },
         "stats": {
             "total_records": len(records),

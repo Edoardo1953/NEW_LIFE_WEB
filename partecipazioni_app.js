@@ -204,6 +204,19 @@ function formatNumber(val, decimals = 2) {
     return decimals > 0 ? `${sign}${integerPart},${decimalPart}` : `${sign}${integerPart}`;
 }
 
+const formatDate = window.formatDate || function(d) {
+    if (!d) return '';
+    const m = String(d).match(/^(\d{4})[-/.](\d{2})[-/.](\d{2})/);
+    return m ? `${m[3]}/${m[2]}/${m[1]}` : d;
+};
+
+const toInputDate = window.toInputDate || function(d) {
+    if (!d) return '';
+    if (/^\d{4}-\d{2}-\d{2}$/.test(d)) return d;
+    const m = String(d).match(/^(\d{2})[\/-](\d{2})[\/-](\d{4})/);
+    return m ? `${m[3]}-${m[2]}-${m[1]}` : d;
+};
+
 function getCategoryBadge(cat) {
     switch (cat) {
         case 'acte':
@@ -434,7 +447,7 @@ function createParticipationCard(p, allDocs) {
                     <span class="part-doc-name">${d.title}</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 0.35rem;">
-                    <span class="part-doc-date">${d.date || ''}</span>
+                    <span class="part-doc-date">${formatDate(d.date) || ''}</span>
                     <button class="${viewBtnClass}" onclick="viewPartDocument('${d.id}')" title="${viewBtnTitle}">
                         <i class="fa-solid fa-eye" style="color: ${iconColor};"></i>
                     </button>
@@ -507,7 +520,7 @@ function createParticipationCard(p, allDocs) {
                 <div><i class="fa-solid fa-hashtag text-blue" style="width: 16px;"></i> <strong>${isReceivable ? 'Compte Comptable :' : 'Immatriculation :'}</strong> ${p.rcs_number || p.pcn_account || '-'}</div>
                 <div><i class="fa-solid fa-building text-blue" style="width: 16px;"></i> <strong>Siège :</strong> ${p.headquarters || '-'}</div>
                 <div><i class="fa-solid fa-user-tie text-blue" style="width: 16px;"></i> <strong>${isReceivable ? 'Gestionnaire :' : 'Mandataire :'}</strong> ${p.rep_name || '-'}</div>
-                <div><i class="fa-regular fa-calendar-check text-blue" style="width: 16px;"></i> <strong>Date de référence :</strong> ${p.entry_date || '-'}</div>
+                <div><i class="fa-regular fa-calendar-check text-blue" style="width: 16px;"></i> <strong>Date de référence :</strong> ${formatDate(p.entry_date) || '-'}</div>
                 ${p.notes ? `<div style="margin-top: 0.25rem; font-style: italic; background: rgba(255,255,255,0.02); padding: 0.4rem 0.6rem; border-radius: 6px; border: 1px solid var(--border-subtle);"><i class="fa-solid fa-circle-info text-cyan"></i> ${p.notes}</div>` : ''}
             </div>
 
@@ -692,7 +705,7 @@ function renderPartTable() {
             </td>
             <td><span class="badge-country">${p.country}</span></td>
             <td><span class="badge-pcn" style="${isReceivable ? 'border-color: rgba(59, 130, 246, 0.4); color: var(--accent-blue);' : ''}">${p.pcn_code || (isReceivable ? '234' : '233')}</span></td>
-            <td>${p.entry_date || '-'}</td>
+            <td>${formatDate(p.entry_date) || '-'}</td>
             <td class="text-right">${formatCurrency(p.initial_invested)}</td>
             <td class="text-right text-amber">${formatCurrency(p.divested_amount)}</td>
             <td class="text-right text-bold ${isReceivable ? 'text-cyan' : 'text-emerald'}" style="font-size: 0.95rem;">${formatCurrency(p.vnc)}</td>
@@ -865,7 +878,7 @@ function renderPartDocsArchive() {
 
                 <div class="doc-name">${d.title}</div>
                 <div class="doc-meta">
-                    <span><i class="fa-regular fa-calendar"></i> Date réf. : <strong>${d.date || '-'}</strong></span>
+                    <span><i class="fa-regular fa-calendar"></i> Date réf. : <strong>${formatDate(d.date) || '-'}</strong></span>
                     <span><i class="fa-solid fa-paperclip"></i> Fichier : <em>${d.filename}</em> (${d.size || 'PDF'})</span>
                     ${d.notes ? `<span style="margin-top: 0.35rem; color: var(--text-muted); font-size: 0.75rem;"><i class="fa-solid fa-circle-info"></i> ${d.notes}</span>` : ''}
                 </div>
@@ -920,7 +933,7 @@ function renderPartHistory() {
         const colorClass = isEntree ? 'text-emerald' : 'text-rose';
 
         tr.innerHTML = `
-            <td><strong>${m.date}</strong></td>
+            <td><strong>${formatDate(m.date)}</strong></td>
             <td><strong style="color: var(--text-main);">${m.entity}</strong></td>
             <td><span class="badge ${badgeClass}">${m.type}</span></td>
             <td><code>${m.compte}</code></td>
@@ -1216,7 +1229,7 @@ function openEditPartModal(partId) {
     document.getElementById('part-form-rcs').value = p.rcs_number || '';
     document.getElementById('part-form-headquarters').value = p.headquarters || '';
     document.getElementById('part-form-rep').value = p.rep_name || '';
-    document.getElementById('part-form-date').value = p.entry_date || '';
+    document.getElementById('part-form-date').value = toInputDate(p.entry_date);
     document.getElementById('part-form-initial').value = p.initial_invested || 0;
     document.getElementById('part-form-divested').value = p.divested_amount || 0;
     document.getElementById('part-form-vnc').value = p.vnc || 0;
@@ -1353,7 +1366,7 @@ function openEditDocModal(docId) {
     document.getElementById('modal-doc-part-id').value = d.part_id || '';
     document.getElementById('modal-doc-title').value = d.title || '';
     document.getElementById('modal-doc-category').value = d.category || 'acte';
-    document.getElementById('modal-doc-date').value = d.date || '';
+    document.getElementById('modal-doc-date').value = toInputDate(d.date);
     document.getElementById('modal-doc-filename').value = d.filename || '';
     document.getElementById('modal-doc-notes').value = d.notes || '';
 

@@ -18,6 +18,12 @@ function formatNumber(num, decimals = 0) {
     return decimals > 0 ? parts.join(",") : parts[0];
 }
 
+const formatDate = window.formatDate || function(d) {
+    if (!d) return '';
+    const m = String(d).match(/^(\d{4})[-/.](\d{2})[-/.](\d{2})/);
+    return m ? `${m[3]}/${m[2]}/${m[1]}` : d;
+};
+
 let currentCategoryFilter = 'ALL';
 let currentAmortYear = 2026;
 
@@ -245,7 +251,7 @@ function renderAssetCards(assets) {
             </div>
 
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-size: 0.75rem; color: var(--text-muted);">${lblAcq} : <strong>${ast.acquisition_date}</strong></span>
+                <span style="font-size: 0.75rem; color: var(--text-muted);">${lblAcq} : <strong>${formatDate(ast.acquisition_date)}</strong></span>
                 <button class="btn btn-secondary btn-sm" onclick="openAssetModal('${ast.id}')">
                     <i class="fa-solid fa-table"></i> ${lblPlan}
                 </button>
@@ -269,7 +275,7 @@ function renderConsolidatedTotals(totalsByYear) {
         let acq = 0;
         if (amort.assets) {
             amort.assets.forEach(a => {
-                const aYr = parseInt(a.acquisition_date.split('-')[0]);
+                const aYr = parseInt(a.acquisition_date.includes('/') ? a.acquisition_date.split('/')[2] : a.acquisition_date.split('-')[0]);
                 if (aYr === yrNum) acq += a.initial_value;
             });
         }
@@ -319,7 +325,7 @@ function openAssetModal(assetId) {
             </div>
             <div>
                 <p style="color: var(--text-muted); font-size: 0.8rem;">Fournisseur & Date d'achat</p>
-                <p style="font-weight: 600;">${ast.supplier} (${ast.acquisition_date})</p>
+                <p style="font-weight: 600;">${ast.supplier} (${formatDate(ast.acquisition_date)})</p>
             </div>
             <div>
                 <p style="color: var(--text-muted); font-size: 0.8rem;">Valeur d'Acquisition HT</p>
@@ -363,7 +369,7 @@ function calculateSimulation() {
     const dateStr = document.getElementById('sim-date').value || '2025-01-01';
     const method = document.getElementById('sim-method').value;
 
-    const startYear = parseInt(dateStr.split('-')[0]) || 2025;
+    const startYear = parseInt(dateStr.includes('/') ? dateStr.split('/')[2] : dateStr.split('-')[0]) || 2025;
     const rate = 100 / years;
 
     const tbody = document.getElementById('sim-tbody');
@@ -422,7 +428,7 @@ function exportAmortExcel() {
         let acq = 0;
         if (amort.assets) {
             amort.assets.forEach(a => {
-                const aYr = parseInt(a.acquisition_date.split('-')[0]);
+                const aYr = parseInt(a.acquisition_date.includes('/') ? a.acquisition_date.split('/')[2] : a.acquisition_date.split('-')[0]);
                 if (aYr === yrNum) acq += a.initial_value;
             });
         }

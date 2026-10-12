@@ -19,6 +19,12 @@ function formatNumber(num, decimals = 0) {
     return decimals > 0 ? parts.join(",") : parts[0];
 }
 
+const formatDate = window.formatDate || function(d) {
+    if (!d) return '';
+    const m = String(d).match(/^(\d{4})[-/.](\d{2})[-/.](\d{2})/);
+    return m ? `${m[3]}/${m[2]}/${m[1]}` : d;
+};
+
 // État global des filtres
 let amlFilterYear = 'ALL';
 let amlFilterClient = 'ALL';
@@ -327,7 +333,7 @@ function renderAmlRegistryTable() {
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td style="font-weight: 600; white-space: nowrap;">${r.date}</td>
+            <td style="font-weight: 600; white-space: nowrap;">${formatDate(r.date)}</td>
             <td>
                 <div style="display: flex; flex-direction: column;">
                     <strong style="color: var(--text-main);">${r.client_name}</strong>
@@ -882,8 +888,8 @@ function exportAmlExcel() {
         const uboNames = (cp.ubo_list || []).map(u => `${u.name} (${u.percentage}%)`).join(', ');
         return {
             "ID Opération": r.id,
-            "Date Opération": r.date,
-            "Date Valeur": r.valeur || r.date,
+            "Date Opération": formatDate(r.date),
+            "Date Valeur": formatDate(r.valeur || r.date),
             "Exercice Fiscal": r.an,
             "Société Débitrice": r.client_name,
             "Dénomination Légale": cp.legal_name,
@@ -906,7 +912,7 @@ function exportAmlExcel() {
             "Statut Dossier KYC": r.aml_kyc_status,
             "Personne Politiquement Exposée (PEP)": r.is_pep ? 'OUI' : 'NON',
             "Bénéficiaires Effectifs (RBE / UBO)": uboNames,
-            "Dernière Revue Due Diligence": cp.last_review_date || '',
+            "Dernière Revue Due Diligence": formatDate(cp.last_review_date) || '',
             "Notes & Vérifications AML": cp.notes || ''
         };
     });
@@ -924,7 +930,7 @@ function exportAmlCsv() {
         const cp = r.client_profile;
         return [
             r.id,
-            r.date,
+            formatDate(r.date),
             r.an,
             `"${(r.client_name || '').replace(/"/g, '""')}"`,
             `"${(cp.legal_name || '').replace(/"/g, '""')}"`,
@@ -974,14 +980,14 @@ function exportAmlPdf() {
 
     doc.setFontSize(10);
     doc.setTextColor(100, 116, 139);
-    doc.text(`Règlementation AED / CSSF (Loi du 12 novembre 2004) • Date d'extraction : ${new Date().toLocaleDateString('fr-FR')}`, 40, 62);
+    doc.text(`Règlementation AED / CSSF (Loi du 12 novembre 2004) • Date d'extraction : ${formatDate(new Date())}`, 40, 62);
     doc.text(`Total Contrôlé : ${formatCurrency(totalVol)} • Opérations : ${records.length} • Dossiers Conformes : ${compCount} (${((compCount / (records.length || 1)) * 100).toFixed(0)}%)`, 40, 77);
 
     // Table
     const tableData = records.map(r => {
         const cp = r.client_profile;
         return [
-            r.date,
+            formatDate(r.date),
             r.client_name,
             cp.rcs_number,
             cp.mandate_nature.split('/')[0],

@@ -21,6 +21,12 @@ function formatNumber(num, decimals = 0) {
     return decimals > 0 ? parts.join(",") : parts[0];
 }
 
+const formatDate = window.formatDate || function(d) {
+    if (!d) return '';
+    const m = String(d).match(/^(\d{4})[-/.](\d{2})[-/.](\d{2})/);
+    return m ? `${m[3]}/${m[2]}/${m[1]}` : d;
+};
+
 function initBanca() {
     if (!window.NEW_LIFE_DATA || !window.NEW_LIFE_DATA.records) {
         console.warn("Données NEW_LIFE non trouvées.");
@@ -219,7 +225,7 @@ function renderStatsAndTable(yearVal) {
 
         tr.innerHTML = `
             <td><code style="font-weight: 700; color: var(--accent-blue);">${r.code_op || '-'}</code></td>
-            <td style="font-weight: 600; white-space: nowrap;">${r.date || '-'}</td>
+            <td style="font-weight: 600; white-space: nowrap;">${formatDate(r.date) || '-'}</td>
             <td style="text-align: center;">${compteBadge}</td>
             <td><span class="badge ${badgeClass}">${badgeText}</span></td>
             <td><strong>${r.description || '-'}</strong></td>
@@ -257,7 +263,7 @@ function deleteBankRecord(id) {
     const rec = data.records.find(r => r.id === id);
     if (!rec) return;
 
-    const msg = `${t('confirm_delete_op') || 'Êtes-vous sûr de vouloir supprimer cette opération ?'}\n\n• Date : ${rec.date}\n• Libellé : ${rec.description}\n• Montant : ${formatCurrency(rec.total)}`;
+    const msg = `${t('confirm_delete_op') || 'Êtes-vous sûr de vouloir supprimer cette opération ?'}\n\n• Date : ${formatDate(rec.date)}\n• Libellé : ${rec.description}\n• Montant : ${formatCurrency(rec.total)}`;
     if (!confirm(msg)) return;
 
     deletedBankIds.add(id);
@@ -288,7 +294,7 @@ function openDetailModal(recordId) {
             </div>
             <div>
                 <p style="color: var(--text-muted); font-size: 0.8rem;">Date d'opération / Date Valeur</p>
-                <p style="font-weight: 600;">${rec.date} (Valeur: ${rec.valeur})</p>
+                <p style="font-weight: 600;">${formatDate(rec.date)} (Valeur: ${formatDate(rec.valeur)})</p>
             </div>
             <div>
                 <p style="color: var(--text-muted); font-size: 0.8rem;">Sens du Flux</p>
@@ -314,7 +320,7 @@ function openDetailModal(recordId) {
             </div>
             <div>
                 <p style="color: var(--text-muted); font-size: 0.8rem;">N° Facture & Date</p>
-                <p style="font-weight: 600;">${rec.nr_fatt || '-'} ${rec.date_facture ? '(' + rec.date_facture + ')' : ''}</p>
+                <p style="font-weight: 600;">${rec.nr_fatt || '-'} ${rec.date_facture ? '(' + formatDate(rec.date_facture) + ')' : ''}</p>
             </div>
             <div>
                 <p style="color: var(--text-muted); font-size: 0.8rem;">Macro Catégorie & Classe PCN</p>
@@ -361,8 +367,8 @@ function exportToExcel() {
 
     const exportRows = currentFilteredRecords.map(r => ({
         "Code Op.": r.code_op,
-        "Date": r.date,
-        "Date Valeur": r.valeur,
+        "Date": formatDate(r.date),
+        "Date Valeur": formatDate(r.valeur),
         "Sens": r.e_s,
         "Description": r.description,
         "Fournisseur": r.fournisseur,
@@ -395,11 +401,11 @@ function exportToPDF() {
     doc.setFontSize(16);
     doc.text("NEW LIFE Sàrl - Grand Livre de Trésorerie", 14, 15);
     doc.setFontSize(10);
-    doc.text(`Export du ${new Date().toLocaleDateString('fr-FR')} - Total ${currentFilteredRecords.length} opérations`, 14, 22);
+    doc.text(`Export du ${formatDate(new Date())} - Total ${currentFilteredRecords.length} opérations`, 14, 22);
 
     const tableData = currentFilteredRecords.slice(0, 100).map(r => [
         r.code_op,
-        r.date,
+        formatDate(r.date),
         r.compte || '-',
         r.e_s,
         r.description.substring(0, 30),

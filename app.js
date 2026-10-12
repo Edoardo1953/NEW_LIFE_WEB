@@ -21,6 +21,12 @@ function formatNumber(num, decimals = 0) {
     return decimals > 0 ? parts.join(",") : parts[0];
 }
 
+const formatDate = window.formatDate || function(d) {
+    if (!d) return '';
+    const m = String(d).match(/^(\d{4})[-/.](\d{2})[-/.](\d{2})/);
+    return m ? `${m[3]}/${m[2]}/${m[1]}` : d;
+};
+
 function initDashboard() {
     if (!window.NEW_LIFE_DATA || !window.NEW_LIFE_DATA.records) {
         console.warn("Données NEW_LIFE non trouvées.");
@@ -34,7 +40,7 @@ function initDashboard() {
     // Update last update timestamp
     const updatedEl = document.getElementById('sidebar-updated-at');
     if (updatedEl) {
-        updatedEl.textContent = (typeof getAppLastUpdate === 'function') ? getAppLastUpdate() : (data.company?.updated_at || '--/--/----');
+        updatedEl.textContent = (typeof getAppLastUpdate === 'function') ? getAppLastUpdate() : (formatDate(data.company?.updated_at) || '--/--/----');
     }
 
     // Populate Year Select Filter
@@ -442,7 +448,7 @@ function renderCorporateProfile() {
                     </div>
                     <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
                         <span style="color: var(--text-muted);">${t('corp_lbl_constitution')} :</span>
-                        <strong>${p.incorporation_date}</strong>
+                        <strong>${formatDate(p.incorporation_date)}</strong>
                     </div>
                     <div style="display: flex; justify-content: space-between;">
                         <span style="color: var(--text-muted);">${t('corp_lbl_office')} :</span>

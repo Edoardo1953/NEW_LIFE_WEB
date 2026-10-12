@@ -34,6 +34,12 @@ function formatNumber(num, decimals = 0) {
     return decimals > 0 ? parts.join(",") : parts[0];
 }
 
+const formatDate = window.formatDate || function(d) {
+    if (!d) return '';
+    const m = String(d).match(/^(\d{4})[-/.](\d{2})[-/.](\d{2})/);
+    return m ? `${m[3]}/${m[2]}/${m[1]}` : d;
+};
+
 function populateYearSelect() {
     const yearSelect = document.getElementById('contab-year-select');
     if (!yearSelect || !window.NEW_LIFE_DATA) return;
@@ -749,7 +755,7 @@ function buildPnLItemHtml(item, itemId, isProd) {
             rowsHtml += `
                 <tr ${isRefund ? 'style="background: rgba(16, 185, 129, 0.04);"' : ''}>
                     <td class="text-center" style="color: var(--text-muted); font-size: 0.8rem;">${i + 1}</td>
-                    <td style="font-weight: 600; white-space: nowrap;">${r.date || '-'}</td>
+                    <td style="font-weight: 600; white-space: nowrap;">${formatDate(r.date) || '-'}</td>
                     <td>
                         <strong style="color: var(--text-main);">${controparte}</strong>
                     </td>
@@ -1148,7 +1154,7 @@ function buildBilanItemHtml(item, itemId, isActif) {
             rowsHtml += `
                 <tr>
                     <td class="text-center" style="color: var(--text-muted); font-size: 0.8rem;">${i + 1}</td>
-                    <td style="font-weight: 600; white-space: nowrap;">${r.date || '-'}</td>
+                    <td style="font-weight: 600; white-space: nowrap;">${formatDate(r.date) || '-'}</td>
                     <td><strong style="color: var(--text-main);">${controparte}</strong></td>
                     <td style="font-size: 0.78rem; color: var(--text-muted);">${desc}</td>
                     <td class="text-right ${colorClass}" style="font-weight: 700; font-family: monospace;">${formatCurrency(tot)}</td>
@@ -1282,8 +1288,10 @@ function renderJournalTable(yearRecords) {
         }
         if (journalFilterDate) {
             const dt = (r.date || '').toLowerCase();
+            const dtFmt = (formatDate(r.date) || '').toLowerCase();
             const valDt = (r.valeur || '').toLowerCase();
-            if (!dt.includes(journalFilterDate) && !valDt.includes(journalFilterDate)) {
+            const valDtFmt = (formatDate(r.valeur) || '').toLowerCase();
+            if (!dt.includes(journalFilterDate) && !dtFmt.includes(journalFilterDate) && !valDt.includes(journalFilterDate) && !valDtFmt.includes(journalFilterDate)) {
                 return false;
             }
         }
@@ -1325,7 +1333,7 @@ function renderJournalTable(yearRecords) {
         rowsHtml += `
             <tr>
                 <td class="text-center" style="color: var(--text-muted); font-size: 0.8rem;">${idx + 1}</td>
-                <td style="font-weight: 600; white-space: nowrap;">${r.date || '-'}</td>
+                <td style="font-weight: 600; white-space: nowrap;">${formatDate(r.date) || '-'}</td>
                 <td>
                     <div style="font-weight: 600; color: var(--text-main);">${r.fournisseur || r.description || '-'}</div>
                     <div style="font-size: 0.75rem; color: var(--text-muted);">${r.description && r.description !== r.fournisseur ? r.description : (r.detail || r.class || '')} ${r.nr_fatt ? `• Fatt: ${r.nr_fatt}` : ''}</div>
@@ -1627,8 +1635,8 @@ function buildMastrinoRowHtml(m) {
             detailRowsHtml += `
                 <tr>
                     <td class="text-center" style="color: var(--text-muted);">${idx + 1}</td>
-                    <td style="font-weight: 600; white-space: nowrap;">${r.date || '-'}</td>
-                    <td style="color: var(--text-muted);">${r.valeur || r.date || '-'}</td>
+                    <td style="font-weight: 600; white-space: nowrap;">${formatDate(r.date) || '-'}</td>
+                    <td style="color: var(--text-muted);">${formatDate(r.valeur || r.date) || '-'}</td>
                     <td>
                         <strong>${r.fournisseur || r.description || '-'}</strong>
                         ${r.description && r.description !== r.fournisseur ? `<div style="font-size: 0.72rem; color: var(--text-muted);">${r.description}</div>` : ''}
@@ -1771,7 +1779,7 @@ function exportAccountingExcel() {
                     "N°": idx + 1,
                     "Tipo": rawTot < 0 ? "NOTA DI CREDITO (PRODUIT)" : "RICAVO (PRODUIT)",
                     "Conto PCN": p.label,
-                    "Data": r.date,
+                    "Data": formatDate(r.date),
                     "Cliente / Controparte": r.fournisseur || r.description || "",
                     "Nr. Fattura": r.nr_fatt || "",
                     "Descrizione": r.description || r.detail || "",
@@ -1793,7 +1801,7 @@ function exportAccountingExcel() {
                     "N°": idx + 1,
                     "Tipo": isRefund ? "RESTITUZIONE / ACCREDITO (CHARGE)" : "COSTO (CHARGE)",
                     "Conto PCN": c.label,
-                    "Data": r.date,
+                    "Data": formatDate(r.date),
                     "Fornitore / Controparte": r.fournisseur || r.description || "",
                     "Nr. Fattura": r.nr_fatt || "",
                     "Descrizione": r.description || r.detail || "",
@@ -1823,7 +1831,7 @@ function exportAccountingExcel() {
                 "Nome Cespite": a.name,
                 "Categoria": a.category_name || a.category_code,
                 "Fornitore Acquisizione": a.supplier || "",
-                "Data Acquisizione": a.acquisition_date || "",
+                "Data Acquisizione": formatDate(a.acquisition_date) || "",
                 "Valore Storico (€)": a.initial_value || 0,
                 "Aliquota (%)": a.annual_rate || 0,
                 "Quota Esercizio (€)": schedItem ? schedItem.annuite : 0,
@@ -1865,8 +1873,8 @@ function exportAccountingExcel() {
     // Sheet 5: Giornale Movimenti
     const journalRows = currentFilteredRecords.map((r, idx) => ({
         "N°": idx + 1,
-        "Data": r.date,
-        "Data Valuta": r.valeur,
+        "Data": formatDate(r.date),
+        "Data Valuta": formatDate(r.valeur),
         "Controparte / Fournisseur": r.fournisseur,
         "Descrizione": r.description,
         "Conto PCN": r.macro || r.class,
@@ -1934,7 +1942,7 @@ function exportAccountingPDF() {
     doc.setFontSize(8.5);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(100, 116, 139);
-    doc.text(`Esercizio: ${yr}  |  Metodo: ${method === 'COMPETENCE' ? 'Competenza PCN' : 'Cassa / Flussi'}  |  Stato: ${statusText}  |  Data export: ${new Date().toLocaleDateString('it-IT')}`, 14, 33);
+    doc.text(`Esercizio: ${yr}  |  Metodo: ${method === 'COMPETENCE' ? 'Competenza PCN' : 'Cassa / Flussi'}  |  Stato: ${statusText}  |  Data export: ${formatDate(new Date())}`, 14, 33);
 
     let currentY = 38;
 
@@ -2066,7 +2074,7 @@ function exportAccountingPDF() {
             if (records.length > 0) {
                 const rows = records.map((r, idx) => [
                     idx + 1,
-                    r.date || '-',
+                    formatDate(r.date) || '-',
                     r.fournisseur || r.description || '-',
                     r.nr_fatt || '-',
                     r.description && r.description !== r.fournisseur ? r.description : (r.detail || '-'),
@@ -2207,7 +2215,7 @@ function exportAccountingPDF() {
 
                     return [
                         idx + 1,
-                        r.date || '-',
+                        formatDate(r.date) || '-',
                         r.fournisseur || r.description || '-',
                         dispRef,
                         r.description && r.description !== r.fournisseur ? r.description : (r.detail || '-'),

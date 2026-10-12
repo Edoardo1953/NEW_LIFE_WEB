@@ -2,6 +2,19 @@
  * NEW LIFE Sàrl - Documents Société & Archive Logic
  */
 
+const formatDate = window.formatDate || function(d) {
+    if (!d) return '';
+    const m = String(d).match(/^(\d{4})[-/.](\d{2})[-/.](\d{2})/);
+    return m ? `${m[3]}/${m[2]}/${m[1]}` : d;
+};
+
+const toInputDate = window.toInputDate || function(d) {
+    if (!d) return '';
+    if (/^\d{4}-\d{2}-\d{2}$/.test(d)) return d;
+    const m = String(d).match(/^(\d{2})[\/-](\d{2})[\/-](\d{4})/);
+    return m ? `${m[3]}-${m[2]}-${m[1]}` : d;
+};
+
 const DEFAULT_DOCUMENTS = [
     {
         id: "DOC-2025-BILAN",
@@ -225,7 +238,7 @@ function renderDocGrid() {
 
                 <div class="doc-name">${d.title}</div>
                 <div class="doc-meta">
-                    <span><i class="fa-regular fa-calendar"></i> Date réf. : <strong>${d.date || '-'}</strong></span>
+                    <span><i class="fa-regular fa-calendar"></i> Date réf. : <strong>${formatDate(d.date) || '-'}</strong></span>
                     <span><i class="fa-solid fa-paperclip"></i> Fichier : <em>${d.filename}</em> (${d.size || 'PDF'})</span>
                     ${d.notes ? `<span style="margin-top: 0.35rem; color: var(--text-muted); font-size: 0.75rem;"><i class="fa-solid fa-circle-info"></i> ${d.notes}</span>` : ''}
                 </div>
@@ -506,7 +519,7 @@ function openEditModal(docId) {
     document.getElementById('edit-doc-id').value = d.id;
     document.getElementById('edit-doc-title').value = d.title;
     document.getElementById('edit-doc-cat').value = d.category;
-    document.getElementById('edit-doc-date').value = d.date;
+    document.getElementById('edit-doc-date').value = toInputDate(d.date);
     document.getElementById('edit-doc-notes').value = d.notes || '';
 
     document.getElementById('edit-doc-modal').classList.add('active');
