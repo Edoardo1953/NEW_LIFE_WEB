@@ -343,17 +343,17 @@ const DEFAULT_CORPORATE_PROFILE = {
     company_name: "NEW LIFE Sàrl",
     legal_form: "Société à responsabilité limitée (Sàrl)",
     share_capital: "31.000 € (interamente versato e liberato)",
-    rcs_number: "B 225.643",
-    matricule: "2018 2432 026",
+    rcs_number: "B 17790",
+    matricule: "1980 2403 189",
     tva_number: "TVA 11773678",
-    incorporation_date: "01/12/2018",
+    incorporation_date: "15/10/1980",
     registered_office: "Luxembourg (Grand-Duché)",
     nationality: "Luxembourgeoise (UE)",
     gerant: "Edoardo Tubia",
     powers: "Signature Individuelle",
     ubo_name: "Edoardo Tubia",
     ubo_percentage: 100,
-    ubo_nationality: "Italienne (Résident Lux)",
+    ubo_nationality: "Italienne-Luxembourgeoise (Résident Lux)",
     rbe_status: "Déposée & Validée LBR (10/2025)",
     pep_status: "Non PEP",
     activity_primary: "Conseil & Mandats Corporate",
@@ -387,6 +387,13 @@ function saveCorporateProfile(data) {
         localStorage.setItem('new_life_corporate_profile', JSON.stringify(data));
     } catch (e) {
         console.error('Error saving corporate profile:', e);
+    }
+    if (window.location.protocol.startsWith('http') && window.location.hostname === 'localhost') {
+        fetch('/api/save-corporate-profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        }).catch(err => console.warn('Could not persist corporate profile to server:', err));
     }
 }
 

@@ -19,7 +19,7 @@ os.makedirs(DOCS_DIR, exist_ok=True)
 MANUAL_MD_FR = """# NEW LIFE Sàrl - Luxembourg
 ## Guide Méthodologique & Manuel d'Utilisation du Module AML / LBC-FT
 ### Conformité Anti-Blanchiment (AED / Loi 12 Nov 2004), Contrôle des Recettes & Mandats d'Administrateur
-**Société :** NEW LIFE Sàrl &bull; **R.C.S. Luxembourg :** B 225.643 &bull; **Matricule National :** 2018 2432 026
+**Société :** NEW LIFE Sàrl &bull; **R.C.S. Luxembourg :** B 17790 &bull; **Matricule National :** 1980 2403 189
 **Version :** 2.0 (Exercice 2026) &bull; **Statut :** Document Officiel Interne
 
 ---
@@ -127,7 +127,7 @@ L'onglet **« 4. Simulateur Due Diligence »** permet d'évaluer le risque de to
 MANUAL_MD_IT = """# NEW LIFE Sàrl - Luxembourg
 ## Guida Metodologica & Manuale d'Uso del Modulo AML / Antiriciclaggio
 ### Conformità LBC-FT (Supervisione AED / Legge 12 Nov 2004), Controllo Entrate & Compensi di Amministratore
-**Società :** NEW LIFE Sàrl &bull; **R.C.S. Luxembourg :** B 225.643 &bull; **Matricola Nazionale :** 2018 2432 026
+**Società :** NEW LIFE Sàrl &bull; **R.C.S. Luxembourg :** B 17790 &bull; **Matricola Nazionale :** 1980 2403 189
 **Versione :** 2.0 (Esercizio 2026) &bull; **Stato :** Documento Ufficiale Interno
 
 ---
@@ -235,7 +235,7 @@ La sezione **« 4. Simulateur Due Diligence »** consente di calcolare il profil
 MANUAL_MD_EN = """# NEW LIFE Sàrl - Luxembourg
 ## Methodological Guide & User Manual for the AML / CFT Compliance Module
 ### Anti-Money Laundering Compliance (AED Oversight / Law of 12 Nov 2004), Inflow Monitoring & Directorship Fees
-**Company :** NEW LIFE Sàrl &bull; **R.C.S. Luxembourg :** B 225.643 &bull; **National ID (Matricule) :** 2018 2432 026
+**Company :** NEW LIFE Sàrl &bull; **R.C.S. Luxembourg :** B 17790 &bull; **National ID (Matricule) :** 1980 2403 189
 **Version :** 2.0 (Fiscal Year 2026) &bull; **Status :** Official Internal Compliance Policy
 
 ---
@@ -370,7 +370,7 @@ def create_pdf_from_text(title, subtitle, lang_code, sections, output_pdf_path):
         # En-tête supérieur
         # Bande supérieure décorative
         page.draw_rect(fitz.Rect(MARGIN_X, 25, PAGE_WIDTH - MARGIN_X, 27), color=COLOR_HEADER_BG, fill=COLOR_HEADER_BG)
-        page.insert_text(fitz.Point(MARGIN_X, 40), "NEW LIFE Sàrl • Luxembourg (R.C.S. B 225.643)", fontsize=8, color=COLOR_MUTED)
+        page.insert_text(fitz.Point(MARGIN_X, 40), "NEW LIFE Sàrl • Luxembourg (R.C.S. B 17790)", fontsize=8, color=COLOR_MUTED)
         page.insert_text(fitz.Point(PAGE_WIDTH - MARGIN_X - 170, 40), f"Conformité AML / LBC-FT (AED)", fontsize=8, color=COLOR_HEADER_BG)
         
         # Ligne de séparation
@@ -396,7 +396,7 @@ def create_pdf_from_text(title, subtitle, lang_code, sections, output_pdf_path):
     
     page.insert_text(fitz.Point(MARGIN_X + 18, y + 26), title, fontsize=15, color=COLOR_DARK, fontname="hebo")
     page.insert_text(fitz.Point(MARGIN_X + 18, y + 46), subtitle, fontsize=9.5, color=COLOR_HEADER_BG, fontname="hebo")
-    page.insert_text(fitz.Point(MARGIN_X + 18, y + 62), "NEW LIFE Sàrl • R.C.S. Luxembourg B 225.643 • Matricule National : 2018 2432 026", fontsize=8, color=COLOR_MUTED)
+    page.insert_text(fitz.Point(MARGIN_X + 18, y + 62), "NEW LIFE Sàrl • R.C.S. Luxembourg B 17790 • Matricule National : 1980 2403 189", fontsize=8, color=COLOR_MUTED)
     
     y += 95.0
     

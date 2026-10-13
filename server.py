@@ -73,6 +73,36 @@ class NewLifeHandler(http.server.SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps({"success": False, "error": str(e)}).encode('utf-8'))
                 return
 
+        if self.path.startswith('/api/save-corporate-profile'):
+            try:
+                content_length = int(self.headers.get('Content-Length', 0))
+                body = self.rfile.read(content_length)
+                data = json.loads(body.decode('utf-8'))
+                
+                app_js_path = os.path.join(BASE_DIR, "app.js")
+                if os.path.exists(app_js_path):
+                    with open(app_js_path, "r", encoding="utf-8") as f:
+                        c_app = f.read()
+                    import re
+                    p_str = json.dumps(data, ensure_ascii=False, indent=4)
+                    c_app = re.sub(r'const DEFAULT_CORPORATE_PROFILE = \{[\s\S]*?\};', f'const DEFAULT_CORPORATE_PROFILE = {p_str};', c_app)
+                    with open(app_js_path, "w", encoding="utf-8") as f:
+                        f.write(c_app)
+
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": True}).encode('utf-8'))
+                return
+            except Exception as e:
+                self.send_response(500)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": False, "error": str(e)}).encode('utf-8'))
+                return
+
         if self.path.startswith('/api/upload'):
             try:
                 content_length = int(self.headers.get('Content-Length', 0))
