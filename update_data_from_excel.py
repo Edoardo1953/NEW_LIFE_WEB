@@ -13,6 +13,7 @@ Genera:
 import os
 import json
 import datetime
+import sys
 import openpyxl
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -717,40 +718,87 @@ def main():
         "records": records
     }
 
-    # Sauvegarde data.js
-    data_js_path = os.path.join(BASE_DIR, "data.js")
-    with open(data_js_path, "w", encoding="utf-8") as f:
-        f.write("/* NEW LIFE Sàrl - Données générées automatiquement */\n")
-        f.write("window.NEW_LIFE_DATA = ")
-        json.dump(data_payload, f, ensure_ascii=False, indent=2)
-        f.write(";\n")
-    print(f"Fichier généré : {data_js_path}")
-
     # 2. Amortissements
     amort_data = extract_amortissements()
-    amort_js_path = os.path.join(BASE_DIR, "ammortamenti_data.js")
-    with open(amort_js_path, "w", encoding="utf-8") as f:
-        f.write("/* NEW LIFE Sàrl - Données d'amortissement générées */\n")
-        f.write("window.NEW_LIFE_AMORT = ")
-        json.dump(amort_data, f, ensure_ascii=False, indent=2)
-        f.write(";\n")
-    print(f"Fichier généré : {amort_js_path}")
 
-    # Aggiorna versione nei file HTML per aggirare la cache del browser
-    try:
-        import glob
-        ts = str(int(datetime.datetime.now().timestamp()))
-        for h in glob.glob(os.path.join(BASE_DIR, "*.html")):
-            with open(h, "r", encoding="utf-8") as f_html:
-                c_html = f_html.read()
-            import re
-            c_html = re.sub(r'data\.js(\?v=\d+)?', f'data.js?v={ts}', c_html)
-            c_html = re.sub(r'ammortamenti_data\.js(\?v=\d+)?', f'ammortamenti_data.js?v={ts}', c_html)
-            with open(h, "w", encoding="utf-8") as f_html:
-                f_html.write(c_html)
-        print(f"Version cache HTML mise à jour (v={ts}).")
-    except Exception as e:
-        print(f"Warning mise a jour cache HTML: {e}")
+    # Vérification des changements réels pour éviter de salir Git inutilement
+    force_update = "--force" in sys.argv
+    data_changed = force_update
+    amort_changed = force_update
+
+    data_js_path = os.path.join(BASE_DIR, "data.js")
+    if not force_update and os.path.exists(data_js_path):
+        try:
+            with open(data_js_path, "r", encoding="utf-8") as f:
+                content = f.read()
+            prefix = "window.NEW_LIFE_DATA = "
+            if prefix in content:
+                json_str = content.split(prefix, 1)[1].rsplit(";", 1)[0].strip()
+                old_data = json.loads(json_str)
+                if old_data.get("records") == records:
+                    data_changed = False
+                    data_payload["company"]["updated_at"] = old_data.get("company", {}).get("updated_at", data_payload["company"]["updated_at"])
+                else:
+                    data_changed = True
+        except Exception:
+            data_changed = True
+    elif not os.path.exists(data_js_path):
+        data_changed = True
+
+    amort_js_path = os.path.join(BASE_DIR, "ammortamenti_data.js")
+    if not force_update and os.path.exists(amort_js_path):
+        try:
+            with open(amort_js_path, "r", encoding="utf-8") as f:
+                content = f.read()
+            prefix = "window.NEW_LIFE_AMORT = "
+            if prefix in content:
+                json_str = content.split(prefix, 1)[1].rsplit(";", 1)[0].strip()
+                old_amort = json.loads(json_str)
+                if old_amort == json.loads(json.dumps(amort_data)):
+                    amort_changed = False
+                else:
+                    amort_changed = True
+        except Exception:
+            amort_changed = True
+    elif not os.path.exists(amort_js_path):
+        amort_changed = True
+
+    if not data_changed and not amort_changed:
+        print("[Info] Aucun changement détecté dans les données Excel. Fichiers data.js et HTML non modifiés.")
+    else:
+        # Sauvegarde data.js si modifié
+        if data_changed:
+            with open(data_js_path, "w", encoding="utf-8") as f:
+                f.write("/* NEW LIFE Sàrl - Données générées automatiquement */\n")
+                f.write("window.NEW_LIFE_DATA = ")
+                json.dump(data_payload, f, ensure_ascii=False, indent=2)
+                f.write(";\n")
+            print(f"Fichier généré : {data_js_path}")
+
+        # Sauvegarde ammortamenti si modifié
+        if amort_changed:
+            with open(amort_js_path, "w", encoding="utf-8") as f:
+                f.write("/* NEW LIFE Sàrl - Données d'amortissement générées */\n")
+                f.write("window.NEW_LIFE_AMORT = ")
+                json.dump(amort_data, f, ensure_ascii=False, indent=2)
+                f.write(";\n")
+            print(f"Fichier généré : {amort_js_path}")
+
+        # Aggiorna versione nei file HTML per aggirare la cache del browser
+        try:
+            import glob
+            ts = str(int(datetime.datetime.now().timestamp()))
+            for h in glob.glob(os.path.join(BASE_DIR, "*.html")):
+                with open(h, "r", encoding="utf-8") as f_html:
+                    c_html = f_html.read()
+                import re
+                c_html = re.sub(r'data\.js(\?v=\d+)?', f'data.js?v={ts}', c_html)
+                c_html = re.sub(r'ammortamenti_data\.js(\?v=\d+)?', f'ammortamenti_data.js?v={ts}', c_html)
+                with open(h, "w", encoding="utf-8") as f_html:
+                    f_html.write(c_html)
+            print(f"Version cache HTML mise à jour (v={ts}).")
+        except Exception as e:
+            print(f"Warning mise a jour cache HTML: {e}")
 
     # 3. Documents
     sync_documents()
