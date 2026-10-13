@@ -9,10 +9,10 @@ window.NEW_LIFE_DATA = {
     "matricule": "2018 2432 026",
     "tva": "TVA 11773678",
     "currency": "EUR (€)",
-    "updated_at": "12/10/2026 10:37:25"
+    "updated_at": "12/10/2026 20:20:29"
   },
   "stats": {
-    "total_records": 993,
+    "total_records": 991,
     "years": [
       2018,
       2019,
@@ -35,7 +35,7 @@ window.NEW_LIFE_DATA = {
       2025
     ],
     "latest_closed_year": 2025,
-    "last_balance": 14204.62,
+    "last_balance": 14144.28,
     "suppliers_count": 64,
     "macros_count": 18
   },
@@ -35508,44 +35508,6 @@ window.NEW_LIFE_DATA = {
       "fournisseur": "Tubia Edoardo",
       "nr_fatt": "CASH 26",
       "personnel": "",
-      "montant": 0.0,
-      "taux_tva": 0.0,
-      "tva": 0.0,
-      "total": 0.0,
-      "paye_non": "PAYE",
-      "exercice": "2026",
-      "progressivo_banca": 78260.28,
-      "is_storno": false,
-      "is_transfert": false
-    },
-    {
-      "id": 937,
-      "code_op": "CHA",
-      "date": "2026-04-04",
-      "valeur": "2026-04-04",
-      "mois": "04-2026",
-      "trim": "2° Trim",
-      "sem": "1° Sem",
-      "month": 4,
-      "an": 2026,
-      "compet_contabile": 2026,
-      "ord_ext": "ORD",
-      "e_s": "SORTIES",
-      "d_c": "D",
-      "macro": "61 - AUTRES CHARGES EXTERNES",
-      "class": "FRAIS",
-      "detail": "DIVERSES",
-      "description": "Frais diverses",
-      "type": "",
-      "comptable": "YES",
-      "sp_ce": "CE",
-      "compte": "",
-      "date_facture": "",
-      "intracom": "NON",
-      "pays": "L",
-      "fournisseur": "Tubia Edoardo",
-      "nr_fatt": "CASH 26",
-      "personnel": "",
       "montant": -2330.53,
       "taux_tva": 0.03,
       "tva": -69.92,
@@ -35557,7 +35519,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 938,
+      "id": 937,
       "code_op": "CHA",
       "date": "2026-04-04",
       "valeur": "2026-04-04",
@@ -35595,7 +35557,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 939,
+      "id": 938,
       "code_op": "CHA",
       "date": "2026-04-04",
       "valeur": "2026-04-04",
@@ -35633,7 +35595,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 940,
+      "id": 939,
       "code_op": "IMM",
       "date": "2026-04-15",
       "valeur": "2026-04-15",
@@ -35671,7 +35633,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 941,
+      "id": 940,
       "code_op": "CHA",
       "date": "2026-04-15",
       "valeur": "2026-04-15",
@@ -35709,7 +35671,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 942,
+      "id": 941,
       "code_op": "CHA",
       "date": "2026-04-24",
       "valeur": "2026-04-24",
@@ -35747,7 +35709,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 943,
+      "id": 942,
       "code_op": "CHA",
       "date": "2026-04-24",
       "valeur": "2026-04-24",
@@ -35785,7 +35747,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 944,
+      "id": 943,
       "code_op": "IMP",
       "date": "2026-04-24",
       "valeur": "2026-04-24",
@@ -35823,7 +35785,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 945,
+      "id": 944,
       "code_op": "CHA",
       "date": "2026-04-27",
       "valeur": "2026-04-27",
@@ -35861,7 +35823,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 946,
+      "id": 945,
       "code_op": "CHA",
       "date": "2026-05-04",
       "valeur": "2026-05-04",
@@ -35899,7 +35861,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 947,
+      "id": 946,
       "code_op": "CHA",
       "date": "2026-05-09",
       "valeur": "2026-05-09",
@@ -35937,7 +35899,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 948,
+      "id": 947,
       "code_op": "CHA",
       "date": "2026-05-09",
       "valeur": "2026-05-09",
@@ -35975,7 +35937,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 949,
+      "id": 948,
       "code_op": "IMP",
       "date": "2026-05-11",
       "valeur": "2026-05-11",
@@ -36013,7 +35975,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 950,
+      "id": 949,
       "code_op": "CHA",
       "date": "2026-05-15",
       "valeur": "2026-05-15",
@@ -36051,7 +36013,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 951,
+      "id": 950,
       "code_op": "CHA",
       "date": "2026-05-15",
       "valeur": "2026-05-15",
@@ -36089,7 +36051,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 952,
+      "id": 951,
       "code_op": "IMP",
       "date": "2026-05-18",
       "valeur": "2026-05-18",
@@ -36127,7 +36089,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 953,
+      "id": 952,
       "code_op": "SAL",
       "date": "2026-05-18",
       "valeur": "2026-05-18",
@@ -36165,7 +36127,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 954,
+      "id": 953,
       "code_op": "SAL",
       "date": "2026-05-20",
       "valeur": "2026-05-20",
@@ -36203,7 +36165,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 955,
+      "id": 954,
       "code_op": "IMP",
       "date": "2026-05-21",
       "valeur": "2026-05-21",
@@ -36241,7 +36203,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 956,
+      "id": 955,
       "code_op": "CHA",
       "date": "2026-06-01",
       "valeur": "2026-06-01",
@@ -36279,7 +36241,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 957,
+      "id": 956,
       "code_op": "CHA",
       "date": "2026-06-01",
       "valeur": "2026-06-01",
@@ -36317,7 +36279,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 958,
+      "id": 957,
       "code_op": "DIV",
       "date": "2026-06-01",
       "valeur": "2026-06-01",
@@ -36353,10 +36315,10 @@ window.NEW_LIFE_DATA = {
       "progressivo_banca": 6521.46,
       "is_storno": true,
       "is_transfert": false,
-      "storno_pair_id": 959
+      "storno_pair_id": 958
     },
     {
-      "id": 959,
+      "id": 958,
       "code_op": "DIV",
       "date": "2026-06-01",
       "valeur": "2026-06-01",
@@ -36392,10 +36354,10 @@ window.NEW_LIFE_DATA = {
       "progressivo_banca": 12521.46,
       "is_storno": true,
       "is_transfert": false,
-      "storno_pair_id": 958
+      "storno_pair_id": 957
     },
     {
-      "id": 960,
+      "id": 959,
       "code_op": "IMP",
       "date": "2026-06-01",
       "valeur": "2026-06-01",
@@ -36433,7 +36395,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 961,
+      "id": 960,
       "code_op": "DIV",
       "date": "2026-06-01",
       "valeur": "2026-06-01",
@@ -36471,7 +36433,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 962,
+      "id": 961,
       "code_op": "IMP",
       "date": "2026-06-03",
       "valeur": "2026-06-03",
@@ -36509,7 +36471,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 963,
+      "id": 962,
       "code_op": "IMP",
       "date": "2026-06-04",
       "valeur": "2026-06-04",
@@ -36547,7 +36509,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 964,
+      "id": 963,
       "code_op": "IMP",
       "date": "2026-06-04",
       "valeur": "2026-06-04",
@@ -36585,7 +36547,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 965,
+      "id": 964,
       "code_op": "IMP",
       "date": "2026-06-12",
       "valeur": "2026-06-12",
@@ -36623,7 +36585,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 966,
+      "id": 965,
       "code_op": "IMP",
       "date": "2026-06-12",
       "valeur": "2026-06-12",
@@ -36661,7 +36623,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 967,
+      "id": 966,
       "code_op": "IMP",
       "date": "2026-06-12",
       "valeur": "2026-06-12",
@@ -36699,7 +36661,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 968,
+      "id": 967,
       "code_op": "IMP",
       "date": "2026-06-22",
       "valeur": "2026-06-22",
@@ -36737,7 +36699,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 969,
+      "id": 968,
       "code_op": "SAL",
       "date": "2026-06-22",
       "valeur": "2026-06-22",
@@ -36775,7 +36737,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 970,
+      "id": 969,
       "code_op": "CHA",
       "date": "2026-06-26",
       "valeur": "2026-06-26",
@@ -36813,7 +36775,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 971,
+      "id": 970,
       "code_op": "CHA",
       "date": "2026-07-01",
       "valeur": "2026-07-01",
@@ -36851,7 +36813,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 972,
+      "id": 971,
       "code_op": "FACT",
       "date": "2026-07-06",
       "valeur": "2026-07-06",
@@ -36889,7 +36851,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 973,
+      "id": 972,
       "code_op": "CHA",
       "date": "2026-07-08",
       "valeur": "2026-07-08",
@@ -36927,7 +36889,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 974,
+      "id": 973,
       "code_op": "IMP",
       "date": "2026-07-13",
       "valeur": "2026-07-13",
@@ -36965,7 +36927,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 975,
+      "id": 974,
       "code_op": "FACT",
       "date": "2026-07-16",
       "valeur": "2026-07-16",
@@ -37003,7 +36965,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 976,
+      "id": 975,
       "code_op": "FACT",
       "date": "2026-07-20",
       "valeur": "2026-07-20",
@@ -37041,7 +37003,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 977,
+      "id": 976,
       "code_op": "CHA",
       "date": "2026-07-20",
       "valeur": "2026-07-20",
@@ -37079,7 +37041,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 978,
+      "id": 977,
       "code_op": "CHA",
       "date": "2026-07-20",
       "valeur": "2026-07-20",
@@ -37117,45 +37079,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 979,
-      "code_op": "CHA",
-      "date": "2026-07-20",
-      "valeur": "2026-07-20",
-      "mois": "07-2026",
-      "trim": "3° Trim",
-      "sem": "2° Sem",
-      "month": 7,
-      "an": 2026,
-      "compet_contabile": 2026,
-      "ord_ext": "ORD",
-      "e_s": "SORTIES",
-      "d_c": "D",
-      "macro": "61 - AUTRES CHARGES EXTERNES",
-      "class": "FRAIS",
-      "detail": "DIVERSES",
-      "description": "Frais diverses",
-      "type": "",
-      "comptable": "YES",
-      "sp_ce": "CE",
-      "compte": "",
-      "date_facture": "",
-      "intracom": "NON",
-      "pays": "L",
-      "fournisseur": "Tubia Edoardo",
-      "nr_fatt": "CASH 27",
-      "personnel": "",
-      "montant": 0.0,
-      "taux_tva": 0.0,
-      "tva": 0.0,
-      "total": 0.0,
-      "paye_non": "PAYE",
-      "exercice": "2026",
-      "progressivo_banca": 37123.16,
-      "is_storno": false,
-      "is_transfert": false
-    },
-    {
-      "id": 980,
+      "id": 978,
       "code_op": "CHA",
       "date": "2026-07-20",
       "valeur": "2026-07-20",
@@ -37193,7 +37117,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 981,
+      "id": 979,
       "code_op": "CHA",
       "date": "2026-07-20",
       "valeur": "2026-07-20",
@@ -37231,7 +37155,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 982,
+      "id": 980,
       "code_op": "CHA",
       "date": "2026-07-20",
       "valeur": "2026-07-20",
@@ -37269,7 +37193,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 983,
+      "id": 981,
       "code_op": "SAL",
       "date": "2026-07-20",
       "valeur": "2026-07-20",
@@ -37307,7 +37231,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 984,
+      "id": 982,
       "code_op": "CHA",
       "date": "2026-07-29",
       "valeur": "2026-07-29",
@@ -37345,7 +37269,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 985,
+      "id": 983,
       "code_op": "CHA",
       "date": "2026-08-03",
       "valeur": "2026-08-03",
@@ -37383,7 +37307,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 986,
+      "id": 984,
       "code_op": "CHA",
       "date": "2026-08-10",
       "valeur": "2026-08-10",
@@ -37421,7 +37345,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 987,
+      "id": 985,
       "code_op": "IMP",
       "date": "2026-08-19",
       "valeur": "2026-08-19",
@@ -37459,7 +37383,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 988,
+      "id": 986,
       "code_op": "CHA",
       "date": "2026-08-27",
       "valeur": "2026-08-27",
@@ -37497,7 +37421,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 989,
+      "id": 987,
       "code_op": "CHA",
       "date": "2026-09-01",
       "valeur": "2026-09-01",
@@ -37535,7 +37459,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 990,
+      "id": 988,
       "code_op": "CHA",
       "date": "2026-09-07",
       "valeur": "2026-09-07",
@@ -37573,7 +37497,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 991,
+      "id": 989,
       "code_op": "IMM",
       "date": "2026-09-07",
       "valeur": "2026-09-07",
@@ -37611,7 +37535,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 992,
+      "id": 990,
       "code_op": "SAL",
       "date": "2026-09-09",
       "valeur": "2026-09-09",
@@ -37649,7 +37573,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 993,
+      "id": 991,
       "code_op": "COMM",
       "date": "2026-09-09",
       "valeur": "2026-09-09",
@@ -37687,7 +37611,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 994,
+      "id": 992,
       "code_op": "IMP",
       "date": "2026-09-14",
       "valeur": "2026-09-14",
@@ -37725,7 +37649,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 995,
+      "id": 993,
       "code_op": "SAL",
       "date": "2026-09-23",
       "valeur": "2026-09-23",
@@ -37763,7 +37687,7 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 996,
+      "id": 994,
       "code_op": "CHA",
       "date": "2026-10-01",
       "valeur": "2026-10-01",
@@ -37801,7 +37725,45 @@ window.NEW_LIFE_DATA = {
       "is_transfert": false
     },
     {
-      "id": 997,
+      "id": 995,
+      "code_op": "CHA",
+      "date": "2026-10-05",
+      "valeur": "2026-10-05",
+      "mois": "10-2026",
+      "trim": "4° Trim",
+      "sem": "2° Sem",
+      "month": 10,
+      "an": 2026,
+      "compet_contabile": 2026,
+      "ord_ext": "ORD",
+      "e_s": "SORTIES",
+      "d_c": "D",
+      "macro": "60 - CONSOMM. MARCHAND. MAT. PREM.",
+      "class": "603 - ACHAT DE MATIERES ET FOURN.",
+      "detail": "6031 - COMB. GAZ, EAU, ELECTRICITE",
+      "description": "60315 - ELECTRICITE",
+      "type": "Décompte Electricité 08/2026",
+      "comptable": "YES",
+      "sp_ce": "CE",
+      "compte": "POST",
+      "date_facture": "2026-09-10",
+      "intracom": "NON",
+      "pays": "L",
+      "fournisseur": "ENOVOS",
+      "nr_fatt": "",
+      "personnel": "",
+      "montant": -55.87,
+      "taux_tva": 0.08,
+      "tva": -4.47,
+      "total": -60.34,
+      "paye_non": "PAYE",
+      "exercice": "2026",
+      "progressivo_banca": 18126.55,
+      "is_storno": false,
+      "is_transfert": false
+    },
+    {
+      "id": 996,
       "code_op": "CHA",
       "date": "2026-10-05",
       "valeur": "2026-10-05",
@@ -37834,12 +37796,12 @@ window.NEW_LIFE_DATA = {
       "total": 3874.63,
       "paye_non": "PAYE",
       "exercice": "2026",
-      "progressivo_banca": 22061.52,
+      "progressivo_banca": 22001.18,
       "is_storno": false,
       "is_transfert": false
     },
     {
-      "id": 998,
+      "id": 997,
       "code_op": "CHA",
       "date": "2026-10-05",
       "valeur": "2026-10-05",
@@ -37872,50 +37834,12 @@ window.NEW_LIFE_DATA = {
       "total": -2706.53,
       "paye_non": "PAYE",
       "exercice": "2026",
-      "progressivo_banca": 19354.99,
+      "progressivo_banca": 19294.65,
       "is_storno": false,
       "is_transfert": false
     },
     {
-      "id": 999,
-      "code_op": "CHA",
-      "date": "2026-10-05",
-      "valeur": "2026-10-05",
-      "mois": "10-2026",
-      "trim": "4° Trim",
-      "sem": "2° Sem",
-      "month": 10,
-      "an": 2026,
-      "compet_contabile": 2026,
-      "ord_ext": "ORD",
-      "e_s": "SORTIES",
-      "d_c": "D",
-      "macro": "61 - AUTRES CHARGES EXTERNES",
-      "class": "FRAIS",
-      "detail": "DIVERSES",
-      "description": "Frais diverses",
-      "type": "",
-      "comptable": "YES",
-      "sp_ce": "CE",
-      "compte": "",
-      "date_facture": "",
-      "intracom": "NON",
-      "pays": "L",
-      "fournisseur": "Tubia Edoardo",
-      "nr_fatt": "CASH 28",
-      "personnel": "",
-      "montant": 0.0,
-      "taux_tva": 0.0,
-      "tva": 0.0,
-      "total": 0.0,
-      "paye_non": "PAYE",
-      "exercice": "2026",
-      "progressivo_banca": 19354.99,
-      "is_storno": false,
-      "is_transfert": false
-    },
-    {
-      "id": 1000,
+      "id": 998,
       "code_op": "CHA",
       "date": "2026-10-05",
       "valeur": "2026-10-05",
@@ -37948,12 +37872,12 @@ window.NEW_LIFE_DATA = {
       "total": -431.2,
       "paye_non": "PAYE",
       "exercice": "2026",
-      "progressivo_banca": 18923.79,
+      "progressivo_banca": 18863.45,
       "is_storno": false,
       "is_transfert": false
     },
     {
-      "id": 1001,
+      "id": 999,
       "code_op": "CHA",
       "date": "2026-10-05",
       "valeur": "2026-10-05",
@@ -37986,12 +37910,12 @@ window.NEW_LIFE_DATA = {
       "total": -736.9,
       "paye_non": "PAYE",
       "exercice": "2026",
-      "progressivo_banca": 18186.89,
+      "progressivo_banca": 18126.55,
       "is_storno": false,
       "is_transfert": false
     },
     {
-      "id": 1002,
+      "id": 1000,
       "code_op": "CHA",
       "date": "2026-10-05",
       "valeur": "2026-10-05",
@@ -38024,12 +37948,12 @@ window.NEW_LIFE_DATA = {
       "total": -3874.63,
       "paye_non": "PAYE",
       "exercice": "2026",
-      "progressivo_banca": 14312.26,
+      "progressivo_banca": 14251.92,
       "is_storno": false,
       "is_transfert": false
     },
     {
-      "id": 1003,
+      "id": 1001,
       "code_op": "CHA",
       "date": "2026-10-12",
       "valeur": "2026-10-12",
@@ -38062,7 +37986,7 @@ window.NEW_LIFE_DATA = {
       "total": -107.64,
       "paye_non": "PAYE",
       "exercice": "2026",
-      "progressivo_banca": 14204.62,
+      "progressivo_banca": 14144.28,
       "is_storno": false,
       "is_transfert": false
     }
