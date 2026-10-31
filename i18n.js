@@ -1527,6 +1527,14 @@ function updateFlagsUI() {
 }
 
 // Theme handling
+function updateThemeButtonIcon() {
+    const btn = document.getElementById('theme-toggle-btn');
+    if (!btn) return;
+    const isLight = document.body.classList.contains('theme-light');
+    btn.innerHTML = isLight ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
+    btn.title = isLight ? 'Passer au thème sombre / Tema scuro' : 'Passer au thème clair / Tema chiaro';
+}
+
 function initTheme() {
     const savedTheme = localStorage.getItem('new_life_theme') || 'dark';
     if (savedTheme === 'light') {
@@ -1534,12 +1542,30 @@ function initTheme() {
     } else {
         document.body.classList.remove('theme-light');
     }
+    updateThemeButtonIcon();
 }
 
 function toggleTheme() {
     const isLight = document.body.classList.toggle('theme-light');
     localStorage.setItem('new_life_theme', isLight ? 'light' : 'dark');
+    updateThemeButtonIcon();
+    if (typeof window.onLanguageChange === 'function') {
+        try { window.onLanguageChange(); } catch (e) {}
+    }
 }
+
+// One-click Copy to Clipboard with Toast feedback
+function copyToClipboardWithToast(text, label = '') {
+    if (!text) return;
+    navigator.clipboard.writeText(String(text).trim()).then(() => {
+        const prefix = currentLang === 'it' ? 'Copiato' : (currentLang === 'en' ? 'Copied' : 'Copié');
+        const msg = label ? `${prefix} (${label}) : ${text}` : `${prefix} : ${text}`;
+        showGlobalToast(msg, 'fa-clipboard-check');
+    }).catch(() => {
+        showGlobalToast(String(text), 'fa-copy');
+    });
+}
+window.copyToClipboardWithToast = copyToClipboardWithToast;
 
 // --- Global Date Formatting Utilities (DD/MM/YYYY) ---
 function formatDate(dateVal) {
@@ -1738,4 +1764,254 @@ document.addEventListener('DOMContentLoaded', () => {
     if (themeToggle) {
         themeToggle.addEventListener('click', toggleTheme);
     }
+
+    initGlobalUXEnhancements();
 });
+
+// --- Global UX Enhancements: Mobile Drawer, Command Palette (Ctrl+K), Modal Esc/Backdrop, Scroll-to-Top ---
+function initGlobalUXEnhancements() {
+    const appContainer = document.querySelector('.app-container');
+    const sidebar = document.querySelector('.sidebar');
+
+    // 1. Mobile Navigation Bar & Slide-out Drawer
+    if (appContainer && sidebar && !document.querySelector('.mobile-nav-bar')) {
+        const activeTitle = document.querySelector('.nav-item.active span')?.textContent || 'NEW LIFE Sàrl';
+        const mobileBar = document.createElement('div');
+        mobileBar.className = 'mobile-nav-bar glass-panel';
+        mobileBar.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 0.65rem;">
+                <button type="button" id="mobile-menu-toggle" class="btn btn-secondary btn-sm" style="padding: 0.45rem 0.65rem;">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <img src="uploads/Loghi/Loghi NL Claude/NewLife_figura.svg" alt="NL" style="width: 28px; height: 28px; object-fit: contain;">
+                <strong style="font-size: 0.92rem; color: var(--text-main);">${activeTitle}</strong>
+            </div>
+            <button type="button" class="cmd-search-trigger" onclick="openGlobalCommandPalette()" style="padding: 0.35rem 0.65rem;">
+                <i class="fa-solid fa-magnifying-glass text-emerald"></i>
+            </button>
+        `;
+        appContainer.insertBefore(mobileBar, appContainer.firstChild);
+
+        const backdrop = document.createElement('div');
+        backdrop.className = 'sidebar-backdrop';
+        backdrop.id = 'sidebar-mobile-backdrop';
+        document.body.appendChild(backdrop);
+
+        const toggleMobileSidebar = (forceClose = false) => {
+            const isOpen = forceClose ? false : !sidebar.classList.contains('mobile-open');
+            sidebar.classList.toggle('mobile-open', isOpen);
+            backdrop.classList.toggle('active', isOpen);
+        };
+
+        document.getElementById('mobile-menu-toggle')?.addEventListener('click', () => toggleMobileSidebar());
+        backdrop.addEventListener('click', () => toggleMobileSidebar(true));
+    }
+
+    // 2. Inject Quick Search (Ctrl+K) Trigger in Topbar
+    const topbarActions = document.querySelector('.topbar-actions');
+    if (topbarActions && !document.getElementById('btn-cmd-palette-trigger')) {
+        const searchBtn = document.createElement('button');
+        searchBtn.type = 'button';
+        searchBtn.id = 'btn-cmd-palette-trigger';
+        searchBtn.className = 'cmd-search-trigger';
+        searchBtn.title = 'Recherche globale rapide (Ctrl+K)';
+        searchBtn.innerHTML = `
+            <i class="fa-solid fa-magnifying-glass text-emerald"></i>
+            <span class="cmd-search-label">${currentLang === 'it' ? 'Cerca ovunque...' : (currentLang === 'en' ? 'Quick search...' : 'Recherche rapide...')}</span>
+            <span class="cmd-kbd">Ctrl K</span>
+        `;
+        searchBtn.addEventListener('click', openGlobalCommandPalette);
+        topbarActions.insertBefore(searchBtn, topbarActions.firstChild);
+    }
+
+    // 3. Universal Modal Backdrop Click & Escape Key Close
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                overlay.classList.remove('active');
+                if (overlay.style.display === 'flex' || overlay.style.display === 'block') {
+                    overlay.style.display = 'none';
+                }
+            }
+        });
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+            e.preventDefault();
+            openGlobalCommandPalette();
+            return;
+        }
+        if (e.key === 'Escape') {
+            const cmdModal = document.getElementById('global-cmd-palette');
+            if (cmdModal && cmdModal.classList.contains('active')) {
+                closeGlobalCommandPalette();
+                return;
+            }
+            document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+            document.querySelectorAll('.modal-overlay').forEach(m => {
+                if (m.style.display === 'flex' || m.style.display === 'block') {
+                    m.style.display = 'none';
+                }
+            });
+            document.querySelector('.sidebar.mobile-open')?.classList.remove('mobile-open');
+            document.getElementById('sidebar-mobile-backdrop')?.classList.remove('active');
+        }
+    });
+
+    // 4. Floating Back-to-Top Button
+    if (!document.getElementById('btn-scroll-top')) {
+        const scrollBtn = document.createElement('button');
+        scrollBtn.id = 'btn-scroll-top';
+        scrollBtn.className = 'scroll-top-btn';
+        scrollBtn.title = 'Retour en haut / Torna su';
+        scrollBtn.innerHTML = '<i class="fa-solid fa-arrow-up"></i>';
+        scrollBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        document.body.appendChild(scrollBtn);
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 320) {
+                scrollBtn.classList.add('visible');
+            } else {
+                scrollBtn.classList.remove('visible');
+            }
+        }, { passive: true });
+    }
+}
+
+function buildGlobalSearchItems(query) {
+    const q = (query || '').toLowerCase().trim();
+    const results = [];
+
+    // 1. Modules
+    const modules = [
+        { title: 'La Société — Fiche Sociétaire & Gouvernance', sub: 'Identité RCS B 17790, RBE, Mandats', icon: 'fa-building text-emerald', url: 'index.html', tag: 'Module' },
+        { title: 'Tableau Financier — Synthèse & Graphiques', sub: 'KPIs, Trésorerie, Flux mensuels & Répartition PCN', icon: 'fa-chart-line text-emerald', url: 'tableau_financier.html', tag: 'Module' },
+        { title: 'Compte Courant — Grand Livre Bancaire POST / ING', sub: 'Opérations bancaires, filtres & export Excel/PDF', icon: 'fa-building-columns text-blue', url: 'banca.html', tag: 'Module' },
+        { title: 'Comptabilité PCN — Bilan, P&L, Journal & Mastrini', sub: 'Plan Comptable Normalisé Luxembourgeois', icon: 'fa-book-bookmark text-amber', url: 'contabilita.html', tag: 'Module' },
+        { title: 'Amortissements — Registre des Immobilisations', sub: 'Cespiti 211 / 2232 / 2234, VNC & Simulateur', icon: 'fa-calculator text-cyan', url: 'ammortamenti.html', tag: 'Module' },
+        { title: 'Participations & Filiales — Portefeuille PCN 23', sub: 'SEF Srl, Sombra e Agua Fresca Resort, Green Enerbras One SCSp', icon: 'fa-shapes text-purple', url: 'partecipazioni.html', tag: 'Module' },
+        { title: 'Conformité AML (LBC-FT) — KYC & Due Diligence', sub: 'Contrôle des recettes, dossiers KYC, Loi 12 Nov 2004', icon: 'fa-shield-halved text-emerald', url: 'aml.html', tag: 'Module' },
+        { title: 'Documents Société — Archive Officielle PDF', sub: 'Bilan 2025 RCSL, Extrait RCS, RBE, Statuts & Manuels', icon: 'fa-folder-open text-blue', url: 'documenti.html', tag: 'Module' },
+        { title: 'Outils & Passwords — Coffre-fort & Accès', sub: 'Gestion des identifiants, banques & utilisateurs', icon: 'fa-toolbox text-amber', url: 'strumenti.html', tag: 'Module' }
+    ];
+
+    modules.forEach(m => {
+        if (!q || `${m.title} ${m.sub}`.toLowerCase().includes(q)) {
+            results.push(m);
+        }
+    });
+
+    // 2. Key Participations
+    const parts = [
+        { title: 'SEF Srl (Italie) — Quote-part 33,33%', sub: 'PCN 233 • VNC 4.000,00 € • Torino (P.IVA 10046910013)', icon: 'fa-building-flag text-blue', url: 'partecipazioni.html', tag: 'Participation' },
+        { title: 'Sombra e Agua Fresca Resort Sàrl — 15,867%', sub: 'PCN 233 • VNC 232.725,00 € • RCS B228941 (Praia de Pipa)', icon: 'fa-umbrella-beach text-emerald', url: 'partecipazioni.html', tag: 'Participation' },
+        { title: 'Green Enerbras One SCSp — General Partner', sub: 'PCN 2330 • VNC 1.000,00 € • Photovoltaïque Brésil (Tri Star)', icon: 'fa-solar-panel text-amber', url: 'partecipazioni.html', tag: 'Participation' }
+    ];
+    parts.forEach(p => {
+        if (!q || `${p.title} ${p.sub}`.toLowerCase().includes(q)) {
+            results.push(p);
+        }
+    });
+
+    // 3. Bank Operations (if query has >= 2 chars and NEW_LIFE_DATA is loaded)
+    if (q.length >= 2 && window.NEW_LIFE_DATA && Array.isArray(window.NEW_LIFE_DATA.records)) {
+        const matches = window.NEW_LIFE_DATA.records
+            .filter(r => r.date && `${r.description} ${r.fournisseur} ${r.code_op} ${r.macro} ${r.total}`.toLowerCase().includes(q))
+            .slice(-6)
+            .reverse();
+
+        matches.forEach(r => {
+            const sign = r.total >= 0 ? '+' : '';
+            results.push({
+                title: `${formatDate(r.date)} — ${r.description || r.fournisseur || 'Opération'}`,
+                sub: `${r.compte || 'BANQUE'} • ${r.macro || r.class || ''} • ${sign}${Number(r.total || 0).toFixed(2)} €`,
+                icon: r.total >= 0 ? 'fa-arrow-trend-up text-emerald' : 'fa-arrow-trend-down text-rose',
+                url: `banca.html?q=${encodeURIComponent(q)}`,
+                tag: 'Trésorerie'
+            });
+        });
+    }
+
+    return results.slice(0, 12);
+}
+
+function openGlobalCommandPalette() {
+    let modal = document.getElementById('global-cmd-palette');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'global-cmd-palette';
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+            <div class="modal-container" style="max-width: 640px; padding: 0; overflow: hidden;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-color); background: rgba(0,0,0,0.2);">
+                    <i class="fa-solid fa-magnifying-glass text-emerald" style="font-size: 1.1rem;"></i>
+                    <input type="text" id="cmd-palette-input" placeholder="Rechercher un module, une participation, une opération, un compte PCN..." style="flex: 1; background: transparent; border: none; color: var(--text-main); font-size: 0.98rem; outline: none;">
+                    <button type="button" class="cmd-kbd" onclick="closeGlobalCommandPalette()" style="cursor: pointer;">ESC</button>
+                </div>
+                <div id="cmd-palette-results" style="max-height: 60vh; overflow-y: auto; padding: 0.75rem; display: flex; flex-direction: column; gap: 0.35rem;"></div>
+                <div style="padding: 0.65rem 1.25rem; border-top: 1px solid var(--border-subtle); font-size: 0.75rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center;">
+                    <span><i class="fa-solid fa-bolt text-emerald"></i> Navigation rapide NEW LIFE Sàrl</span>
+                    <span><strong>↵ Entrée</strong> pour ouvrir &bull; <strong>ESC</strong> pour fermer</span>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeGlobalCommandPalette();
+        });
+
+        const input = modal.querySelector('#cmd-palette-input');
+        input.addEventListener('input', () => renderGlobalCommandResults(input.value));
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const firstLink = modal.querySelector('.cmd-palette-item');
+                if (firstLink && firstLink.dataset.url) {
+                    window.location.href = firstLink.dataset.url;
+                }
+            }
+        });
+    }
+
+    modal.classList.add('active');
+    const input = modal.querySelector('#cmd-palette-input');
+    if (input) {
+        input.value = '';
+        renderGlobalCommandResults('');
+        setTimeout(() => input.focus(), 50);
+    }
+}
+
+function closeGlobalCommandPalette() {
+    const modal = document.getElementById('global-cmd-palette');
+    if (modal) modal.classList.remove('active');
+}
+
+function renderGlobalCommandResults(query) {
+    const container = document.getElementById('cmd-palette-results');
+    if (!container) return;
+    const items = buildGlobalSearchItems(query);
+    if (items.length === 0) {
+        container.innerHTML = `<div style="padding: 1.5rem; text-align: center; color: var(--text-muted);">Aucun résultat trouvé pour "${query}".</div>`;
+        return;
+    }
+    container.innerHTML = items.map((item, idx) => `
+        <a href="${item.url}" data-url="${item.url}" class="cmd-palette-item ${idx === 0 ? 'selected' : ''}">
+            <div style="display: flex; align-items: center; gap: 0.85rem; overflow: hidden;">
+                <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <i class="fa-solid ${item.icon}"></i>
+                </div>
+                <div style="overflow: hidden;">
+                    <div style="font-weight: 700; font-size: 0.88rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.title}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.sub}</div>
+                </div>
+            </div>
+            <span class="badge badge-ord" style="flex-shrink: 0;">${item.tag}</span>
+        </a>
+    `).join('');
+}
+window.openGlobalCommandPalette = openGlobalCommandPalette;
+window.closeGlobalCommandPalette = closeGlobalCommandPalette;

@@ -3,6 +3,7 @@
  */
 
 let currentFilteredRecords = [];
+let currentMaxRender = 400;
 let deletedBankIds = new Set(JSON.parse(localStorage.getItem('new_life_deleted_records') || '[]'));
 
 function formatCurrency(num) {
@@ -80,6 +81,14 @@ function initBanca() {
 
     document.getElementById('btn-export-excel').addEventListener('click', exportToExcel);
     document.getElementById('btn-export-pdf').addEventListener('click', exportToPDF);
+
+    // Support URL search query ?q=... from Global Command Palette (Ctrl+K)
+    const urlParams = new URLSearchParams(window.location.search);
+    const qParam = urlParams.get('q');
+    if (qParam) {
+        const searchInput = document.getElementById('filter-search');
+        if (searchInput) searchInput.value = qParam;
+    }
 
     applyFilters();
 }
@@ -186,15 +195,21 @@ function renderStatsAndTable(yearVal) {
         }
     }
 
-    // Render Table Body (limit to 400 rows at once for fast DOM rendering)
+    // Render Table Body
     const tbody = document.getElementById('bank-tbody');
     tbody.innerHTML = '';
 
-    const maxRender = 400;
+    const maxRender = currentMaxRender;
     const slice = currentFilteredRecords.slice(0, maxRender);
 
     slice.forEach(r => {
         const tr = document.createElement('tr');
+        tr.style.cursor = 'pointer';
+        tr.title = 'Cliquer pour voir le détail de l’opération';
+        tr.addEventListener('click', (e) => {
+            if (e.target.closest('button')) return;
+            openDetailModal(r.id);
+        });
         const isEntree = r.total >= 0;
         let badgeClass = isEntree ? 'badge-entree' : 'badge-sortie';
         let badgeText = isEntree ? 'Entrée' : 'Sortie';
@@ -244,12 +259,26 @@ function renderStatsAndTable(yearVal) {
     if (currentFilteredRecords.length > maxRender) {
         const noteTr = document.createElement('tr');
         noteTr.innerHTML = `
-            <td colspan="10" class="text-center" style="padding: 1rem; color: var(--text-muted); font-style: italic;">
-                Affichage des ${formatNumber(maxRender)} premières lignes sur ${formatNumber(currentFilteredRecords.length)}. Affinez vos filtres de recherche si nécessaire.
+            <td colspan="10" class="text-center" style="padding: 1.1rem; color: var(--text-muted);">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 0.85rem; flex-wrap: wrap;">
+                    <span>Affichage de <strong>${formatNumber(maxRender)}</strong> sur <strong>${formatNumber(currentFilteredRecords.length)}</strong> opérations.</span>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="loadMoreBankRows(400)">
+                        <i class="fa-solid fa-angles-down text-emerald"></i> Afficher +400 lignes
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="loadMoreBankRows(99999)">
+                        <i class="fa-solid fa-list"></i> Tout afficher (${formatNumber(currentFilteredRecords.length)})
+                    </button>
+                </div>
             </td>
         `;
         tbody.appendChild(noteTr);
     }
+}
+
+function loadMoreBankRows(increment) {
+    currentMaxRender += increment;
+    const yearVal = document.getElementById('filter-year')?.value || 'ALL';
+    renderStatsAndTable(yearVal);
 }
 
 function deleteBankRecord(id) {

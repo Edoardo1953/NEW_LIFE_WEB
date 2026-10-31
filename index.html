@@ -114,22 +114,22 @@
 
             <!-- Quick Action Bar -->
             <div class="filter-bar glass-panel" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
-                <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
-                    <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald); font-weight: 700; padding: 0.45rem 0.85rem;">
-                        <i class="fa-solid fa-circle-check"></i> R.C.S. Luxembourg B 17790
+                <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
+                    <span class="badge copyable-badge" onclick="copyToClipboardWithToast('B 17790', 'R.C.S. Luxembourg')" title="Cliquer pour copier le N° R.C.S." style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald); font-weight: 700; padding: 0.45rem 0.85rem;">
+                        <i class="fa-solid fa-circle-check"></i> R.C.S. Luxembourg B 17790 <i class="fa-regular fa-copy" style="font-size: 0.7rem; opacity: 0.7; margin-left: 0.25rem;"></i>
                     </span>
-                    <span class="badge" style="background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); font-weight: 700; padding: 0.45rem 0.85rem;">
-                        <i class="fa-solid fa-fingerprint"></i> Matricule 1980 2403 189
+                    <span class="badge copyable-badge" onclick="copyToClipboardWithToast('1980 2403 189', 'Matricule National')" title="Cliquer pour copier le Matricule" style="background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); font-weight: 700; padding: 0.45rem 0.85rem;">
+                        <i class="fa-solid fa-fingerprint"></i> Matricule 1980 2403 189 <i class="fa-regular fa-copy" style="font-size: 0.7rem; opacity: 0.7; margin-left: 0.25rem;"></i>
                     </span>
-                    <span class="badge" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; font-weight: 700; padding: 0.45rem 0.85rem;">
-                        <i class="fa-solid fa-receipt"></i> TVA 11773678
+                    <span class="badge copyable-badge" onclick="copyToClipboardWithToast('LU11773678', 'N° TVA')" title="Cliquer pour copier le N° TVA" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; font-weight: 700; padding: 0.45rem 0.85rem;">
+                        <i class="fa-solid fa-receipt"></i> TVA 11773678 <i class="fa-regular fa-copy" style="font-size: 0.7rem; opacity: 0.7; margin-left: 0.25rem;"></i>
                     </span>
-                    <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald); font-weight: 700; padding: 0.45rem 0.85rem;">
+                    <span class="badge copyable-badge" onclick="copyToClipboardWithToast('31.000,00 EUR', 'Capital Social')" title="Cliquer pour copier le Capital Social" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald); font-weight: 700; padding: 0.45rem 0.85rem;">
                         <i class="fa-solid fa-coins"></i> <span data-i18n="badge_share_capital">Cap. Soc. 31.000 € (i.v. e liberato)</span>
                     </span>
-                    <span class="badge" style="background: rgba(168, 85, 247, 0.15); color: #c084fc; font-weight: 700; padding: 0.45rem 0.85rem;">
+                    <a href="documenti.html" class="badge copyable-badge" style="text-decoration: none; background: rgba(168, 85, 247, 0.15); color: #c084fc; font-weight: 700; padding: 0.45rem 0.85rem;" title="Consulter le Bilan déposé">
                         <i class="fa-solid fa-stamp"></i> <span data-i18n="badge_bilan_rcsl">Bilan RCSL 2025 Déposé</span>
-                    </span>
+                    </a>
                 </div>
 
                 <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
@@ -137,15 +137,58 @@
                         <i class="fa-solid fa-chart-line"></i>
                         <span data-i18n="nav_tableau_financier">Tableau Financier</span>
                     </a>
-                    <a href="documenti.html" class="btn btn-secondary btn-sm">
-                        <i class="fa-solid fa-folder-tree text-blue"></i>
-                        <span data-i18n="nav_documenti">Documents Société</span>
+                    <a href="banca.html" class="btn btn-secondary btn-sm">
+                        <i class="fa-solid fa-building-columns text-emerald"></i>
+                        <span data-i18n="nav_banca">Compte Courant</span>
+                    </a>
+                    <a href="partecipazioni.html" class="btn btn-secondary btn-sm">
+                        <i class="fa-solid fa-shapes text-purple"></i>
+                        <span data-i18n="nav_partecipazioni">Participations</span>
                     </a>
                     <a href="aml.html" class="btn btn-secondary btn-sm">
                         <i class="fa-solid fa-shield-halved text-emerald"></i>
                         <span data-i18n="nav_aml">Conformité AML</span>
                     </a>
                 </div>
+            </div>
+
+            <!-- Synthèse Exécutive & Accès Direct (Live KPIs) -->
+            <div class="kpi-grid" style="margin-bottom: 1.5rem;">
+                <a href="banca.html" class="kpi-card" style="text-decoration: none; cursor: pointer;">
+                    <div class="kpi-header">
+                        <span class="kpi-title" data-i18n="kpi_bank_balance">Solde Bancaire Actuel</span>
+                        <div class="kpi-icon emerald"><i class="fa-solid fa-vault"></i></div>
+                    </div>
+                    <div class="kpi-value text-emerald" id="kpi-balance">0,00 €</div>
+                    <div class="kpi-sub"><i class="fa-solid fa-arrow-up-right-from-square text-emerald"></i> Compte Courant POST Luxembourg</div>
+                </a>
+
+                <a href="partecipazioni.html" class="kpi-card" style="text-decoration: none; cursor: pointer;">
+                    <div class="kpi-header">
+                        <span class="kpi-title" data-i18n="nav_partecipazioni">Participations (PCN 23)</span>
+                        <div class="kpi-icon purple"><i class="fa-solid fa-shapes"></i></div>
+                    </div>
+                    <div class="kpi-value text-purple">239.221,67 €</div>
+                    <div class="kpi-sub"><i class="fa-solid fa-building-flag text-purple"></i> SEF Srl • SAF Resort • Green Enerbras</div>
+                </a>
+
+                <a href="ammortamenti.html" class="kpi-card" style="text-decoration: none; cursor: pointer;">
+                    <div class="kpi-header">
+                        <span class="kpi-title" data-i18n="kpi_assets_vnc">Immobilisations (VNC)</span>
+                        <div class="kpi-icon cyan"><i class="fa-solid fa-cubes"></i></div>
+                    </div>
+                    <div class="kpi-value text-cyan" id="kpi-vnc">34.098,81 €</div>
+                    <div class="kpi-sub"><i class="fa-solid fa-calculator text-cyan"></i> 13 Cespiti & Plan d'amortissement</div>
+                </a>
+
+                <a href="aml.html" class="kpi-card" style="text-decoration: none; cursor: pointer;">
+                    <div class="kpi-header">
+                        <span class="kpi-title" data-i18n="nav_aml">Conformité AML / KYC</span>
+                        <div class="kpi-icon blue"><i class="fa-solid fa-shield-halved"></i></div>
+                    </div>
+                    <div class="kpi-value text-blue">100%</div>
+                    <div class="kpi-sub"><i class="fa-solid fa-circle-check text-emerald"></i> 14 Mandats & Dossiers KYC vérifiés</div>
+                </a>
             </div>
 
             <!-- Fiche Sociétaire Principale (Toujours ouverte) -->

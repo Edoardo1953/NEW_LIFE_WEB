@@ -140,44 +140,54 @@
             <!-- KPI Cards Grid -->
             <div class="kpi-grid">
                 <!-- Solde Bancaire -->
-                <div class="kpi-card">
+                <a href="banca.html" class="kpi-card" style="text-decoration: none;">
                     <div class="kpi-header">
                         <span class="kpi-title" data-i18n="kpi_bank_balance">Solde Bancaire Actuel</span>
                         <div class="kpi-icon emerald"><i class="fa-solid fa-vault"></i></div>
                     </div>
                     <div class="kpi-value" id="kpi-balance">0,00 €</div>
                     <div class="kpi-sub"><i class="fa-solid fa-building-columns text-emerald"></i> Compte courant professionnel</div>
-                </div>
+                </a>
+
+                <!-- Total Entrées & Sorties -->
+                <a href="banca.html" class="kpi-card" style="text-decoration: none;">
+                    <div class="kpi-header">
+                        <span class="kpi-title">Flux Entrées / Sorties</span>
+                        <div class="kpi-icon blue"><i class="fa-solid fa-arrow-right-arrow-left"></i></div>
+                    </div>
+                    <div class="kpi-value text-emerald" style="font-size: 1.3rem;" id="kpi-inflows">0,00 €</div>
+                    <div class="kpi-sub"><i class="fa-solid fa-arrow-trend-down text-rose"></i> Sorties : <strong class="text-rose" id="kpi-outflows">0,00 €</strong></div>
+                </a>
 
                 <!-- Résultat d'Exploitation Net -->
-                <div class="kpi-card">
+                <a href="contabilita.html" class="kpi-card" style="text-decoration: none;">
                     <div class="kpi-header">
                         <span class="kpi-title" data-i18n="kpi_net_result">Résultat Net Période</span>
                         <div class="kpi-icon amber"><i class="fa-solid fa-scale-balanced"></i></div>
                     </div>
                     <div class="kpi-value" id="kpi-net">0,00 €</div>
                     <div class="kpi-sub"><i class="fa-solid fa-calculator text-amber"></i> Solde économique net</div>
-                </div>
+                </a>
 
                 <!-- Valeur Nette Cespiti -->
-                <div class="kpi-card">
+                <a href="ammortamenti.html" class="kpi-card" style="text-decoration: none;">
                     <div class="kpi-header">
                         <span class="kpi-title" data-i18n="kpi_assets_vnc">Valeur Nette Immobilisations</span>
                         <div class="kpi-icon cyan"><i class="fa-solid fa-cubes"></i></div>
                     </div>
                     <div class="kpi-value text-cyan" id="kpi-vnc">0,00 €</div>
                     <div class="kpi-sub"><i class="fa-solid fa-shield-halved text-cyan"></i> Cespiti & Actifs VNC</div>
-                </div>
+                </a>
 
                 <!-- Documents Archivés -->
-                <div class="kpi-card">
+                <a href="documenti.html" class="kpi-card" style="text-decoration: none;">
                     <div class="kpi-header">
                         <span class="kpi-title" data-i18n="kpi_docs_count">Documents Juridiques</span>
-                        <div class="kpi-icon blue"><i class="fa-solid fa-file-pdf"></i></div>
+                        <div class="kpi-icon purple"><i class="fa-solid fa-file-pdf"></i></div>
                     </div>
-                    <div class="kpi-value text-blue" id="kpi-docs">1</div>
-                    <div class="kpi-sub"><i class="fa-solid fa-stamp text-blue"></i> Bilan RCSL 2025 déposé</div>
-                </div>
+                    <div class="kpi-value text-purple" id="kpi-docs">1</div>
+                    <div class="kpi-sub"><i class="fa-solid fa-stamp text-purple"></i> Bilan RCSL 2025 déposé</div>
+                </a>
             </div>
 
             <!-- Charts Grid -->

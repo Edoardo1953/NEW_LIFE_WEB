@@ -435,17 +435,26 @@ function renderCorporateProfile() {
                         <span style="color: var(--text-muted);">${t('corp_lbl_capital')} :</span>
                         <strong style="color: var(--accent-emerald);">${p.share_capital || '31.000 € (interamente versato e liberato)'}</strong>
                     </div>
-                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
                         <span style="color: var(--text-muted);">${t('corp_lbl_rcs')} :</span>
-                        <strong style="color: var(--accent-blue);">${p.rcs_number}</strong>
+                        <span style="display: inline-flex; align-items: center; gap: 0.3rem;">
+                            <strong style="color: var(--accent-blue);">${p.rcs_number}</strong>
+                            <button type="button" class="copy-mini-btn" onclick="copyToClipboardWithToast('${p.rcs_number}', 'RCS')" title="Copier"><i class="fa-regular fa-copy"></i></button>
+                        </span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
                         <span style="color: var(--text-muted);">${t('corp_lbl_matricule')} :</span>
-                        <strong style="color: var(--accent-purple);">${p.matricule}</strong>
+                        <span style="display: inline-flex; align-items: center; gap: 0.3rem;">
+                            <strong style="color: var(--accent-purple);">${p.matricule}</strong>
+                            <button type="button" class="copy-mini-btn" onclick="copyToClipboardWithToast('${p.matricule}', 'Matricule')" title="Copier"><i class="fa-regular fa-copy"></i></button>
+                        </span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
                         <span style="color: var(--text-muted);">${t('corp_lbl_tva')} :</span>
-                        <strong style="color: #f59e0b;">${p.tva_number || 'TVA 11773678'}</strong>
+                        <span style="display: inline-flex; align-items: center; gap: 0.3rem;">
+                            <strong style="color: #f59e0b;">${p.tva_number || 'TVA 11773678'}</strong>
+                            <button type="button" class="copy-mini-btn" onclick="copyToClipboardWithToast('${p.tva_number || 'TVA 11773678'}', 'TVA')" title="Copier"><i class="fa-regular fa-copy"></i></button>
+                        </span>
                     </div>
                     <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 0.35rem;">
                         <span style="color: var(--text-muted);">${t('corp_lbl_constitution')} :</span>
