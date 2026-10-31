@@ -1632,11 +1632,78 @@ window.formatDate = formatDate;
 window.formatDateOnly = formatDateOnly;
 window.toInputDate = toInputDate;
 
+function parseAppTimestamp(str) {
+    if (!str || typeof str !== 'string') return 0;
+    const m = str.trim().match(/^(\d{2})[\/\.-](\d{2})[\/\.-](\d{4})(?:\s+(\d{2}):(\d{2})(?::(\d{2}))?)?/);
+    if (m) {
+        return new Date(
+            parseInt(m[3], 10),
+            parseInt(m[2], 10) - 1,
+            parseInt(m[1], 10),
+            parseInt(m[4] || '0', 10),
+            parseInt(m[5] || '0', 10),
+            parseInt(m[6] || '0', 10)
+        ).getTime();
+    }
+    const t = Date.parse(str);
+    return isNaN(t) ? 0 : t;
+}
+
 function getAppLastUpdate() {
-    const raw = localStorage.getItem('new_life_last_sync') || 
-           (window.NEW_LIFE_DATA && window.NEW_LIFE_DATA.company && window.NEW_LIFE_DATA.company.updated_at) || 
-           '28/09/2026 07:38:17';
-    return formatDate(raw);
+    const localSync = localStorage.getItem('new_life_last_sync');
+    const dataUpdated = (window.NEW_LIFE_DATA && window.NEW_LIFE_DATA.company && window.NEW_LIFE_DATA.company.updated_at) || '';
+    const tLocal = parseAppTimestamp(localSync);
+    const tData = parseAppTimestamp(dataUpdated);
+
+    let best = '31/10/2026 11:45:00';
+    if (tData >= tLocal && tData > 0) {
+        best = dataUpdated;
+        if (localSync !== dataUpdated) {
+            try { localStorage.setItem('new_life_last_sync', dataUpdated); } catch (e) {}
+        }
+    } else if (tLocal > 0) {
+        best = localSync;
+    } else if (dataUpdated) {
+        best = dataUpdated;
+    }
+    return formatDate(best);
+}
+
+function syncLocalStorageWithRepoDefaults() {
+    try {
+        if (Array.isArray(window.DEFAULT_PARTECIPAZIONI_DOCS)) {
+            const rawDocs = localStorage.getItem('new_life_partecipazioni_docs');
+            if (rawDocs) {
+                let docs = JSON.parse(rawDocs);
+                window.DEFAULT_PARTECIPAZIONI_DOCS.forEach(defDoc => {
+                    const idx = docs.findIndex(d => d.id === defDoc.id);
+                    if (idx === -1) {
+                        docs.push(JSON.parse(JSON.stringify(defDoc)));
+                    } else if (defDoc.available) {
+                        docs[idx] = { ...docs[idx], ...JSON.parse(JSON.stringify(defDoc)) };
+                    }
+                });
+                localStorage.setItem('new_life_partecipazioni_docs', JSON.stringify(docs));
+            }
+        }
+        if (Array.isArray(window.DEFAULT_DOCUMENTS)) {
+            const rawCompDocs = localStorage.getItem('new_life_docs');
+            if (rawCompDocs) {
+                let cdocs = JSON.parse(rawCompDocs);
+                window.DEFAULT_DOCUMENTS.forEach(defDoc => {
+                    const idx = cdocs.findIndex(d => d.id === defDoc.id);
+                    if (idx === -1) {
+                        cdocs.push(JSON.parse(JSON.stringify(defDoc)));
+                    } else if (defDoc.available) {
+                        cdocs[idx] = { ...cdocs[idx], ...JSON.parse(JSON.stringify(defDoc)) };
+                    }
+                });
+                localStorage.setItem('new_life_docs', JSON.stringify(cdocs));
+            }
+        }
+    } catch (e) {
+        console.warn('Error syncing repo defaults:', e);
+    }
 }
 
 function updateSidebarTimestamp() {
@@ -1685,9 +1752,15 @@ function refreshAppGlobalData(btn) {
     const pad = (n) => String(n).padStart(2, '0');
     const formatted = `${pad(now.getDate())}/${pad(now.getMonth() + 1)}/${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
     
+    syncLocalStorageWithRepoDefaults();
+    localStorage.setItem('new_life_last_sync', formatted);
+    updateSidebarTimestamp();
+
+    const isLocalhost = window.location.protocol.startsWith('http') && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
     // If running with local python server (http://localhost:8085)
-    if (window.location.protocol.startsWith('http')) {
-        const msgSync = (translations[currentLang] && translations[currentLang]['toast_sync_in_progress']) || 'Sincronizzazione file Excel in corso...';
+    if (isLocalhost) {
+        const msgSync = (translations[currentLang] && translations[currentLang]['toast_sync_in_progress']) || 'Sincronizzazione file Excel e Documenti in corso...';
         showGlobalToast(msgSync, 'fa-rotate');
 
         fetch('/api/sync-excel', { method: 'POST' })
@@ -1712,23 +1785,29 @@ function refreshAppGlobalData(btn) {
             })
             .catch(err => {
                 console.warn('Sync server non disponibile:', err);
-                const msgOffline = 'Attenzione: Server locale non attivo. Per sincronizzare da Excel avvia "Avvia NEW_LIFE.bat" o esegui "1 - AGGIORNA DATI DA EXCEL.bat"';
-                showGlobalToast(msgOffline, 'fa-triangle-exclamation');
-                if (icon) icon.classList.remove('fa-spin');
+                sessionStorage.setItem('new_life_just_refreshed', 'true');
                 setTimeout(() => {
                     const url = new URL(window.location.href);
                     url.searchParams.set('_t', Date.now().toString());
                     window.location.href = url.toString();
-                }, 1500);
+                }, 400);
             });
+    } else if (window.location.protocol.startsWith('http')) {
+        // Hosted online (e.g., GitHub Pages)
+        const msgSync = (translations[currentLang] && translations[currentLang]['toast_sync_in_progress']) || 'Sincronizzazione dati e documenti in corso...';
+        showGlobalToast(msgSync, 'fa-rotate');
+        sessionStorage.setItem('new_life_just_refreshed', 'true');
+        setTimeout(() => {
+            const url = new URL(window.location.href);
+            url.searchParams.set('_t', Date.now().toString());
+            window.location.href = url.toString();
+        }, 350);
     } else {
         // file:/// protocol
-        const msgFile = 'Attenzione: Per aggiornare i dati da Excel avvia "Avvia NEW_LIFE.bat" o esegui "1 - AGGIORNA DATI DA EXCEL.bat"';
-        showGlobalToast(msgFile, 'fa-triangle-exclamation');
-        if (icon) icon.classList.remove('fa-spin');
+        sessionStorage.setItem('new_life_just_refreshed', 'true');
         setTimeout(() => {
             window.location.reload(true);
-        }, 1500);
+        }, 350);
     }
 }
 

@@ -35,7 +35,7 @@ class NewLifeHandler(http.server.SimpleHTTPRequestHandler):
                 import importlib
                 import update_data_from_excel
                 importlib.reload(update_data_from_excel)
-                update_data_from_excel.main()
+                update_data_from_excel.main(force=True)
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json; charset=utf-8')
                 self.send_header('Access-Control-Allow-Origin', '*')
@@ -58,12 +58,115 @@ class NewLifeHandler(http.server.SimpleHTTPRequestHandler):
                 import importlib
                 import update_data_from_excel
                 importlib.reload(update_data_from_excel)
-                update_data_from_excel.main()
+                update_data_from_excel.main(force=True)
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json; charset=utf-8')
                 self.send_header('Access-Control-Allow-Origin', '*')
                 self.end_headers()
                 self.wfile.write(json.dumps({"success": True, "message": "Excel data re-synced successfully"}).encode('utf-8'))
+                return
+            except Exception as e:
+                self.send_response(500)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": False, "error": str(e)}).encode('utf-8'))
+                return
+
+        if self.path.startswith('/api/save-partecipazioni-docs'):
+            try:
+                content_length = int(self.headers.get('Content-Length', 0))
+                body = self.rfile.read(content_length)
+                data = json.loads(body.decode('utf-8'))
+
+                part_data_path = os.path.join(BASE_DIR, "partecipazioni_data.js")
+                if os.path.exists(part_data_path):
+                    with open(part_data_path, "r", encoding="utf-8") as f:
+                        c_part = f.read()
+                    import re
+                    p_str = json.dumps(data, ensure_ascii=False, indent=4)
+                    c_part = re.sub(
+                        r'const DEFAULT_PARTECIPAZIONI_DOCS = \[[\s\S]*?\];\s*(?=const HISTORICAL_PART_MOVEMENTS)',
+                        f'const DEFAULT_PARTECIPAZIONI_DOCS = {p_str};\n\n',
+                        c_part
+                    )
+                    with open(part_data_path, "w", encoding="utf-8") as f:
+                        f.write(c_part)
+
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": True}).encode('utf-8'))
+                return
+            except Exception as e:
+                self.send_response(500)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": False, "error": str(e)}).encode('utf-8'))
+                return
+
+        if self.path.startswith('/api/save-partecipazioni'):
+            try:
+                content_length = int(self.headers.get('Content-Length', 0))
+                body = self.rfile.read(content_length)
+                data = json.loads(body.decode('utf-8'))
+
+                part_data_path = os.path.join(BASE_DIR, "partecipazioni_data.js")
+                if os.path.exists(part_data_path):
+                    with open(part_data_path, "r", encoding="utf-8") as f:
+                        c_part = f.read()
+                    import re
+                    p_str = json.dumps(data, ensure_ascii=False, indent=4)
+                    c_part = re.sub(
+                        r'const DEFAULT_PARTECIPAZIONI = \[[\s\S]*?\];\s*(?=const DEFAULT_PARTECIPAZIONI_DOCS)',
+                        f'const DEFAULT_PARTECIPAZIONI = {p_str};\n\n',
+                        c_part
+                    )
+                    with open(part_data_path, "w", encoding="utf-8") as f:
+                        f.write(c_part)
+
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": True}).encode('utf-8'))
+                return
+            except Exception as e:
+                self.send_response(500)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": False, "error": str(e)}).encode('utf-8'))
+                return
+
+        if self.path.startswith('/api/save-company-docs'):
+            try:
+                content_length = int(self.headers.get('Content-Length', 0))
+                body = self.rfile.read(content_length)
+                data = json.loads(body.decode('utf-8'))
+
+                doc_app_path = os.path.join(BASE_DIR, "documenti_app.js")
+                if os.path.exists(doc_app_path):
+                    with open(doc_app_path, "r", encoding="utf-8") as f:
+                        c_doc = f.read()
+                    import re
+                    p_str = json.dumps(data, ensure_ascii=False, indent=4)
+                    c_doc = re.sub(
+                        r'const DEFAULT_DOCUMENTS = \[[\s\S]*?\];',
+                        f'const DEFAULT_DOCUMENTS = {p_str};',
+                        c_doc,
+                        count=1
+                    )
+                    with open(doc_app_path, "w", encoding="utf-8") as f:
+                        f.write(c_doc)
+
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": True}).encode('utf-8'))
                 return
             except Exception as e:
                 self.send_response(500)

@@ -572,7 +572,8 @@ def extract_amortissements():
     return {"assets": assets, "totals_by_year": totals_by_year}
 
 def sync_documents():
-    """Vérifie la présence du bilan 2025 dans docs"""
+    """Vérifie la présence du bilan 2025 et des documents dans docs"""
+    import shutil
     source_pdf = os.path.join(UPLOADS_DIR, "NEW_LIFE_bilan_2025_RCSL_déposé.pdf")
     # Rechercher aussi si problème d'encodage de caractères accentués
     if not os.path.exists(source_pdf):
@@ -583,11 +584,19 @@ def sync_documents():
     
     target_pdf = os.path.join(DOCS_DIR, "NEW_LIFE_bilan_2025_RCSL_déposé.pdf")
     if os.path.exists(source_pdf):
-        import shutil
         shutil.copy2(source_pdf, target_pdf)
         print(f"Document synchronisé : {target_pdf}")
 
-def main():
+    uploads_doc_dir = os.path.join(UPLOADS_DIR, "Documenti")
+    if os.path.exists(uploads_doc_dir):
+        for fn in os.listdir(uploads_doc_dir):
+            src_f = os.path.join(uploads_doc_dir, fn)
+            dst_f = os.path.join(DOCS_DIR, fn)
+            if os.path.isfile(src_f) and not os.path.exists(dst_f):
+                shutil.copy2(src_f, dst_f)
+                print(f"Document synchronisé : {dst_f}")
+
+def main(force=False):
     print("="*60)
     print("   NEW LIFE Sàrl - Extraction des Données Comptables & Bancaires")
     print("="*60)
@@ -722,7 +731,7 @@ def main():
     amort_data = extract_amortissements()
 
     # Vérification des changements réels pour éviter de salir Git inutilement
-    force_update = "--force" in sys.argv
+    force_update = force or ("--force" in sys.argv)
     data_changed = force_update
     amort_changed = force_update
 
@@ -794,6 +803,10 @@ def main():
                 import re
                 c_html = re.sub(r'data\.js(\?v=\d+)?', f'data.js?v={ts}', c_html)
                 c_html = re.sub(r'ammortamenti_data\.js(\?v=\d+)?', f'ammortamenti_data.js?v={ts}', c_html)
+                c_html = re.sub(r'partecipazioni_data\.js(\?v=\d+)?', f'partecipazioni_data.js?v={ts}', c_html)
+                c_html = re.sub(r'partecipazioni_app\.js(\?v=\d+)?', f'partecipazioni_app.js?v={ts}', c_html)
+                c_html = re.sub(r'documenti_app\.js(\?v=\d+)?', f'documenti_app.js?v={ts}', c_html)
+                c_html = re.sub(r'i18n\.js(\?v=\d+)?', f'i18n.js?v={ts}', c_html)
                 with open(h, "w", encoding="utf-8") as f_html:
                     f_html.write(c_html)
             print(f"Version cache HTML mise à jour (v={ts}).")

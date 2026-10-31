@@ -268,15 +268,15 @@ const DEFAULT_PARTECIPAZIONI_DOCS = [
         id: "DOC-SEF-01",
         part_id: "PART-SEF",
         part_name: "SEF Srl (Italie)",
-        title: "Atto Notarile di Cessione / Compravendita Quote Sociali SEF Srl",
+        title: "Atto Notarile di Cessione / Compravendita Quote Sociali SEF Srl (TE a NL)",
         category: "acte",
         date: "2026-09-07",
-        filename: "Atto_Notarile_Cessione_Quote_SEF_Srl.pdf",
-        filepath: "docs/Atto_Notarile_Cessione_Quote_SEF_Srl.pdf",
-        size: "1.95 Mo",
+        filename: "Cessione SEF - TE a NL.pdf",
+        filepath: "docs/Cessione SEF - TE a NL.pdf",
+        size: "5.52 Mo",
         type: "PDF Document",
-        notes: "Atto di acquisto quote stipulato per il perfezionamento della partecipazione.",
-        available: false
+        notes: "Atto notarile di cessione e compravendita quote sociali SEF Srl da Tubia Edoardo (TE) a New Life Sàrl (NL).",
+        available: true
     },
     {
         id: "DOC-SEF-02",
@@ -290,6 +290,20 @@ const DEFAULT_PARTECIPAZIONI_DOCS = [
         size: "81.56 Ko",
         type: "PDF Document",
         notes: "Certificato di iscrizione alla Camera di Commercio con compagine sociale aggiornata al 28/09/2026.",
+        available: true
+    },
+    {
+        id: "DOC-SEF-05",
+        part_id: "PART-SEF",
+        part_name: "SEF Srl (Italie)",
+        title: "Share Transfer Agreement TE - New Life Sàrl - SEF Srl (EN / IT)",
+        category: "acte",
+        date: "2026-09-07",
+        filename: "Share transfer agreement TE - New Life Sàrl - SEF srl (EN IT).pdf",
+        filepath: "docs/Share transfer agreement TE - New Life Sàrl - SEF srl (EN IT).pdf",
+        size: "6.06 Mo",
+        type: "PDF Document",
+        notes: "Contratto bilingue (EN/IT) di cessione e trasferimento quote sociali SEF Srl tra Tubia Edoardo (TE) e New Life Sàrl.",
         available: true
     },
     {

@@ -89,6 +89,8 @@ const DEFAULT_DOCUMENTS = [
     }
 ];
 
+window.DEFAULT_DOCUMENTS = DEFAULT_DOCUMENTS;
+
 function getStoredDocuments() {
     const raw = localStorage.getItem('new_life_docs');
     let docs;
@@ -102,12 +104,41 @@ function getStoredDocuments() {
     } catch {
         docs = JSON.parse(JSON.stringify(DEFAULT_DOCUMENTS));
         localStorage.setItem('new_life_docs', JSON.stringify(docs));
+        return docs;
+    }
+
+    let updated = false;
+    DEFAULT_DOCUMENTS.forEach(defDoc => {
+        const idx = docs.findIndex(d => d.id === defDoc.id);
+        if (idx === -1) {
+            docs.push(JSON.parse(JSON.stringify(defDoc)));
+            updated = true;
+        } else if (defDoc.available && !docs[idx].available) {
+            docs[idx] = { ...docs[idx], ...JSON.parse(JSON.stringify(defDoc)) };
+            updated = true;
+        }
+    });
+    docs.forEach(d => {
+        if (d.filename && (!d.filepath || !d.filepath.endsWith(d.filename))) {
+            d.filepath = `docs/${d.filename}`;
+            updated = true;
+        }
+    });
+    if (updated) {
+        saveDocuments(docs, false);
     }
     return docs;
 }
 
-function saveDocuments(docs) {
+function saveDocuments(docs, syncServer = true) {
     localStorage.setItem('new_life_docs', JSON.stringify(docs));
+    if (syncServer && window.location.protocol.startsWith('http') && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+        fetch('/api/save-company-docs', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(docs)
+        }).catch(() => {});
+    }
 }
 
 function restoreDefaultDocs() {
@@ -484,6 +515,7 @@ async function handleDirectUploadDoc(docId, inputElement) {
     if (idx !== -1) {
         docs[idx].available = true;
         docs[idx].filename = file.name;
+        docs[idx].filepath = `docs/${file.name}`;
         docs[idx].size = `${(file.size / (1024 * 1024)).toFixed(2)} Mo`;
         saveDocuments(docs);
     }

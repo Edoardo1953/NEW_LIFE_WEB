@@ -101,8 +101,15 @@ function getParticipations() {
     return items;
 }
 
-function saveParticipations(items) {
+function saveParticipations(items, syncServer = true) {
     localStorage.setItem('new_life_partecipazioni', JSON.stringify(items));
+    if (syncServer && window.location.protocol.startsWith('http') && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+        fetch('/api/save-partecipazioni', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(items)
+        }).catch(() => {});
+    }
 }
 
 function getPartDocs() {
@@ -121,8 +128,17 @@ function getPartDocs() {
 
     let updated = false;
 
-    // Ensure DOC-SEF-02 (Visura Camerale) has the official file attached
+    // Ensure official SEF documents (DOC-SEF-01, DOC-SEF-02, DOC-SEF-05) have their real PDF files attached
     docs = docs.map(d => {
+        if (d.id === 'DOC-SEF-01') {
+            d.title = "Atto Notarile di Cessione / Compravendita Quote Sociali SEF Srl (TE a NL)";
+            d.date = "2026-09-07";
+            d.filename = "Cessione SEF - TE a NL.pdf";
+            d.filepath = "docs/Cessione SEF - TE a NL.pdf";
+            d.available = true;
+            d.size = "5.52 Mo";
+            updated = true;
+        }
         if (d.id === 'DOC-SEF-02') {
             d.title = "Visura Camerale Storica CCIAA Registro Imprese SEF Srl";
             d.date = "2026-09-28";
@@ -132,55 +148,77 @@ function getPartDocs() {
             d.size = "81.56 Ko";
             updated = true;
         }
+        if (d.id === 'DOC-SEF-05') {
+            d.title = "Share Transfer Agreement TE - New Life Sàrl - SEF Srl (EN / IT)";
+            d.date = "2026-09-07";
+            d.filename = "Share transfer agreement TE - New Life Sàrl - SEF srl (EN IT).pdf";
+            d.filepath = "docs/Share transfer agreement TE - New Life Sàrl - SEF srl (EN IT).pdf";
+            d.available = true;
+            d.size = "6.06 Mo";
+            updated = true;
+        }
+        // Fix any document where filename was updated without updating filepath
+        if (d.filename && (!d.filepath || !d.filepath.endsWith(d.filename))) {
+            d.filepath = `docs/${d.filename}`;
+            updated = true;
+        }
         return d;
     });
 
-    // Deduplicate extra test visura documents for PART-SEF
-    const hasOfficialSefVisura = docs.some(d => d.id === 'DOC-SEF-02');
-    if (hasOfficialSefVisura) {
-        const initialLen = docs.length;
-        docs = docs.filter(d => {
-            if (d.part_id === 'PART-SEF' && d.id !== 'DOC-SEF-02' && (d.title.trim().toLowerCase() === 'visura camerale' || d.title.trim().toLowerCase() === 'visura camerale storica cciaa registro imprese sef srl')) {
-                return false;
-            }
-            return true;
-        });
-        if (docs.length !== initialLen) updated = true;
-    }
-
-    // Merge missing defaults without overwriting user changes or uploaded files
+    // Merge missing defaults and upgrade any default doc that became available on disk
     const defaults = window.DEFAULT_PARTECIPAZIONI_DOCS || [];
     defaults.forEach(defDoc => {
         const existingIdx = docs.findIndex(d => d.id === defDoc.id);
         if (existingIdx === -1) {
-            docs.push(JSON.parse(JSON.stringify(defDoc)));
+            // Insert right after previous doc of same part_id if possible
+            const lastSamePartIdx = docs.map(item => item.part_id).lastIndexOf(defDoc.part_id);
+            if (lastSamePartIdx !== -1) {
+                docs.splice(lastSamePartIdx + 1, 0, JSON.parse(JSON.stringify(defDoc)));
+            } else {
+                docs.push(JSON.parse(JSON.stringify(defDoc)));
+            }
+            updated = true;
+        } else if (defDoc.available && !docs[existingIdx].available) {
+            docs[existingIdx] = { ...docs[existingIdx], ...JSON.parse(JSON.stringify(defDoc)) };
             updated = true;
         }
     });
 
-    // Clean duplicate test entries for SEF
-    const sefDocs = docs.filter(d => d.part_id === 'PART-SEF');
-    if (sefDocs.length > 4) {
-        const seenTitles = new Set();
-        docs = docs.filter(d => {
-            if (d.part_id !== 'PART-SEF') return true;
-            const key = `${d.title.trim().toLowerCase()}_${d.date}`;
-            if (seenTitles.has(key)) return false;
-            seenTitles.add(key);
-            return true;
-        });
-        updated = true;
-    }
+    // Deduplicate extra custom entries if they point to the exact same official file for the same participation
+    const officialIds = new Set(defaults.map(d => d.id));
+    const officialFiles = new Set(
+        docs.filter(d => officialIds.has(d.id) && d.available && d.filename)
+            .map(d => `${d.part_id}::${d.filename.trim().toLowerCase()}`)
+    );
+    const beforeDedupLen = docs.length;
+    docs = docs.filter(d => {
+        if (!officialIds.has(d.id) && d.filename) {
+            const key = `${d.part_id}::${d.filename.trim().toLowerCase()}`;
+            if (officialFiles.has(key)) return false;
+        }
+        if (d.part_id === 'PART-SEF' && d.id !== 'DOC-SEF-02' && (d.title.trim().toLowerCase() === 'visura camerale' || d.title.trim().toLowerCase() === 'visura camerale storica cciaa registro imprese sef srl')) {
+            return false;
+        }
+        return true;
+    });
+    if (docs.length !== beforeDedupLen) updated = true;
 
     if (updated) {
-        savePartDocs(docs);
+        savePartDocs(docs, false);
     }
 
     return docs;
 }
 
-function savePartDocs(docs) {
+function savePartDocs(docs, syncServer = true) {
     localStorage.setItem('new_life_partecipazioni_docs', JSON.stringify(docs));
+    if (syncServer && window.location.protocol.startsWith('http') && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+        fetch('/api/save-partecipazioni-docs', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(docs)
+        }).catch(() => {});
+    }
 }
 
 // --- Formatters (Punto per le migliaia, virgola per i decimali) ---
@@ -1055,8 +1093,14 @@ async function viewPartDocument(docId) {
     }
 
     if (!fileUrl && d.available) {
-        if (d.id === 'DOC-SEF-02' || (d.title && d.title.toLowerCase().includes('visura') && d.part_id === 'PART-SEF')) {
+        if (d.id === 'DOC-SEF-01') {
+            fileUrl = 'docs/Cessione SEF - TE a NL.pdf';
+        } else if (d.id === 'DOC-SEF-02' || (d.title && d.title.toLowerCase().includes('visura') && d.part_id === 'PART-SEF')) {
             fileUrl = 'docs/SEF srl - visura del 28.9.26.pdf';
+        } else if (d.id === 'DOC-SEF-05') {
+            fileUrl = 'docs/Share transfer agreement TE - New Life Sàrl - SEF srl (EN IT).pdf';
+        } else if (d.filename) {
+            fileUrl = `docs/${d.filename}`;
         }
     }
 
@@ -1131,6 +1175,7 @@ async function handleDirectDocUpload(docId, inputElement) {
         docs[idx].available = true;
         docs[idx].has_stored_file = true;
         docs[idx].filename = file.name;
+        docs[idx].filepath = `docs/${file.name}`;
         docs[idx].size = (file.size / (1024 * 1024)).toFixed(2) + ' Mo';
         savePartDocs(docs);
     }
@@ -1153,8 +1198,14 @@ async function downloadPartDocument(docId) {
     }
 
     if (!fileUrl && d.available) {
-        if (d.id === 'DOC-SEF-02' || (d.title && d.title.toLowerCase().includes('visura') && d.part_id === 'PART-SEF')) {
+        if (d.id === 'DOC-SEF-01') {
+            fileUrl = 'docs/Cessione SEF - TE a NL.pdf';
+        } else if (d.id === 'DOC-SEF-02' || (d.title && d.title.toLowerCase().includes('visura') && d.part_id === 'PART-SEF')) {
             fileUrl = 'docs/SEF srl - visura del 28.9.26.pdf';
+        } else if (d.id === 'DOC-SEF-05') {
+            fileUrl = 'docs/Share transfer agreement TE - New Life Sàrl - SEF srl (EN IT).pdf';
+        } else if (d.filename) {
+            fileUrl = `docs/${d.filename}`;
         }
     }
 
@@ -1406,6 +1457,7 @@ async function saveDocForm() {
             docs[idx].category = category;
             docs[idx].date = date;
             docs[idx].filename = filename;
+            docs[idx].filepath = `docs/${filename}`;
             docs[idx].notes = notes;
             if (selectedFile) {
                 docs[idx].size = `${(selectedFile.size / (1024 * 1024)).toFixed(2)} Mo`;

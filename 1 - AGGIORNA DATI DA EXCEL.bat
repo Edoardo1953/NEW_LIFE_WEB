@@ -6,7 +6,7 @@ echo        NEW LIFE Sàrl - Aggiornamento Automatico Dati Excel
 echo ====================================================================
 echo.
 echo [1/2] Elaborazione file Excel (Conto Corrente e Ammortamenti)...
-python "%~dp0update_data_from_excel.py"
+python "%~dp0update_data_from_excel.py" --force
 
 if %ERRORLEVEL% EQU 0 (
     echo.
