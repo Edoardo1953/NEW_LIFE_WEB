@@ -18,6 +18,10 @@ const DocStorage = (function() {
                     resolve(null);
                     return;
                 }
+                const timer = setTimeout(() => {
+                    console.warn('IndexedDB open timeout.');
+                    resolve(null);
+                }, 1500);
                 try {
                     const request = indexedDB.open(DB_NAME, DB_VERSION);
                     request.onupgradeneeded = function(e) {
@@ -27,13 +31,21 @@ const DocStorage = (function() {
                         }
                     };
                     request.onsuccess = function(e) {
+                        clearTimeout(timer);
                         resolve(e.target.result);
                     };
                     request.onerror = function(e) {
+                        clearTimeout(timer);
                         console.warn('IndexedDB open error:', e);
                         resolve(null);
                     };
+                    request.onblocked = function() {
+                        clearTimeout(timer);
+                        console.warn('IndexedDB blocked.');
+                        resolve(null);
+                    };
                 } catch (err) {
+                    clearTimeout(timer);
                     console.warn('IndexedDB exception:', err);
                     resolve(null);
                 }
@@ -75,38 +87,50 @@ const DocStorage = (function() {
             // Offline / file:// protocol / no server
         }
 
-        // 2. Read as base64 for fallback storage
+        // 2. Read as base64 for fallback storage (only if small or offline, since IndexedDB stores Blob natively)
         let dataUrl = null;
-        try {
-            dataUrl = await fileToBase64(fileOrBlob);
-        } catch (e) {
-            console.warn('Could not convert file to base64:', e);
+        if (!serverSaved && (!fileOrBlob.size || fileOrBlob.size < 3 * 1024 * 1024)) {
+            try {
+                dataUrl = await fileToBase64(fileOrBlob);
+            } catch (e) {
+                console.warn('Could not convert file to base64:', e);
+            }
         }
 
-        // 3. Save into IndexedDB
-        try {
-            const db = await openDB();
-            if (db) {
-                await new Promise((resolve) => {
-                    const tx = db.transaction(STORE_NAME, 'readwrite');
-                    const store = tx.objectStore(STORE_NAME);
-                    const record = {
-                        id: id,
-                        blob: fileOrBlob,
-                        dataUrl: dataUrl,
-                        filename: fname,
-                        type: type,
-                        size: fileOrBlob.size || 0,
-                        serverSaved: serverSaved,
-                        updatedAt: new Date().toISOString()
-                    };
-                    const req = store.put(record);
-                    req.onsuccess = () => resolve(true);
-                    req.onerror = () => resolve(false);
-                });
+        // 3. Save into IndexedDB (skip storing huge binary blobs if already saved on local server)
+        if (!serverSaved) {
+            try {
+                const db = await openDB();
+                if (db) {
+                    await new Promise((resolve) => {
+                        const timer = setTimeout(() => resolve(false), 2000);
+                        try {
+                            const tx = db.transaction(STORE_NAME, 'readwrite');
+                            const store = tx.objectStore(STORE_NAME);
+                            const record = {
+                                id: id,
+                                blob: fileOrBlob,
+                                dataUrl: dataUrl,
+                                filename: fname,
+                                type: type,
+                                size: fileOrBlob.size || 0,
+                                serverSaved: serverSaved,
+                                updatedAt: new Date().toISOString()
+                            };
+                            tx.oncomplete = () => { clearTimeout(timer); resolve(true); };
+                            tx.onerror = () => { clearTimeout(timer); resolve(false); };
+                            tx.onabort = () => { clearTimeout(timer); resolve(false); };
+                            const req = store.put(record);
+                            req.onerror = () => { clearTimeout(timer); resolve(false); };
+                        } catch (txErr) {
+                            clearTimeout(timer);
+                            resolve(false);
+                        }
+                    });
+                }
+            } catch (err) {
+                console.warn('Failed to save to IndexedDB:', err);
             }
-        } catch (err) {
-            console.warn('Failed to save to IndexedDB:', err);
         }
 
         return {
@@ -134,8 +158,12 @@ const DocStorage = (function() {
     }
 
     async function getFileUrl(id, fallbackPath) {
+        const isHttp = window.location.protocol.startsWith('http');
         const item = await getFile(id);
         if (item) {
+            if (isHttp && item.serverSaved && (fallbackPath || item.filename)) {
+                return fallbackPath || `docs/${item.filename}`;
+            }
             if (item.blob) {
                 try {
                     return URL.createObjectURL(item.blob);

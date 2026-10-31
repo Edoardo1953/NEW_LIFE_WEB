@@ -4,88 +4,112 @@
 
 const DEFAULT_DOCUMENTS = [
     {
-        id: "DOC-2025-BILAN",
-        title: "Bilan & Comptes Annuels 2025 Déposés",
-        category: "bilan",
-        date: "2025-12-31",
-        filename: "NEW_LIFE_bilan_2025_RCSL_déposé.pdf",
-        filepath: "docs/NEW_LIFE_bilan_2025_RCSL_déposé.pdf",
-        size: "3.32 Mo",
-        type: "PDF Document",
-        notes: "Bilan complet et compte de résultat 2025 officiellement déposés au RCS Luxembourg (RCSL).",
-        available: true
+        "id": "DOC-SHARE-TRANSFER-SEF",
+        "title": "Share Transfer Agreement TE - New Life Sàrl - SEF Srl (EN / IT)",
+        "category": "juridique",
+        "date": "2026-09-07",
+        "filename": "Share transfer agreement TE - New Life Sàrl - SEF srl (EN IT).pdf",
+        "filepath": "docs/Share transfer agreement TE - New Life Sàrl - SEF srl (EN IT).pdf",
+        "size": "6.06 Mo",
+        "type": "application/pdf",
+        "notes": "Contratto bilingue (EN/IT) di cessione e trasferimento quote sociali SEF Srl tra Tubia Edoardo (TE) e New Life Sàrl.",
+        "available": true
     },
     {
-        id: "DOC-STATUTS",
-        title: "Acte Constitutif & Statuts Coordonnés",
-        category: "juridique",
-        date: "2018-12-01",
-        filename: "Statuts_NEW_LIFE_Sarl.pdf",
-        filepath: "docs/Statuts_NEW_LIFE_Sarl.pdf",
-        size: "En attente",
-        type: "PDF Document",
-        notes: "Statuts d'origine et modifications statutaires de la société.",
-        available: false
+        "id": "DOC-1793442274271",
+        "title": "Cessione partecipazione TE a NL",
+        "category": "juridique",
+        "date": "2026-09-07",
+        "filename": "Cessione SEF - TE a NL.pdf",
+        "filepath": "docs/Cessione SEF - TE a NL.pdf",
+        "size": "5.52 Mo",
+        "type": "application/pdf",
+        "notes": "Cessione di partecipazione",
+        "available": true
     },
     {
-        id: "DOC-RCS",
-        title: "Extrait d'Immatriculation RCS Luxembourg (10/2025)",
-        category: "registres",
-        date: "2025-10-06",
-        filename: "Extrait RCS New Life 10.2025.pdf",
-        filepath: "docs/Extrait RCS New Life 10.2025.pdf",
-        size: "379.38 Ko",
-        type: "PDF Document",
-        notes: "Certificat d'immatriculation officiel au Registre de Commerce et des Sociétés.",
-        available: true
+        "id": "DOC-2025-BILAN",
+        "title": "Bilan & Comptes Annuels 2025 Déposés",
+        "category": "bilan",
+        "date": "2025-12-31",
+        "filename": "NEW_LIFE_bilan_2025_RCSL_déposé.pdf",
+        "filepath": "docs/NEW_LIFE_bilan_2025_RCSL_déposé.pdf",
+        "size": "3.32 Mo",
+        "type": "PDF Document",
+        "notes": "Bilan complet et compte de résultat 2025 officiellement déposés au RCS Luxembourg (RCSL).",
+        "available": true
     },
     {
-        id: "DOC-RBE",
-        title: "Déclaration Registre des Bénéficiaires Effectifs (RBE 10/2025)",
-        category: "registres",
-        date: "2025-10-03",
-        filename: "NEW LIFE - Extrait RBE 10.2025.pdf",
-        filepath: "docs/NEW LIFE - Extrait RBE 10.2025.pdf",
-        size: "360.09 Ko",
-        type: "PDF Document",
-        notes: "Attestation de conformité et déclaration légale RBE Luxembourg.",
-        available: true
+        "id": "DOC-STATUTS",
+        "title": "Acte Constitutif & Statuts Coordonnés",
+        "category": "juridique",
+        "date": "2018-12-01",
+        "filename": "Statuts_NEW_LIFE_Sarl.pdf",
+        "filepath": "docs/Statuts_NEW_LIFE_Sarl.pdf",
+        "size": "En attente",
+        "type": "PDF Document",
+        "notes": "Statuts d'origine et modifications statutaires de la société.",
+        "available": false
     },
     {
-        id: "DOC-AML-MANUAL-IT",
-        title: "Manuale di Conformità AML & Guida Metodologica Antiriciclaggio (IT)",
-        category: "conformite",
-        date: "2026-10-08",
-        filename: "Manuale_Conformita_AML_Antiriciclaggio_NEW_LIFE_IT.pdf",
-        filepath: "docs/Manuale_Conformita_AML_Antiriciclaggio_NEW_LIFE_IT.pdf",
-        size: "85.00 Ko",
-        type: "PDF Document",
-        notes: "Manuale operativo e normativo AML/LBC-FT per NEW LIFE Sàrl (Legge 12 Nov. 2004, AED, RBE, Mandati di Amministratore e Simulatore di Due Diligence).",
-        available: true
+        "id": "DOC-RCS",
+        "title": "Extrait d'Immatriculation RCS Luxembourg (10/2025)",
+        "category": "registres",
+        "date": "2025-10-06",
+        "filename": "Extrait RCS New Life 10.2025.pdf",
+        "filepath": "docs/Extrait RCS New Life 10.2025.pdf",
+        "size": "379.38 Ko",
+        "type": "PDF Document",
+        "notes": "Certificat d'immatriculation officiel au Registre de Commerce et des Sociétés.",
+        "available": true
     },
     {
-        id: "DOC-AML-MANUAL-FR",
-        title: "Manuel de Conformité AML & Guide Méthodologique LBC-FT (FR)",
-        category: "conformite",
-        date: "2026-10-08",
-        filename: "Manuel_Conformite_AML_LBC-FT_NEW_LIFE_FR.pdf",
-        filepath: "docs/Manuel_Conformite_AML_LBC-FT_NEW_LIFE_FR.pdf",
-        size: "85.00 Ko",
-        type: "PDF Document",
-        notes: "Manuel officiel de conformité LBC-FT et procédures de Due Diligence pour NEW LIFE Sàrl selon la Loi du 12 novembre 2004 et la supervision AED.",
-        available: true
+        "id": "DOC-RBE",
+        "title": "Déclaration Registre des Bénéficiaires Effectifs (RBE 10/2025)",
+        "category": "registres",
+        "date": "2025-10-03",
+        "filename": "NEW LIFE - Extrait RBE 10.2025.pdf",
+        "filepath": "docs/NEW LIFE - Extrait RBE 10.2025.pdf",
+        "size": "360.09 Ko",
+        "type": "PDF Document",
+        "notes": "Attestation de conformité et déclaration légale RBE Luxembourg.",
+        "available": true
     },
     {
-        id: "DOC-AML-MANUAL-EN",
-        title: "AML / CFT Compliance Manual & Due Diligence Guide (EN)",
-        category: "conformite",
-        date: "2026-10-08",
-        filename: "User_Manual_AML_CFT_Compliance_NEW_LIFE_EN.pdf",
-        filepath: "docs/User_Manual_AML_CFT_Compliance_NEW_LIFE_EN.pdf",
-        size: "85.00 Ko",
-        type: "PDF Document",
-        notes: "Operational AML/CFT Compliance Manual and Due Diligence Risk Assessment guide under Luxembourg Law and AED supervision.",
-        available: true
+        "id": "DOC-AML-MANUAL-IT",
+        "title": "Manuale di Conformità AML & Guida Metodologica Antiriciclaggio (IT)",
+        "category": "conformite",
+        "date": "2026-10-08",
+        "filename": "Manuale_Conformita_AML_Antiriciclaggio_NEW_LIFE_IT.pdf",
+        "filepath": "docs/Manuale_Conformita_AML_Antiriciclaggio_NEW_LIFE_IT.pdf",
+        "size": "85.00 Ko",
+        "type": "PDF Document",
+        "notes": "Manuale operativo e normativo AML/LBC-FT per NEW LIFE Sàrl (Legge 12 Nov. 2004, AED, RBE, Mandati di Amministratore e Simulatore di Due Diligence).",
+        "available": true
+    },
+    {
+        "id": "DOC-AML-MANUAL-FR",
+        "title": "Manuel de Conformité AML & Guide Méthodologique LBC-FT (FR)",
+        "category": "conformite",
+        "date": "2026-10-08",
+        "filename": "Manuel_Conformite_AML_LBC-FT_NEW_LIFE_FR.pdf",
+        "filepath": "docs/Manuel_Conformite_AML_LBC-FT_NEW_LIFE_FR.pdf",
+        "size": "85.00 Ko",
+        "type": "PDF Document",
+        "notes": "Manuel officiel de conformité LBC-FT et procédures de Due Diligence pour NEW LIFE Sàrl selon la Loi du 12 novembre 2004 et la supervision AED.",
+        "available": true
+    },
+    {
+        "id": "DOC-AML-MANUAL-EN",
+        "title": "AML / CFT Compliance Manual & Due Diligence Guide (EN)",
+        "category": "conformite",
+        "date": "2026-10-08",
+        "filename": "User_Manual_AML_CFT_Compliance_NEW_LIFE_EN.pdf",
+        "filepath": "docs/User_Manual_AML_CFT_Compliance_NEW_LIFE_EN.pdf",
+        "size": "85.00 Ko",
+        "type": "PDF Document",
+        "notes": "Operational AML/CFT Compliance Manual and Due Diligence Risk Assessment guide under Luxembourg Law and AED supervision.",
+        "available": true
     }
 ];
 
@@ -108,7 +132,9 @@ function getStoredDocuments() {
     }
 
     let updated = false;
+    const deletedIds = new Set(JSON.parse(localStorage.getItem('new_life_docs_deleted') || '[]'));
     DEFAULT_DOCUMENTS.forEach(defDoc => {
+        if (deletedIds.has(defDoc.id)) return;
         const idx = docs.findIndex(d => d.id === defDoc.id);
         if (idx === -1) {
             docs.push(JSON.parse(JSON.stringify(defDoc)));
@@ -149,6 +175,7 @@ function restoreDefaultDocs() {
     
     if (!confirm(msg)) return;
 
+    localStorage.removeItem('new_life_docs_deleted');
     let docs = getStoredDocuments();
     DEFAULT_DOCUMENTS.forEach(defDoc => {
         const exists = docs.some(d => d.id === defDoc.id);
@@ -171,6 +198,18 @@ function initDocumenti() {
 
     document.getElementById('doc-cat-filter').addEventListener('change', renderDocGrid);
     document.getElementById('doc-search-input').addEventListener('input', renderDocGrid);
+
+    const uploadFileInput = document.getElementById('upload-file-input');
+    if (uploadFileInput) {
+        uploadFileInput.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                const titleInput = document.getElementById('upload-doc-title');
+                if (titleInput && !titleInput.value.trim()) {
+                    titleInput.value = this.files[0].name.replace(/\.[^/.]+$/, '');
+                }
+            }
+        });
+    }
 
     renderDocGrid();
 }
@@ -589,6 +628,9 @@ async function deleteDocument(docId) {
     if (!confirm(confirmMsg)) return;
 
     docs = docs.filter(item => item.id !== docId);
+    const deletedIds = new Set(JSON.parse(localStorage.getItem('new_life_docs_deleted') || '[]'));
+    deletedIds.add(docId);
+    localStorage.setItem('new_life_docs_deleted', JSON.stringify(Array.from(deletedIds)));
     saveDocuments(docs);
 
     if (window.DocStorage) {
@@ -618,45 +660,68 @@ function closeUploadModal() {
 }
 
 async function submitUploadDoc() {
-    const title = document.getElementById('upload-doc-title').value.trim();
+    let title = document.getElementById('upload-doc-title').value.trim();
     const cat = document.getElementById('upload-doc-cat').value;
     const date = document.getElementById('upload-doc-date').value;
     const notes = document.getElementById('upload-doc-notes').value.trim();
     const fileInput = document.getElementById('upload-file-input');
+    const file = fileInput.files && fileInput.files.length > 0 ? fileInput.files[0] : null;
 
+    if (!title && file) {
+        title = file.name.replace(/\.[^/.]+$/, '');
+    }
     if (!title) {
         alert("Veuillez indiquer un titre pour le document.");
         return;
     }
 
-    const file = fileInput.files && fileInput.files.length > 0 ? fileInput.files[0] : null;
     const filename = file ? file.name : `${title.replace(/\s+/g, '_')}.pdf`;
-    const docId = "DOC-" + Date.now();
     const size = file ? `${(file.size / (1024 * 1024)).toFixed(2)} Mo` : "1.00 Mo";
 
-    if (file && window.DocStorage) {
-        await window.DocStorage.saveFile(docId, file, filename, file.type);
+    const docs = getStoredDocuments();
+    const existingIdx = file ? docs.findIndex(d => d.filename && d.filename.trim().toLowerCase() === filename.trim().toLowerCase()) : -1;
+
+    let docId;
+    if (existingIdx !== -1) {
+        docId = docs[existingIdx].id;
+        docs[existingIdx].title = title;
+        docs[existingIdx].category = cat;
+        docs[existingIdx].date = date || docs[existingIdx].date || new Date().toISOString().split('T')[0];
+        docs[existingIdx].filename = filename;
+        docs[existingIdx].filepath = `docs/${filename}`;
+        docs[existingIdx].size = size;
+        if (notes) docs[existingIdx].notes = notes;
+        docs[existingIdx].available = true;
+        const [updatedDoc] = docs.splice(existingIdx, 1);
+        docs.unshift(updatedDoc);
+    } else {
+        docId = "DOC-" + Date.now();
+        const newDoc = {
+            id: docId,
+            title: title,
+            category: cat,
+            date: date || new Date().toISOString().split('T')[0],
+            filename: filename,
+            filepath: `docs/${filename}`,
+            size: size,
+            type: file ? (file.type || "PDF Document") : "PDF Document",
+            notes: notes,
+            available: !!file
+        };
+        docs.unshift(newDoc);
     }
 
-    const newDoc = {
-        id: docId,
-        title: title,
-        category: cat,
-        date: date || new Date().toISOString().split('T')[0],
-        filename: filename,
-        filepath: `docs/${filename}`,
-        size: size,
-        type: file ? file.type : "PDF Document",
-        notes: notes,
-        available: !!file
-    };
-
-    const docs = getStoredDocuments();
-    docs.unshift(newDoc);
     saveDocuments(docs);
-
     closeUploadModal();
     renderDocGrid();
+
+    if (file && window.DocStorage) {
+        try {
+            await window.DocStorage.saveFile(docId, file, filename, file.type);
+        } catch (err) {
+            console.warn("Upload storage warning:", err);
+        }
+    }
 
     if (file) {
         await viewDocument(docId);

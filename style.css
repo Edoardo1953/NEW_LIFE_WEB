@@ -1166,8 +1166,8 @@ body.theme-light .part-metrics-box {
     display: flex;
     flex-direction: column;
     gap: 0.45rem;
-    max-height: 180px;
-    overflow-y: auto;
+    max-height: none;
+    overflow-y: visible;
 }
 
 .part-doc-item {

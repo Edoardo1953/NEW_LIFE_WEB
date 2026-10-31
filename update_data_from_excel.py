@@ -806,6 +806,8 @@ def main(force=False):
                 c_html = re.sub(r'partecipazioni_data\.js(\?v=\d+)?', f'partecipazioni_data.js?v={ts}', c_html)
                 c_html = re.sub(r'partecipazioni_app\.js(\?v=\d+)?', f'partecipazioni_app.js?v={ts}', c_html)
                 c_html = re.sub(r'documenti_app\.js(\?v=\d+)?', f'documenti_app.js?v={ts}', c_html)
+                c_html = re.sub(r'doc_storage\.js(\?v=\d+)?', f'doc_storage.js?v={ts}', c_html)
+                c_html = re.sub(r'style\.css(\?v=\d+)?', f'style.css?v={ts}', c_html)
                 c_html = re.sub(r'i18n\.js(\?v=\d+)?', f'i18n.js?v={ts}', c_html)
                 with open(h, "w", encoding="utf-8") as f_html:
                     f_html.write(c_html)

@@ -127,37 +127,19 @@ function getPartDocs() {
     }
 
     let updated = false;
+    const deletedIds = new Set(JSON.parse(localStorage.getItem('new_life_part_docs_deleted') || '[]'));
 
-    // Ensure official SEF documents (DOC-SEF-01, DOC-SEF-02, DOC-SEF-05) have their real PDF files attached
+    // Fix any document where filename was updated without updating filepath, and ensure SEF official docs are marked available
     docs = docs.map(d => {
-        if (d.id === 'DOC-SEF-01') {
-            d.title = "Atto Notarile di Cessione / Compravendita Quote Sociali SEF Srl (TE a NL)";
-            d.date = "2026-09-07";
-            d.filename = "Cessione SEF - TE a NL.pdf";
-            d.filepath = "docs/Cessione SEF - TE a NL.pdf";
-            d.available = true;
-            d.size = "5.52 Mo";
-            updated = true;
+        if (d.id === 'DOC-SEF-05' && !deletedIds.has('DOC-SEF-05')) {
+            if (!d.filename || d.available === false) {
+                d.filename = "Share transfer agreement TE - New Life Sàrl - SEF srl (EN IT).pdf";
+                d.filepath = "docs/Share transfer agreement TE - New Life Sàrl - SEF srl (EN IT).pdf";
+                d.size = "6.06 Mo";
+                d.available = true;
+                updated = true;
+            }
         }
-        if (d.id === 'DOC-SEF-02') {
-            d.title = "Visura Camerale Storica CCIAA Registro Imprese SEF Srl";
-            d.date = "2026-09-28";
-            d.filename = "SEF srl - visura del 28.9.26.pdf";
-            d.filepath = "docs/SEF srl - visura del 28.9.26.pdf";
-            d.available = true;
-            d.size = "81.56 Ko";
-            updated = true;
-        }
-        if (d.id === 'DOC-SEF-05') {
-            d.title = "Share Transfer Agreement TE - New Life Sàrl - SEF Srl (EN / IT)";
-            d.date = "2026-09-07";
-            d.filename = "Share transfer agreement TE - New Life Sàrl - SEF srl (EN IT).pdf";
-            d.filepath = "docs/Share transfer agreement TE - New Life Sàrl - SEF srl (EN IT).pdf";
-            d.available = true;
-            d.size = "6.06 Mo";
-            updated = true;
-        }
-        // Fix any document where filename was updated without updating filepath
         if (d.filename && (!d.filepath || !d.filepath.endsWith(d.filename))) {
             d.filepath = `docs/${d.filename}`;
             updated = true;
@@ -165,43 +147,44 @@ function getPartDocs() {
         return d;
     });
 
-    // Merge missing defaults and upgrade any default doc that became available on disk
+    // Merge missing defaults (unless explicitly deleted by user)
     const defaults = window.DEFAULT_PARTECIPAZIONI_DOCS || [];
     defaults.forEach(defDoc => {
+        if (deletedIds.has(defDoc.id)) return;
         const existingIdx = docs.findIndex(d => d.id === defDoc.id);
         if (existingIdx === -1) {
-            // Insert right after previous doc of same part_id if possible
-            const lastSamePartIdx = docs.map(item => item.part_id).lastIndexOf(defDoc.part_id);
-            if (lastSamePartIdx !== -1) {
-                docs.splice(lastSamePartIdx + 1, 0, JSON.parse(JSON.stringify(defDoc)));
-            } else {
-                docs.push(JSON.parse(JSON.stringify(defDoc)));
+            // Check if user already uploaded a custom doc with the same filename for this participation
+            const sameFileExists = defDoc.filename && docs.some(
+                d => d.part_id === defDoc.part_id && d.filename && d.filename.trim().toLowerCase() === defDoc.filename.trim().toLowerCase()
+            );
+            if (!sameFileExists) {
+                const lastSamePartIdx = docs.map(item => item.part_id).lastIndexOf(defDoc.part_id);
+                if (lastSamePartIdx !== -1) {
+                    docs.splice(lastSamePartIdx + 1, 0, JSON.parse(JSON.stringify(defDoc)));
+                } else {
+                    docs.push(JSON.parse(JSON.stringify(defDoc)));
+                }
+                updated = true;
             }
-            updated = true;
         } else if (defDoc.available && !docs[existingIdx].available) {
-            docs[existingIdx] = { ...docs[existingIdx], ...JSON.parse(JSON.stringify(defDoc)) };
+            docs[existingIdx].available = true;
+            docs[existingIdx].filename = defDoc.filename;
+            docs[existingIdx].filepath = defDoc.filepath;
+            docs[existingIdx].size = defDoc.size;
             updated = true;
         }
     });
 
-    // Deduplicate extra custom entries if they point to the exact same official file for the same participation
-    const officialIds = new Set(defaults.map(d => d.id));
-    const officialFiles = new Set(
-        docs.filter(d => officialIds.has(d.id) && d.available && d.filename)
-            .map(d => `${d.part_id}::${d.filename.trim().toLowerCase()}`)
-    );
-    const beforeDedupLen = docs.length;
-    docs = docs.filter(d => {
-        if (!officialIds.has(d.id) && d.filename) {
-            const key = `${d.part_id}::${d.filename.trim().toLowerCase()}`;
-            if (officialFiles.has(key)) return false;
-        }
-        if (d.part_id === 'PART-SEF' && d.id !== 'DOC-SEF-02' && (d.title.trim().toLowerCase() === 'visura camerale' || d.title.trim().toLowerCase() === 'visura camerale storica cciaa registro imprese sef srl')) {
-            return false;
-        }
-        return true;
+    // Place available documents (with PDF attached) before unavailable placeholders
+    const sortedDocs = [...docs].sort((a, b) => {
+        const aAvail = a.available === true ? 1 : 0;
+        const bAvail = b.available === true ? 1 : 0;
+        return bAvail - aAvail;
     });
-    if (docs.length !== beforeDedupLen) updated = true;
+    if (sortedDocs.some((d, i) => d.id !== docs[i].id)) {
+        docs = sortedDocs;
+        updated = true;
+    }
 
     if (updated) {
         savePartDocs(docs, false);
@@ -1385,6 +1368,8 @@ function openAddDocModal(preselectedPartId) {
     document.getElementById('modal-doc-date').value = new Date().toISOString().split('T')[0];
     document.getElementById('modal-doc-filename').value = '';
     document.getElementById('modal-doc-notes').value = '';
+    const fileInput = document.getElementById('modal-doc-file-input');
+    if (fileInput) fileInput.value = '';
 
     if (preselectedPartId) {
         document.getElementById('modal-doc-part-id').value = preselectedPartId;
@@ -1407,6 +1392,8 @@ function openEditDocModal(docId) {
     document.getElementById('modal-doc-date').value = toInputDate(d.date);
     document.getElementById('modal-doc-filename').value = d.filename || '';
     document.getElementById('modal-doc-notes').value = d.notes || '';
+    const fileInput = document.getElementById('modal-doc-file-input');
+    if (fileInput) fileInput.value = '';
 
     document.getElementById('modal-doc-form-title').textContent = 'Modifier le Document';
     document.getElementById('edit-doc-modal').classList.add('active');
@@ -1419,7 +1406,13 @@ function closeDocModal() {
 async function saveDocForm() {
     const id = document.getElementById('modal-doc-id').value;
     const partId = document.getElementById('modal-doc-part-id').value;
-    const title = document.getElementById('modal-doc-title').value.trim();
+    const fileInput = document.getElementById('modal-doc-file-input');
+    const selectedFile = fileInput && fileInput.files && fileInput.files.length > 0 ? fileInput.files[0] : null;
+
+    let title = document.getElementById('modal-doc-title').value.trim();
+    if (!title && selectedFile) {
+        title = selectedFile.name.replace(/\.[^/.]+$/, '');
+    }
     if (!title) {
         alert('Veuillez saisir un titre de document.');
         return;
@@ -1428,8 +1421,6 @@ async function saveDocForm() {
     const category = document.getElementById('modal-doc-category').value;
     const date = document.getElementById('modal-doc-date').value;
     let filename = document.getElementById('modal-doc-filename').value.trim();
-    const fileInput = document.getElementById('modal-doc-file-input');
-    const selectedFile = fileInput && fileInput.files && fileInput.files.length > 0 ? fileInput.files[0] : null;
 
     if (selectedFile) {
         filename = selectedFile.name;
@@ -1447,27 +1438,43 @@ async function saveDocForm() {
     const docs = getPartDocs();
 
     let targetDocId = id;
-    if (id) {
-        // Edit existing
-        const idx = docs.findIndex(d => d.id === id);
+    if (!targetDocId && filename) {
+        // Check if a document for the same participation already points to this exact filename
+        const existingSameFile = docs.find(
+            d => d.part_id === partId && d.filename && d.filename.trim().toLowerCase() === filename.trim().toLowerCase()
+        );
+        if (existingSameFile) {
+            targetDocId = existingSameFile.id;
+        }
+    }
+
+    const fileAvailable = !!(selectedFile || filename);
+
+    if (targetDocId) {
+        // Edit / update existing and move to top of list
+        const idx = docs.findIndex(d => d.id === targetDocId);
         if (idx !== -1) {
             docs[idx].part_id = partId;
             docs[idx].part_name = partName;
             docs[idx].title = title;
             docs[idx].category = category;
-            docs[idx].date = date;
+            docs[idx].date = date || docs[idx].date || new Date().toISOString().split('T')[0];
             docs[idx].filename = filename;
             docs[idx].filepath = `docs/${filename}`;
-            docs[idx].notes = notes;
+            if (notes) docs[idx].notes = notes;
             if (selectedFile) {
                 docs[idx].size = `${(selectedFile.size / (1024 * 1024)).toFixed(2)} Mo`;
                 docs[idx].available = true;
                 docs[idx].has_stored_file = true;
+            } else if (filename) {
+                docs[idx].available = true;
             }
+            const [updatedDoc] = docs.splice(idx, 1);
+            docs.unshift(updatedDoc);
         }
     } else {
         // Create new
-        targetDocId = 'DOC-PART-' + Date.now().toString().slice(-4);
+        targetDocId = 'DOC-PART-' + Date.now();
         const newDoc = {
             id: targetDocId,
             part_id: partId,
@@ -1477,17 +1484,13 @@ async function saveDocForm() {
             date: date || new Date().toISOString().split('T')[0],
             filename: filename,
             filepath: `docs/${filename}`,
-            size: selectedFile ? `${(selectedFile.size / (1024 * 1024)).toFixed(2)} Mo` : '1.20 Mo',
-            type: selectedFile ? selectedFile.type : 'PDF Document',
+            size: selectedFile ? `${(selectedFile.size / (1024 * 1024)).toFixed(2)} Mo` : 'PDF',
+            type: selectedFile ? (selectedFile.type || 'PDF Document') : 'PDF Document',
             notes: notes,
-            available: !!selectedFile,
+            available: fileAvailable,
             has_stored_file: !!selectedFile
         };
         docs.unshift(newDoc);
-    }
-
-    if (selectedFile && window.DocStorage) {
-        await window.DocStorage.saveFile(targetDocId, selectedFile, selectedFile.name, selectedFile.type);
     }
 
     savePartDocs(docs);
@@ -1495,7 +1498,15 @@ async function saveDocForm() {
     renderCurrentView();
     renderPartDocsArchive();
 
-    if (selectedFile) {
+    if (selectedFile && window.DocStorage) {
+        try {
+            await window.DocStorage.saveFile(targetDocId, selectedFile, selectedFile.name, selectedFile.type);
+        } catch (err) {
+            console.warn("Upload storage warning:", err);
+        }
+    }
+
+    if (selectedFile || fileAvailable) {
         await viewPartDocument(targetDocId);
     }
 }
@@ -1505,24 +1516,24 @@ async function deletePartDocument(docId) {
     const targetDoc = docs.find(d => d.id === docId);
     if (!targetDoc) return;
 
-    const isSystemDoc = targetDoc.id.startsWith('DOC-SEF-') || targetDoc.id.startsWith('DOC-SAF-') || targetDoc.id.startsWith('DOC-GEB-') || targetDoc.id.startsWith('DOC-CRE-');
-
-    let confirmMsg = `Sei sicuro di voler eliminare il documento "${targetDoc.title}"?`;
-    if (isSystemDoc && targetDoc.available) {
-        confirmMsg = `Vuoi rimuovere il file PDF allegato a "${targetDoc.title}"? (L'icona tornerà grigia e il file verrà staccato)`;
+    const lang = localStorage.getItem('new_life_lang') || 'fr';
+    let confirmMsg = `Êtes-vous sûr de vouloir supprimer le document "${targetDoc.title}" ?`;
+    if (lang === 'it') {
+        confirmMsg = `Sei sicuro di voler eliminare il documento "${targetDoc.title}"?`;
+    } else if (lang === 'en') {
+        confirmMsg = `Are you sure you want to delete the document "${targetDoc.title}"?`;
     }
 
     if (!confirm(confirmMsg)) return;
 
-    if (isSystemDoc) {
-        targetDoc.available = false;
-        targetDoc.has_stored_file = false;
-        targetDoc.filename = targetDoc.title.replace(/[^a-zA-Z0-9]/g, '_') + '.pdf';
-        targetDoc.size = 'Non caricato';
-    } else {
-        const idx = docs.findIndex(d => d.id === docId);
-        if (idx !== -1) docs.splice(idx, 1);
+    const idx = docs.findIndex(d => d.id === docId);
+    if (idx !== -1) {
+        docs.splice(idx, 1);
     }
+
+    const deletedIds = new Set(JSON.parse(localStorage.getItem('new_life_part_docs_deleted') || '[]'));
+    deletedIds.add(docId);
+    localStorage.setItem('new_life_part_docs_deleted', JSON.stringify(Array.from(deletedIds)));
 
     savePartDocs(docs);
     if (window.DocStorage) {
@@ -1531,6 +1542,24 @@ async function deletePartDocument(docId) {
     renderCurrentView();
     renderPartDocsArchive();
 }
+
+// Auto-fill filename and title when selecting a file in the modal
+document.addEventListener('DOMContentLoaded', () => {
+    const fileInput = document.getElementById('modal-doc-file-input');
+    if (fileInput) {
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                const file = this.files[0];
+                const fnInput = document.getElementById('modal-doc-filename');
+                if (fnInput) fnInput.value = file.name;
+                const titleInput = document.getElementById('modal-doc-title');
+                if (titleInput && !titleInput.value.trim()) {
+                    titleInput.value = file.name.replace(/\.[^/.]+$/, '');
+                }
+            }
+        });
+    }
+});
 
 // Initialize on DOM load
 document.addEventListener('DOMContentLoaded', initPartecipazioni);
