@@ -66,7 +66,7 @@ function getParticipations() {
             p.legal_form = "Société en Commandite Spéciale (SCSp)";
             p.pcn_account = "2330 - GREEN ENERBRAS ONE SCSp";
             p.sector = "Investimenti Fotovoltaico a terra (Brasile)";
-            p.rcs_number = "RCS Luxembourg (SCSp)";
+            p.rcs_number = "RCS Luxembourg B295061";
             p.headquarters = "Luxembourg";
             p.rep_name = "NEW LIFE Sàrl (General Partner & Gérant Commandité)";
             p.pct_ownership = "Contrôle (General Partner)";

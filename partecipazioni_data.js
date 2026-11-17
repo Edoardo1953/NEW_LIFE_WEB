@@ -40,7 +40,7 @@ const DEFAULT_PARTECIPAZIONI = [
         "pcn_account": "2330 - GREEN ENERBRAS ONE SCSp",
         "pcn_code": "2330",
         "sector": "Investimenti Fotovoltaico a terra (Brasile)",
-        "rcs_number": "RCS Luxembourg (SCSp)",
+        "rcs_number": "RCS Luxembourg B295061",
         "headquarters": "Luxembourg",
         "rep_name": "NEW LIFE Sàrl (General Partner & Gérant Commandité)",
         "entry_date": "2025-08-28",

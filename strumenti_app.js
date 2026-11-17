@@ -37,7 +37,7 @@ const INITIAL_ENTRIES = [
         id: 'usr_4',
         name: 'MYGUICHET & RCSL (Administration)',
         username: 'EDOARDO_TUBIA_RCS',
-        password: 'Rcs*Luxembourg2026!B225643',
+        password: 'Rcs*Luxembourg2026!B17790',
         role: 'Administration / RCSL',
         pin: 'Matricule 2018 2432 026',
         notes: 'Portale LBR.lu e MyGuichet.lu per depositi legali e RCS',

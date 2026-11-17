@@ -1020,7 +1020,7 @@ const AML_MANUAL_DOCS = {
                 <div style="background: rgba(16,185,129,0.08); border-left: 4px solid var(--accent-emerald); padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem;">
                     <h3 style="color: var(--accent-emerald); margin: 0 0 0.5rem 0; font-size: 1.1rem;"><i class="fa-solid fa-circle-info"></i> Inquadramento Generale & Supervisione AED</h3>
                     <p style="margin: 0; font-size: 0.85rem; color: var(--text-main);">
-                        Questo Manuale operativo disciplina i presidi antiriciclaggio e di contrasto al finanziamento del terrorismo (AML/CFT) adottati da <strong>NEW LIFE Sàrl</strong> (R.C.S. Luxembourg B 229.740). La società esercita prestazioni fiduciarie e mandati di Amministratore di Società ed è soggetta alla vigilanza dell'<strong>AED (Administration de l'Enregistrement, des Domaines et de la TVA)</strong> ai sensi dell'Art. 2-1 (8) della Legge del 12 novembre 2004 e relative circolari (Circolari 779 e 800).
+                        Questo Manuale operativo disciplina i presidi antiriciclaggio e di contrasto al finanziamento del terrorismo (AML/CFT) adottati da <strong>NEW LIFE Sàrl</strong> (R.C.S. Luxembourg B 17790). La società esercita prestazioni fiduciarie e mandati di Amministratore di Società ed è soggetta alla vigilanza dell'<strong>AED (Administration de l'Enregistrement, des Domaines et de la TVA)</strong> ai sensi dell'Art. 2-1 (8) della Legge del 12 novembre 2004 e relative circolari (Circolari 779 e 800).
                     </p>
                 </div>
 
@@ -1089,7 +1089,7 @@ const AML_MANUAL_DOCS = {
                 <div style="background: rgba(16,185,129,0.08); border-left: 4px solid var(--accent-emerald); padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem;">
                     <h3 style="color: var(--accent-emerald); margin: 0 0 0.5rem 0; font-size: 1.1rem;"><i class="fa-solid fa-circle-info"></i> Cadre Général & Supervision AED</h3>
                     <p style="margin: 0; font-size: 0.85rem; color: var(--text-main);">
-                        Le présent manuel opérationnel régit les procédures de lutte contre le blanchiment de capitaux et le financement du terrorisme (LBC-FT) mises en œuvre par <strong>NEW LIFE Sàrl</strong> (R.C.S. Luxembourg B 229.740). La société exerce des prestations de direction et mandats d'Administrateur de société et est placée sous la surveillance de l'<strong>AED (Administration de l'Enregistrement, des Domaines et de la TVA)</strong> conformément à l'article 2-1 (8) de la Loi modifiée du 12 novembre 2004 (Circulaires 779 et 800).
+                        Le présent manuel opérationnel régit les procédures de lutte contre le blanchiment de capitaux et le financement du terrorisme (LBC-FT) mises en œuvre par <strong>NEW LIFE Sàrl</strong> (R.C.S. Luxembourg B 17790). La société exerce des prestations de direction et mandats d'Administrateur de société et est placée sous la surveillance de l'<strong>AED (Administration de l'Enregistrement, des Domaines et de la TVA)</strong> conformément à l'article 2-1 (8) de la Loi modifiée du 12 novembre 2004 (Circulaires 779 et 800).
                     </p>
                 </div>
 
@@ -1158,7 +1158,7 @@ const AML_MANUAL_DOCS = {
                 <div style="background: rgba(16,185,129,0.08); border-left: 4px solid var(--accent-emerald); padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem;">
                     <h3 style="color: var(--accent-emerald); margin: 0 0 0.5rem 0; font-size: 1.1rem;"><i class="fa-solid fa-circle-info"></i> Regulatory Overview & AED Supervision</h3>
                     <p style="margin: 0; font-size: 0.85rem; color: var(--text-main);">
-                        This operational Compliance Manual establishes the anti-money laundering and countering the financing of terrorism (AML/CFT) framework implemented by <strong>NEW LIFE Sàrl</strong> (R.C.S. Luxembourg B 229.740). Operating as a corporate service provider and professional director, NEW LIFE Sàrl is supervised by the <strong>AED (Administration de l'Enregistrement, des Domaines et de la TVA)</strong> pursuant to Article 2-1 (8) of the amended Law of 12 November 2004 and AED Circulars 779 and 800.
+                        This operational Compliance Manual establishes the anti-money laundering and countering the financing of terrorism (AML/CFT) framework implemented by <strong>NEW LIFE Sàrl</strong> (R.C.S. Luxembourg B 17790). Operating as a corporate service provider and professional director, NEW LIFE Sàrl is supervised by the <strong>AED (Administration de l'Enregistrement, des Domaines et de la TVA)</strong> pursuant to Article 2-1 (8) of the amended Law of 12 November 2004 and AED Circulars 779 and 800.
                     </p>
                 </div>
 
