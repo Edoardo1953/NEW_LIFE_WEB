@@ -1,7 +1,7 @@
 # NEW LIFE Sàrl - Luxembourg
 ## Guide Méthodologique & Manuel d'Utilisation du Module AML / LBC-FT
 ### Conformité Anti-Blanchiment (AED / Loi 12 Nov 2004), Contrôle des Recettes & Mandats d'Administrateur
-**Société :** NEW LIFE Sàrl &bull; **R.C.S. Luxembourg :** B 225.643 &bull; **Matricule National :** 2018 2432 026
+**Société :** NEW LIFE Sàrl &bull; **R.C.S. Luxembourg :** B 17790 &bull; **Matricule National :** 1980 2403 189
 **Version :** 2.0 (Exercice 2026) &bull; **Statut :** Document Officiel Interne
 
 ---

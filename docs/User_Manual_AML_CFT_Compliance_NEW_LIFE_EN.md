@@ -1,7 +1,7 @@
 # NEW LIFE Sàrl - Luxembourg
 ## Methodological Guide & User Manual for the AML / CFT Compliance Module
 ### Anti-Money Laundering Compliance (AED Oversight / Law of 12 Nov 2004), Inflow Monitoring & Directorship Fees
-**Company :** NEW LIFE Sàrl &bull; **R.C.S. Luxembourg :** B 225.643 &bull; **National ID (Matricule) :** 2018 2432 026
+**Company :** NEW LIFE Sàrl &bull; **R.C.S. Luxembourg :** B 17790 &bull; **National ID (Matricule) :** 1980 2403 189
 **Version :** 2.0 (Fiscal Year 2026) &bull; **Status :** Official Internal Compliance Policy
 
 ---

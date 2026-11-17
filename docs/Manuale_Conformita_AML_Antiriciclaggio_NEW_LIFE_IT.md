@@ -1,7 +1,7 @@
 # NEW LIFE Sàrl - Luxembourg
 ## Guida Metodologica & Manuale d'Uso del Modulo AML / Antiriciclaggio
 ### Conformità LBC-FT (Supervisione AED / Legge 12 Nov 2004), Controllo Entrate & Compensi di Amministratore
-**Società :** NEW LIFE Sàrl &bull; **R.C.S. Luxembourg :** B 225.643 &bull; **Matricola Nazionale :** 2018 2432 026
+**Società :** NEW LIFE Sàrl &bull; **R.C.S. Luxembourg :** B 17790 &bull; **Matricola Nazionale :** 1980 2403 189
 **Versione :** 2.0 (Esercizio 2026) &bull; **Stato :** Documento Ufficiale Interno
 
 ---
